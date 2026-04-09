@@ -1,0 +1,11 @@
+.fui-card {
+	background-color: var(--bg-2);
+}
+
+fieldset {
+	border: none;
+}
+
+.fui-error {
+	color: var(--accent);
+}

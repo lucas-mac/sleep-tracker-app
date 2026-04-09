@@ -1,0 +1,40 @@
+sl-switch::part(base) {
+	padding: var(--padd-sm) var(--padd-md);
+	outline: 1px solid var(--gloss);
+	outline-offset: -1px;
+	border-radius: 999px;
+	gap: var(--padd-sm);
+}
+
+sl-switch[checked]::part(base) {
+	background-color: color-mix(in lch, var(--primary) 5%, var(--bg) 100%);
+}
+
+sl-switch[checked]::part(control) {
+	background-color: var(--primary);
+}
+
+sl-switch::part(thumb),
+sl-switch[checked]::part(control) {
+	border: none;
+}
+
+sl-switch::part(thumb) {
+	box-shadow: 0 0 var(--padd-md) var(--bg-2);
+}
+
+sl-switch[checked]::part(thumb) {
+	box-shadow: 0 0 var(--padd-md) var(--primary-text);
+}
+
+sl-switch[checked]::part(label) {
+	color: var(--primary);
+}
+
+.timer-date {
+	min-width: 16ch;
+}
+
+.timer-time {
+	min-width: 13ch;
+}
