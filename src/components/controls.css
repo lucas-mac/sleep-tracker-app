@@ -1,0 +1,71 @@
+.controls {
+	--control-bg: color-mix(in lch, var(--bg) 100%, var(--solvent) 70%);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	flex-direction: row;
+	position: sticky;
+	bottom: 8px;
+	color: var(--solvent);
+	background-color: color-mix(in lch, var(--control-bg) 90%, transparent 50%);
+	width: 100%;
+	padding: var(--padd-md) var(--padd-lg);
+	margin-block: var(--padd-md);
+	border-radius: 24px;
+	backdrop-filter: blur(24px);
+}
+
+.controls.dark-bg {
+	background-color: var(--bg);
+	/* backdrop-filter: none; */
+	padding: var(--padd-md) 0;
+	border-radius: 0;
+}
+
+button.btn-play {
+	padding: var(--padd-sm);
+	aspect-ratio: 1/1;
+	color: var(--secondary);
+	border-color: var(--secondary);
+}
+
+button.btn-play > svg.lucide-play {
+	position: relative;
+	left: 1px;
+}
+
+button.btn-play:hover {
+	background-color: var(--secondary);
+	border-color: var(--secondary);
+}
+
+button.btn-stop {
+	padding: var(--padd-sm);
+	color: var(--accent);
+	border-color: var(--accent);
+	aspect-ratio: 1/1;
+}
+
+button.btn-stop:hover {
+	background-color: var(--accent);
+	border-color: var(--accent);
+}
+
+button.btn-stop:hover,
+button.btn-play:hover {
+	color: var(--bg);
+}
+
+button.btn-play,
+button.btn-stop {
+	width: 24px;
+	height: 24px;
+	box-sizing: content-box;
+}
+
+.timer {
+	font-size: 1.4rem;
+	font-weight: 600;
+	color: var(--solvent);
+}
