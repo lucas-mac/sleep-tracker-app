@@ -22,6 +22,7 @@ const ProfilePage = () => {
 	const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [children, setChildren] = useState([]);
+    const [activeTab, setActiveTab] = useState("user");
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -47,11 +48,17 @@ const ProfilePage = () => {
 				querySnapshot.forEach((doc) => {
 					childrenData.push({id: doc.id, ...doc.data()});
 				});
-				console.log(childrenData);
 				setChildren(childrenData);
 			}
 		};
 		fetchChildData();
+	}, []);
+
+    useEffect(() => {
+		const location = window.location;
+		const hash = location.hash;
+		const tab = hash ? hash.split("#")[1] : "user";
+		setActiveTab(tab);
 	}, []);
 
 	const handleUserSave = async () => {
@@ -75,22 +82,29 @@ const ProfilePage = () => {
 	}
 
 	return (
-		<div className="profile-page">
+		<div className="profile-page page">
 			<h1>Settings</h1>
 			<WaTabGroup>
 				<WaTab
 					slot="nav"
 					panel="user"
+					active={activeTab === "user"}
+					onClick={() => (location.hash = "user")}
 				>
 					User
 				</WaTab>
 				<WaTab
 					slot="nav"
 					panel="children"
+					active={activeTab === "children"}
+					onClick={() => (location.hash = "children")}
 				>
 					Children
 				</WaTab>
-				<WaTabPanel name="user">
+				<WaTabPanel
+					name="user"
+					active={activeTab === "user"}
+				>
 					<div className="elem-group column gap-lg align-start">
 						<WaInput
 							label="First Name"
@@ -133,7 +147,10 @@ const ProfilePage = () => {
 						</WaButton>
 					</div>
 				</WaTabPanel>
-				<WaTabPanel name="children">
+				<WaTabPanel
+					name="children"
+					active={activeTab === "children"}
+				>
 					<div className="elem-group gap-lg column align-start">
 						<WaButton
 							className="btn-accent"
