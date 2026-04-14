@@ -38,13 +38,14 @@ body {
 	font-size: 16px;
 	line-height: 1.5;
 	margin: 0px;
-	height: 100vh;
+	min-height: 100vh;
+    height:100%;
 }
 
 main {
 	padding-inline: var(--padd-lg);
 	padding-block: var(--padd-md);
-	height: 100vh;
+	min-height: 100vh;
 	max-width: 640px;
 	margin-left: auto;
 	margin-right: auto;
@@ -90,6 +91,7 @@ button.btn-round {
 	border-radius: 999px;
 }
 
+wa-button.btn-transparent::part(base),
 wa-icon-button.btn-transparent::part(base),
 button.btn-transparent {
 	background-color: transparent;
@@ -99,6 +101,7 @@ button.btn-transparent {
 wa-button.btn-outline::part(base),
 wa-icon-button.btn-outline::part(base),
 button.btn-outline {
+    background-color:transparent;
 	border: 0px;
 	outline: 1px solid var(--gloss);
 	outline-offset: -1px;
@@ -260,6 +263,11 @@ wa-tab[active]::part(base){
     border-bottom-color:var(--accent);
 }
 
+table{
+    outline:1px solid var(--gloss);
+    border-radius: 4px;
+}
+
 table thead,
 table tfoot{
     background-color: var(--bg-2);
@@ -271,6 +279,10 @@ table thead tr th:first-child{
 
 table thead tr th:last-child{
     border-top-right-radius: 4px;
+}
+
+table tbody tr:last-of-type td{
+    border-bottom:1px solid var(--gloss);
 }
 
 table tfoot tr td:first-child{
@@ -364,6 +376,11 @@ table tr td{
 	gap: var(--padd-sm);
 }
 
+.page{
+    padding-top:var(--padd-lg);
+    padding-bottom:var(--padd-lg);
+}
+
 .align-baseline {
 	align-items: baseline;
 }
@@ -374,6 +391,10 @@ table tr td{
 
 .align-center{
     align-items:center;
+}
+
+.align-end {
+    align-items: flex-end;
 }
 
 .justify-start {
