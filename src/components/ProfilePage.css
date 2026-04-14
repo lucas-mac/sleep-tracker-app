@@ -1,0 +1,28 @@
+.children-wrapper > .child-card + .child-card {
+	/* padding-top: var(--padd-md); */
+	/* border-top: 1px solid var(--gloss); */
+}
+
+.child-card {
+	display: grid;
+	grid-template-columns: 36px 1fr auto;
+	gap: var(--padd-md);
+	border-radius: 12px;
+	background-color: var(--bg-2);
+	padding: var(--padd-md) var(--padd-lg);
+
+	& h3 {
+		margin-bottom: 0;
+	}
+}
+
+.avatar {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: 2px solid var(--solvent);
+}
