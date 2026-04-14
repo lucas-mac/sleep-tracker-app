@@ -26,3 +26,10 @@
 	justify-content: center;
 	outline: 2px solid var(--solvent);
 }
+
+.avatar.avatar-lg{
+    width: 120px;
+    height: 120px;
+    font-size:60px;
+    outline-width:4px;
+}
