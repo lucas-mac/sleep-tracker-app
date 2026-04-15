@@ -14,15 +14,14 @@ import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 
 import "./ProfilePage.css";
 
-
 const ProfilePage = () => {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [children, setChildren] = useState([]);
-    const [activeTab, setActiveTab] = useState("user");
+	const [saving, setSaving] = useState(false);
+	const [children, setChildren] = useState([]);
+	const [activeTab, setActiveTab] = useState("user");
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -38,8 +37,8 @@ const ProfilePage = () => {
 			}
 			setLoading(false);
 		};
-        fetchUserData();
-        const fetchChildData = async () => {
+		fetchUserData();
+		const fetchChildData = async () => {
 			const user = auth.currentUser;
 			if (user) {
 				const q = query(collection(db, "child"), where("guardian", "==", user.uid));
@@ -54,7 +53,7 @@ const ProfilePage = () => {
 		fetchChildData();
 	}, []);
 
-    useEffect(() => {
+	useEffect(() => {
 		const location = window.location;
 		const hash = location.hash;
 		const tab = hash ? hash.split("#")[1] : "user";
@@ -113,7 +112,7 @@ const ProfilePage = () => {
 							size="large"
 							type="text"
 							value={firstName}
-							onSlChange={(e) => setFirstName(e.target.value)}
+							onChange={(e) => setFirstName(e.target.value)}
 						></WaInput>
 
 						<WaInput
@@ -123,7 +122,7 @@ const ProfilePage = () => {
 							size="large"
 							type="text"
 							value={lastName}
-							onSlChange={(e) => setLastName(e.target.value)}
+							onChange={(e) => setLastName(e.target.value)}
 						></WaInput>
 
 						<WaInput
