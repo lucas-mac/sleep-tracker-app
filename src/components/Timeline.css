@@ -21,6 +21,10 @@
 	display: grid;
 	grid-template-columns: 32px 1fr 32px;
 	align-items: center;
+
+    & h3{
+        margin-bottom:0;
+    }
 }
 
 .day h3 {

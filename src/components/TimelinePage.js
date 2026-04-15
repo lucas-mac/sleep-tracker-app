@@ -20,9 +20,9 @@ import "./Timeline.css";
 import "./controls.css";
 
 import {Play, Pause, Square} from "lucide-react";
-import {registerIconLibrary} from "@shoelace-style/shoelace/dist/utilities/icon-library";
-import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
-import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
+import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesome.js";
+import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
+import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
 
 import {ulid} from "ulid";
 
@@ -194,32 +194,41 @@ const Timeline = () => {
 	}).format(currentDay);
 
 	const header = (
-		<div className="pagination">
-			<SlIconButton
-				name="chevron-left"
-				library="lucide"
+		<div className="pagination align-center space-between">
+			<WaButton
 				slot="trigger"
 				className="btn-round btn-gloss"
 				onClick={getPrevDay}
-			/>
+			>
+				<WaIcon
+					name="chevron-left"
+					library="lucide"
+				/>
+			</WaButton>
 			<div className="elem-group gap-md">
 				<h3>{headerDate}</h3>
-				<SlIconButton
+				<WaButton
 					slot="trigger"
-					name="calendar"
-					library="lucide"
 					className="btn-transparent icon-gloss btn-outline"
 					onClick={getToday}
-				/>
+				>
+					<WaIcon
+						name="calendar"
+						library="lucide"
+					/>
+				</WaButton>
 			</div>
 			{currentDay.getTime() < todayDay.getTime() ? (
-				<SlIconButton
-					name="chevron-right"
-					library="lucide"
+				<WaButton
 					slot="trigger"
 					className="btn-round btn-gloss"
 					onClick={getNextDay}
-				/>
+				>
+					<WaIcon
+						name="chevron-right"
+						library="lucide"
+					/>
+				</WaButton>
 			) : (
 				""
 			)}
