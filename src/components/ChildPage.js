@@ -222,61 +222,63 @@ const ChildPage = () => {
 					onChange={(icon) => setAvatarIcon(icon)}
 				/>
 
-				<div className="elem-group gap-sm align-end">
-					<WaInput
-						value={guardian}
-						label="Guardian"
-						name="guardian"
-						size="large"
-						type="text"
-						ref={guardianRef}
-						readonly
-					></WaInput>
-					{auth.currentUser.uid === guardianId && (
-						<WaButton
-							className="btn-gloss"
-							size="large"
-							pill
-							href="/profile"
-						>
-							Swap
-						</WaButton>
-					)}
-				</div>
-
-				<label class="large">Sharing With</label>
+				<label class="large">Permissions</label>
 				<table>
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>Role</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
+						{guardian && (
+							<tr>
+								<td>
+									{guardian}
+									{auth.currentUser.uid === guardianId && " (You)"}
+								</td>
+								<td>Owner</td>
+								<td>
+									<WaButton
+										className="btn-gloss"
+										size="small"
+										pill
+										disabled
+									>
+										Revoke
+									</WaButton>
+								</td>
+							</tr>
+						)}
 						{sharedUsers && sharedUsers.length > 0 ? (
 							sharedUsers.map((user, index) => (
 								<tr key={index}>
-									<td>{user}</td>
+									<td>
+										{user}
+										{auth.currentUser.uid === user.id && " (You)"}
+									</td>
+									<td>Viewer</td>
 									<td>
 										<WaButton
 											className="btn-gloss"
 											size="small"
 											pill
 										>
-											Revoke Access
+											Revoke
 										</WaButton>
 									</td>
 								</tr>
 							))
 						) : (
 							<tr>
-								<td colSpan="2">Not shared with anyone</td>
+								<td colSpan="3">Not shared with anyone</td>
 							</tr>
 						)}
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colSpan="2">
+							<td colSpan="3">
 								<WaButton
 									className="btn-outline"
 									size="small"
