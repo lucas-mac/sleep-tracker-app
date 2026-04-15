@@ -19,19 +19,19 @@ const ChildPage = () => {
 	const [nickname, setNickname] = useState("");
 	const [birthMonth, setBirthMonth] = useState("");
 	const [birthYear, setBirthYear] = useState("");
-    const [gender, setGender] = useState("");
-    const [guardian, setGuardian] = useState("");
+	const [gender, setGender] = useState("");
+	const [guardian, setGuardian] = useState("");
 	const [guardianId, setGuardianId] = useState("");
 	const [avatarIcon, setAvatarIcon] = useState("");
-    const [avatarColor, setAvatarColor] = useState("");
-    const [sharedUsers, setSharedUsers] = useState([]);
+	const [avatarColor, setAvatarColor] = useState("");
+	const [sharedUsers, setSharedUsers] = useState([]);
 
 	const nicknameRef = useRef();
 	const birthMonthRef = useRef();
 	const birthYearRef = useRef();
 	const genderRef = useRef();
-    const avatarColorRef = useRef();
-    const guardianRef = useRef();
+	const avatarColorRef = useRef();
+	const guardianRef = useRef();
 
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
@@ -92,29 +92,18 @@ const ChildPage = () => {
 		fetchChildData();
 	}, [childId]);
 
-	useEffect(() => {
-		if (!loading) {
-			if (nicknameRef.current) nicknameRef.current.value = nickname;
-			if (birthMonthRef.current) birthMonthRef.current.value = birthMonth;
-			if (birthYearRef.current) birthYearRef.current.value = birthYear;
-			if (genderRef.current) genderRef.current.value = gender;
-			if (avatarColorRef.current) avatarColorRef.current.value = avatarColor;
-			if (guardianRef.current) guardianRef.current.value = guardian;
-		}
-	}, [loading, nickname, birthMonth, birthYear, gender, avatarColor, guardian]);
-
 	const handleSave = async () => {
 		const user = auth.currentUser;
 		if (user) {
 			setSaving(true);
 			const docId = childId || ulid(); // You can generate this ID as needed
 			await setDoc(doc(db, "child", docId), {
-				nickname: nicknameRef.current?.value || "",
-				birth_month: birthMonthRef.current?.value || "",
-				birth_year: birthYearRef.current?.value || "",
-				gender: genderRef.current?.value || "",
+				nickname: nickname || "",
+				birth_month: birthMonth || "",
+				birth_year: birthYear || "",
+				gender: gender || "",
 				avatar_icon: avatarIcon,
-				avatar_color: avatarColorRef.current?.value || "",
+				avatar_color: avatarColor || "",
 				guardian: user.uid,
 			});
 			setSaving(false);
@@ -140,7 +129,9 @@ const ChildPage = () => {
 					placeholder="Johnny"
 					size="large"
 					type="text"
-					ref={nicknameRef}
+					// ref={nicknameRef}
+					value={nickname}
+					onchange={(e) => setNickname(e.target.value)}
 				></WaInput>
 				<div className="elem-group gap-x">
 					<WaSelect
@@ -149,7 +140,8 @@ const ChildPage = () => {
 						placeholder="January"
 						size="large"
 						type="text"
-						ref={birthMonthRef}
+						value={birthMonth}
+						onChange={(e) => setBirthMonth(e.target.value)}
 					>
 						<WaOption value="Jan">January</WaOption>
 						<WaOption value="Feb">February</WaOption>
@@ -168,7 +160,8 @@ const ChildPage = () => {
 						label="Birth Year"
 						name="birth_year"
 						size="large"
-						ref={birthYearRef}
+						value={birthYear}
+						onChange={(e) => setBirthYear(e.target.value)}
 					>
 						{birthYears.map((year) => (
 							<WaOption
@@ -184,7 +177,8 @@ const ChildPage = () => {
 					label="Gender"
 					name="gender"
 					size="large"
-					ref={genderRef}
+					value={gender}
+					onChange={(e) => setGender(e.target.value)}
 				>
 					<WaOption value="male">Male</WaOption>
 					<WaOption value="female">Female</WaOption>
@@ -195,7 +189,7 @@ const ChildPage = () => {
 						label="Avatar Color"
 						name="avatar_color"
 						hint="Choose a color for your child's avatar"
-						ref={avatarColorRef}
+						value={avatarColor}
 						onChange={(e) => setAvatarColor(e.target.value)}
 						size="large"
 						format="hex"
@@ -304,6 +298,6 @@ const ChildPage = () => {
 			</div>
 		</div>
 	);
-};
+};;;;
 
 export default ChildPage;
