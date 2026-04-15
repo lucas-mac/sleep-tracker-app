@@ -17,7 +17,7 @@ const SignupPage = () => {
 				createdAt: new Date(),
 			});
 		}
-		navigate("/");
+		navigate("/profile");
 	};
 
 	return <SignUpAuthScreen onSignUp={handleSignUp} />;
