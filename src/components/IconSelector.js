@@ -1,4 +1,5 @@
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
+import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 import "./IconSelector.css";
 
 const IconSelector = ({value, onChange, avatarColor}) => {
@@ -19,6 +20,22 @@ const IconSelector = ({value, onChange, avatarColor}) => {
 		"user-astronaut",
 		"jet-fighter-up",
 		"plane",
+		"sailboat",
+		"apple-whole",
+		"carrot",
+		"leaf",
+		"feather",
+		"lemon",
+		"seedling",
+		"pepper-hot",
+		"pizza-slice",
+		"ghost",
+		"gamepad",
+		"bolt",
+		"fire",
+		"sun",
+		"cookie-bite",
+		"ice-cream",
 	];
 
 	return (
@@ -26,21 +43,33 @@ const IconSelector = ({value, onChange, avatarColor}) => {
 			<label class="large">Avatar Icon</label>
 			<div className="icon-selector grid-auto column gap-lg">
 				{icons.map((icon) => (
-					<WaIcon
-						key={icon}
-						name={icon}
-						family="default"
-						size="large"
-						className="icon-option"
-						style={{
-							cursor: "pointer",
-							border:
-								value === icon
-									? "2px solid var(--solvent)"
-									: "2px solid transparent",
-						}}
-						onClick={() => onChange(icon)}
-					/>
+					<div>
+						<WaTooltip
+							key={icon}
+							content={icon}
+							for={`icon-${icon}`}
+						>
+							{icon
+								.split("-")
+								.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+								.join(" ")}
+						</WaTooltip>
+						<WaIcon
+							id={`icon-${icon}`}
+							name={icon}
+							family="default"
+							size="large"
+							className="icon-option"
+							style={{
+								cursor: "pointer",
+								border:
+									value === icon
+										? "2px solid var(--solvent)"
+										: "2px solid transparent",
+							}}
+							onClick={() => onChange(icon)}
+						/>
+					</div>
 				))}
 			</div>
 		</div>
