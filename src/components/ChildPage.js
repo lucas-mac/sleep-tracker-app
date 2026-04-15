@@ -26,13 +26,6 @@ const ChildPage = () => {
 	const [avatarColor, setAvatarColor] = useState("");
 	const [sharedUsers, setSharedUsers] = useState([]);
 
-	const nicknameRef = useRef();
-	const birthMonthRef = useRef();
-	const birthYearRef = useRef();
-	const genderRef = useRef();
-	const avatarColorRef = useRef();
-	const guardianRef = useRef();
-
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 
@@ -81,10 +74,10 @@ const ChildPage = () => {
 							sharedUsers.push(userData.firstName + " " + userData.lastName);
 						});
 						setSharedUsers(sharedUsers);
-						// You can set this sharedUsers array to state if you want to display it
 					}
 				} else {
 					console.log("No such document!");
+					// TODO: display error message that the user doesn't have access to this child profile, and redirect back to profile page after a few seconds
 				}
 			}
 			setLoading(false);
