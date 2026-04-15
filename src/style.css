@@ -85,6 +85,7 @@ wa-button::part(base) {
 	padding-right: var(--padd-lg);
 }
 
+wa-button.btn-round::part(base),
 wa-icon-button.btn-round::part(base),
 button.btn-round {
 	aspect-ratio: 1/1;
