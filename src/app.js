@@ -37,7 +37,7 @@ const handleLogout = () => signOut(auth);
 
 const App = () => {
     return (
-		<div>
+		<main>
 			<WaToast></WaToast>
 			<FirebaseUIProvider ui={ui}>
 				<AuthProvider>
@@ -105,7 +105,7 @@ const App = () => {
 					</Router>
 				</AuthProvider>
 			</FirebaseUIProvider>
-		</div>
+		</main>
 	);
 };
 

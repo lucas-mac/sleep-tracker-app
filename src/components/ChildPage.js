@@ -210,74 +210,76 @@ const ChildPage = () => {
 				/>
 
 				<label class="large">Permissions</label>
-				<table>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Role</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{guardian && (
+				<div class="table-scroll-wrapper">
+					<table class="scroll">
+						<thead>
 							<tr>
-								<td>
-									{guardian}
-									{auth.currentUser.uid === guardianId && " (You)"}
-								</td>
-								<td>Owner</td>
-								<td>
-									<WaButton
-										className="btn-gloss"
-										size="small"
-										pill
-										disabled
-									>
-										Revoke
-									</WaButton>
-								</td>
+								<th>Name</th>
+								<th>Role</th>
+								<th>Actions</th>
 							</tr>
-						)}
-						{sharedUsers && sharedUsers.length > 0 ? (
-							sharedUsers.map((user, index) => (
-								<tr key={index}>
+						</thead>
+						<tbody>
+							{guardian && (
+								<tr>
 									<td>
-										{user}
-										{auth.currentUser.uid === user.id && " (You)"}
+										{guardian}
+										{auth.currentUser.uid === guardianId && " (You)"}
 									</td>
-									<td>Viewer</td>
+									<td>Owner</td>
 									<td>
 										<WaButton
 											className="btn-gloss"
 											size="small"
 											pill
+											disabled
 										>
 											Revoke
 										</WaButton>
 									</td>
 								</tr>
-							))
-						) : (
+							)}
+							{sharedUsers && sharedUsers.length > 0 ? (
+								sharedUsers.map((user, index) => (
+									<tr key={index}>
+										<td>
+											{user}
+											{auth.currentUser.uid === user.id && " (You)"}
+										</td>
+										<td>Viewer</td>
+										<td>
+											<WaButton
+												className="btn-gloss"
+												size="small"
+												pill
+											>
+												Revoke
+											</WaButton>
+										</td>
+									</tr>
+								))
+							) : (
+								<tr>
+									<td colSpan="3">Not shared with anyone</td>
+								</tr>
+							)}
+						</tbody>
+						<tfoot>
 							<tr>
-								<td colSpan="3">Not shared with anyone</td>
+								<td colSpan="3">
+									<WaButton
+										className="btn-outline"
+										size="small"
+										pill
+										href={`/share/${childId}`}
+									>
+										Share with someone
+									</WaButton>
+								</td>
 							</tr>
-						)}
-					</tbody>
-					<tfoot>
-						<tr>
-							<td colSpan="3">
-								<WaButton
-									className="btn-outline"
-									size="small"
-									pill
-									href={`/share/${childId}`}
-								>
-									Share with someone
-								</WaButton>
-							</td>
-						</tr>
-					</tfoot>
-				</table>
+						</tfoot>
+					</table>
+				</div>
 
 				<WaButton
 					size="large"

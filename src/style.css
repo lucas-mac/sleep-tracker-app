@@ -33,19 +33,20 @@ body.light {
 
 body {
 	background-color: var(--bg);
+	padding-inline: var(--padd-lg);
+	padding-block: var(--padd-md);
 	color: var(--solvent);
 	font-family: "Inter", sans-serif;
 	font-size: 16px;
 	line-height: 1.5;
 	margin: 0px;
-	min-height: 100vh;
+	height:100%;
+    overflow:scroll;
     height:100%;
 }
 
 main {
-	padding-inline: var(--padd-lg);
-	padding-block: var(--padd-md);
-	min-height: 100vh;
+    min-height: calc(100vh - var(--padd-md) * 2);
 	max-width: 640px;
 	margin-left: auto;
 	margin-right: auto;
@@ -115,8 +116,6 @@ button.btn-outline:hover {
 }
 
 wa-button.btn-gloss::part(base),
-wa-icon-button.btn-gloss::part(base),
-wa-icon-button.btn-gloss::part(base),
 button.btn-gloss {
 	background-color: var(--gloss);
 	border: none;
@@ -132,12 +131,12 @@ button.btn-gloss:hover {
 }
 
 wa-icon-button.icon-gloss::part(base),
-button.icon-glass {
+button.icon-gloss {
 	color: var(--gloss);
 }
 
 wa-icon-button.icon-gloss::part(base):hover,
-button.icon-glass:hover {
+button.icon-gloss:hover {
 	color: var(--gloss-hover);
 }
 
@@ -264,6 +263,7 @@ wa-tab[active]::part(base){
     border-bottom-color:var(--accent);
 }
 
+.table-scroll-wrapper,
 table{
     outline:1px solid var(--gloss);
     border-radius: 4px;
@@ -304,6 +304,33 @@ table tr td{
     vertical-align: baseline;
 }
 
+.table-scroll-wrapper{
+    overflow-x:scroll;
+    width:100%;
+}
+
+table.scroll {
+    border-spacing: 0;
+    width:100%;
+}
+
+table.scroll thead tr th:first-of-type,
+table.scroll tbody tr td:first-of-type,
+table.scroll tfoot tr td:first-of-type{
+    /* position:sticky; */
+    left:0;
+    z-index:1;
+}
+
+table.scroll thead tr th:first-of-type,
+table.scroll tfoot tr td:first-of-type{
+    background-color: var(--bg-2);
+}
+
+table.scroll tbody tr td:first-of-type{
+    background-color: var(--bg);
+}
+
 .wrapper {
 	width: 100%;
 	max-width: 640px;
@@ -316,7 +343,7 @@ table tr td{
 }
 
 .full-height {
-	height: 100%;
+	min-height: calc(100vh - var(--padd-md) * 2);
 }
 
 .scroll-y {
