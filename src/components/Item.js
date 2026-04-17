@@ -2,19 +2,18 @@ import React, {useState, useEffect} from "react";
 import {SunMedium, MoonStar} from "lucide-react";
 import "./Item.css"; // Import your CSS styles
 
-import SlButton from "@shoelace-style/shoelace/dist/react/button";
-import SlDropdown from "@shoelace-style/shoelace/dist/react/dropdown";
-import SlMenu from "@shoelace-style/shoelace/dist/react/menu";
-import SlMenuItem from "@shoelace-style/shoelace/dist/react/menu-item";
-import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
-import SlIconButton from "@shoelace-style/shoelace/dist/react/icon-button";
+import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
+import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
+import WaDropdown from "@web.awesome.me/webawesome-pro/dist/react/dropdown";
+import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-item";
 import {getFirestore, doc, deleteDoc} from "firebase/firestore";
 import {db} from "../firebase"; // Import your Firestore instance
 
-import {registerIconLibrary} from "@shoelace-style/shoelace/dist/utilities/icon-library";
+import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesome.js";
 
 registerIconLibrary("lucide", {
-	resolver: (name) => `https://cdn.jsdelivr.net/npm/lucide-static@0.16.29/icons/${name}.svg`,
+	resolver: (name) => `https://jsdelivr.net/npm/lucide-static@1.8.0/icons/${name}.svg`,
+	mutator: (svg) => svg.setAttribute("fill", "none"),
 });
 
 const Item = ({id, entry}) => {
@@ -107,13 +106,16 @@ const Item = ({id, entry}) => {
 						{awakeTag}
 						{!entry.end ? formatTime(time) : durationString}
 					</div>
-					<SlIconButton
-						name="plus"
-						library="lucide"
+					<WaButton
 						label="Add Entry"
 						className="btn-round btn-gloss"
 						href={`/add/`}
-					/>
+					>
+						<WaIcon
+							name="plus"
+							library="lucide"
+						/>
+					</WaButton>
 				</div>
 			</div>
 		</div>
@@ -128,7 +130,7 @@ const Item = ({id, entry}) => {
 				<div className={`elem-group align-baseline`}>
 					<div className={`item-duration`}>
 						{!entry.end ? (
-							<SlIcon
+							<WaIcon
 								name="arrow-repeat"
 								className="ongoing"
 							/>
@@ -143,61 +145,65 @@ const Item = ({id, entry}) => {
 				<div className="elem-group gap-xs">
 					<div className="item-category badge">
 						{startTime.getHours() >= 17 ? (
-							<sl-icon
+							<wa-icon
 								name="moon"
 								library="lucide"
 								class="icon"
 							/>
 						) : (
-							<sl-icon
+							<wa-icon
 								name="sun"
 								library="lucide"
 								class="icon"
 							/>
 						)}
 					</div>
-					<SlDropdown>
-						<SlIconButton
-							name="three-dots-vertical"
+					<WaDropdown>
+						<WaButton
 							slot="trigger"
-						/>
-						<SlMenu>
-							<SlMenuItem
-								value="edit"
-								onClick={handleEdit}
-							>
-								Edit
-								<SlIcon
-									slot="prefix"
-									name="pencil"
-									library="lucide"
-								/>
-							</SlMenuItem>
-							<SlMenuItem
-								value="delete"
-								onClick={(e) => {
-									const deleteEntry = async () => {
-										try {
-											await deleteDoc(doc(db, "sleep", id));
-											const entry = e.target.closest(".timeline-item");
-											entry.remove();
-										} catch (error) {
-											console.error("Error deleting document: ", error);
-										}
-									};
+							className="btn-gloss"
+							size="small"
+						>
+							<WaIcon
+								name="chevron-down"
+								library="lucide"
+							/>
+						</WaButton>
+						<WaDropdownItem
+							value="edit"
+							onClick={handleEdit}
+						>
+							Edit
+							<WaIcon
+								slot="icon"
+								name="pencil"
+								library="lucide"
+							/>
+						</WaDropdownItem>
+						<WaDropdownItem
+							value="delete"
+							onClick={(e) => {
+								const deleteEntry = async () => {
+									try {
+										await deleteDoc(doc(db, "sleep", id));
+										const entry = e.target.closest(".timeline-item");
+										entry.remove();
+									} catch (error) {
+										console.error("Error deleting document: ", error);
+									}
+								};
 
-									deleteEntry();
-								}}
-							>
-								Delete Entry
-								<SlIcon
-									slot="prefix"
-									name="trash"
-									library="lucide"
-								/>
-							</SlMenuItem>
-						</SlMenu>
-					</SlDropdown>
+								deleteEntry();
+							}}
+						>
+							Delete Entry
+							<WaIcon
+								slot="icon"
+								name="trash"
+								library="lucide"
+							/>
+						</WaDropdownItem>
+					</WaDropdown>
 				</div>
 			</div>
 		</div>
