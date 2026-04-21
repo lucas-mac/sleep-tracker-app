@@ -173,9 +173,9 @@ const ChildPage = () => {
 					value={gender}
 					onChange={(e) => setGender(e.target.value)}
 				>
-					<WaOption value="male">Male</WaOption>
-					<WaOption value="female">Female</WaOption>
-					<WaOption value="unset">Prefer Not To Say</WaOption>
+					<WaOption value="Male">Male</WaOption>
+					<WaOption value="Female">Female</WaOption>
+					<WaOption value="Unset">Prefer Not To Say</WaOption>
 				</WaSelect>
 				<div class="elem-group gap-lg full-width justify-between">
 					<WaColorPicker
@@ -281,15 +281,25 @@ const ChildPage = () => {
 					</table>
 				</div>
 
-				<WaButton
-					size="large"
-					onClick={handleSave}
-					className="btn-accent"
-					pill
-					disabled={saving}
-				>
-					{saving ? "Saving..." : "Save"}
-				</WaButton>
+				<div className="elem-group gap-sm">
+					<WaButton
+						size="large"
+						onClick={handleSave}
+						className="btn-accent"
+						pill
+						disabled={saving}
+					>
+						{saving ? "Saving..." : "Save"}
+					</WaButton>
+					<WaButton
+						className="btn-gloss"
+						size="large"
+						onClick={() => (location.href = "/profile#children")}
+						pill
+					>
+						Cancel
+					</WaButton>
+				</div>
 			</div>
 		</div>
 	);

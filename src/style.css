@@ -63,6 +63,10 @@ a:visited {
 	color: var(--accent);
 }
 
+.no-bottom{
+    margin-bottom:0;
+}
+
 button {
 	padding: var(--padd-sm) var(--padd-lg);
 }
