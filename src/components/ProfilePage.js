@@ -13,7 +13,7 @@ import WaSpinner from "@web.awesome.me/webawesome-pro/dist/react/spinner";
 import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 
-import {House} from "lucide-react";
+import {House, LogOut} from "lucide-react";
 
 import "./ProfilePage.css";
 
@@ -101,7 +101,6 @@ const ProfilePage = () => {
 					slot="nav"
 					panel="user"
 					active={activeTab === "user"}
-					onClick={() => (location.hash = "user")}
 				>
 					User
 				</WaTab>
@@ -109,7 +108,6 @@ const ProfilePage = () => {
 					slot="nav"
 					panel="children"
 					active={activeTab === "children"}
-					onClick={() => (location.hash = "children")}
 				>
 					Children
 				</WaTab>
@@ -167,6 +165,23 @@ const ProfilePage = () => {
 								Cancel
 							</WaButton>
 						</div>
+						<WaButton
+							label="Logout"
+							className="btn-outline"
+							size="medium"
+							onClick={() => {
+								auth.signOut();
+								location.href = "/";
+							}}
+						>
+							<div class="elem-group gap-sm">
+								Logout
+								<LogOut
+									size={18}
+									className="icon-gloss"
+								/>
+							</div>
+						</WaButton>
 					</div>
 				</WaTabPanel>
 				<WaTabPanel
@@ -218,13 +233,6 @@ const ProfilePage = () => {
 												href={`/child/${child.id}`}
 											>
 												Edit
-											</WaButton>
-											<WaButton
-												className="btn-gloss"
-												size="small"
-												pill
-											>
-												Share
 											</WaButton>
 										</div>
 									</div>
