@@ -25,7 +25,7 @@ import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
 import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 
-import {CircleUser, LogOut} from "lucide-react";
+import {CircleUser, Calendar} from "lucide-react";
 
 import {ulid} from "ulid";
 
@@ -204,10 +204,9 @@ const Timeline = () => {
 		<div className="pagination align-center space-between full-width">
 			<WaButton
 				className="btn-transparent btn-round icon-gloss"
-				onClick={logout}
-				id="logout-button"
+				onClick={getToday}
 			>
-				<LogOut size={36} />
+				<Calendar size={36} />
 			</WaButton>
 			<WaTooltip for="logout-button">Log out</WaTooltip>
 			<WaButton
