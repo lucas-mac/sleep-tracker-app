@@ -9,9 +9,15 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    env:
+      WEBAWESOME_NPM_TOKEN: ${{ secrets.WEBAWESOME_NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - name: Set up .npmrc
+        run: cp .npmrc ~/.npmrc
       - run: npm ci && npm run build
+        env:
+          CI: false
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

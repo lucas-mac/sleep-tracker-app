@@ -52,7 +52,7 @@
 .timeline-item .badge {
 	color: var(--bg);
 	display: inline-flex;
-	padding: calc(var(--padd-sm) - 0.5px);
+	padding: calc(var(--padd-sm) + 1px);
 }
 
 .timeline-item.nighttime .badge {
@@ -94,12 +94,7 @@
 	}
 }
 
-sl-menu,
-sl-menu-item::part(base) {
-	background-color: color-mix(in lch, var(--bg) 100%, var(--solvent) 30%);
-}
-
-sl-menu {
+wa-dropdown::part(menu) {
 	background-color: var(--bg);
 	border: none;
 	padding: var(--padd-xs);
@@ -107,35 +102,42 @@ sl-menu {
 	border: 2px solid var(--gloss);
 }
 
-sl-menu-item::part(base) {
-	background-color: var(--bg);
-	border-radius: var(--padd-sm);
-	color: var(--text);
-	padding: var(--padd-sm) 0;
-	font-weight: 600;
-	font-size: 14px;
+wa-dropdown-item::part(base) {
+	background-color: color-mix(in lch, var(--bg) 100%, var(--solvent) 30%);
 }
 
-sl-menu-item::part(base):hover {
+wa-dropdown-item{
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    padding:var(--padd-sm) var(--padd-md);
+}
+
+wa-dropdown-item::part(base) {
+	background-color: var(--bg);
+	border-radius: var(--padd-sm);
+}
+
+wa-dropdown-item:hover {
 	background-color: var(--gloss);
 	color: var(--text);
 }
 
-sl-menu-item::part(prefix) {
+wa-dropdown-item::part(icon) {
 	color: var(--text);
 }
 
-.timeline-item sl-icon-button::part(base) {
-	color: var(--gloss);
+.timeline-item wa-button::part(base) {
+	/* color: var(--gloss); */
 	padding: calc(var(--padd-sm) - 2px);
 }
 
-.timeline-item sl-icon-button::part(base):hover,
-.timeline-item:hover sl-icon-button::part(base) {
+.timeline-item wa-button::part(base):hover,
+.timeline-item:hover wa-button::part(base) {
 	color: color-mix(in lch, var(--gloss) 100%, var(--primary) 60%);
 }
 
-.timeline-item sl-icon-button::part(base):hover {
+.timeline-item wa-button::part(base):hover {
 	background-color: color-mix(in lch, var(--bg) 100%, var(--solvent) 20%);
 }
 
@@ -147,7 +149,7 @@ sl-menu-item::part(prefix) {
 	}
 	& .badge,
 	& .item-range,
-	& sl-icon-button::part(base) {
+	& wa-button::part(base) {
 		/* display: none; */
 	}
 }
@@ -188,6 +190,6 @@ sl-menu-item::part(prefix) {
 	padding-inline: var(--padd-md) 0;
 }
 
-.elem-divider > sl-icon-button::part(base) {
+.elem-divider > wa-button::part(base) {
 	color: var(--bg);
 }

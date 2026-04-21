@@ -1,33 +1,51 @@
-sl-switch::part(base) {
+wa-switch{
+    --thumb-size: 26px;
+    --height:22px;
+    --width:44px;
+}
+
+wa-switch::part(base) {
 	padding: var(--padd-sm) var(--padd-md);
-	outline: 1px solid var(--gloss);
+	outline: 2px solid var(--gloss);
 	outline-offset: -1px;
 	border-radius: 999px;
 	gap: var(--padd-sm);
+    font-weight:500;
 }
 
-sl-switch[checked]::part(base) {
+wa-switch:state(checked)::part(base) {
 	background-color: color-mix(in lch, var(--primary) 5%, var(--bg) 100%);
 }
 
-sl-switch[checked]::part(control) {
+wa-switch::part(control) {
+    background-color: lightgrey;
+}
+
+wa-switch:state(checked)::part(control) {
 	background-color: var(--primary);
 }
 
-sl-switch::part(thumb),
-sl-switch[checked]::part(control) {
+wa-switch::part(thumb),
+wa-switch::part(control),
+wa-switch:state(checked)::part(control) {
 	border: none;
 }
 
-sl-switch::part(thumb) {
+wa-switch::part(thumb),
+wa-switch:state(checked)::part(thumb){
+    background-color:var(--solvent);
 	box-shadow: 0 0 var(--padd-md) var(--bg-2);
 }
 
-sl-switch[checked]::part(thumb) {
+wa-switch:state(checked)::part(thumb) {
 	box-shadow: 0 0 var(--padd-md) var(--primary-text);
 }
 
-sl-switch[checked]::part(label) {
+wa-switch::part(label) {
+    color: var(--text);
+}
+
+wa-switch:state(checked)::part(label) {
 	color: var(--primary);
 }
 

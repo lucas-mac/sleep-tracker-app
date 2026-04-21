@@ -2,6 +2,7 @@
 	"name": "sleep-tracker-app",
 	"version": "1.0.0",
 	"private": true,
+	"packageManager": "npm@10.9.2",
 	"scripts": {
 		"start": "react-scripts start --watch",
 		"build": "react-scripts build",
@@ -11,6 +12,7 @@
 	"dependencies": {
 		"@firebase-oss/ui-react": "^7.0.2-beta",
 		"@shoelace-style/shoelace": "^2.20.1",
+		"@web.awesome.me/webawesome-pro": "^3.5.0",
 		"firebase": "^11.6.0",
 		"lucide-react": "^0.544.0",
 		"react": "^19.0.0",

@@ -1,0 +1,21 @@
+.icon-selector {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+	gap: var(--padd-md);
+	margin-top: var(--padd-lg);
+	width: 100%;
+}
+
+.icon-option {
+	aspect-ratio: 1/1;
+	font-size: 24px;
+	padding: var(--padd-lg);
+	background-color: var(--gloss);
+	border-radius: var(--radius);
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.icon-option:hover {
+	background-color: var(--gloss-hover);
+}
