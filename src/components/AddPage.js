@@ -2,10 +2,10 @@ import React, {useState, useEffect} from "react";
 import {doc, addDoc, collection, Timestamp} from "firebase/firestore";
 import {db} from "../firebase";
 import {useNavigate} from "react-router-dom";
-import SlInput from "@shoelace-style/shoelace/dist/react/input";
-import SlButton from "@shoelace-style/shoelace/dist/react/button";
-import SlIcon from "@shoelace-style/shoelace/dist/react/icon";
-import SlSwitch from "@shoelace-style/shoelace/dist/react/switch";
+import WaInput from "@web.awesome.me/webawesome-pro/dist/react/input";
+import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
+import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
+import WaSwitch from "@web.awesome.me/webawesome-pro/dist/react/switch";
 import "./EditPage.css"; // Import your CSS styles
 
 const AddPage = () => {
@@ -40,16 +40,16 @@ const AddPage = () => {
 	return (
 		<div className="wrapper">
 			<div className="elem-group column gap-lg">
-				<SlSwitch
+				<WaSwitch
 					label="Ongoing"
 					checked={isOngoing}
 					size="large"
-					onSlChange={(e) => setIsOngoing(e.target.checked)}
+					onChange={(e) => setIsOngoing(e.target.checked)}
 				>
 					Ongoing Sleep
-				</SlSwitch>
+				</WaSwitch>
 				<div className="elem-group gap-x">
-					<SlInput
+					<WaInput
 						className="timer-date"
 						label="Start Date"
 						type="date"
@@ -57,9 +57,9 @@ const AddPage = () => {
 						placeholder="YYYY-MM-DD"
 						value={startDate}
 						size="large"
-						onSlInput={(e) => setStartDate(e.target.value)}
-					></SlInput>
-					<SlInput
+						onInput={(e) => setStartDate(e.target.value)}
+					></WaInput>
+					<WaInput
 						className="timer-time"
 						label="Start Time"
 						type="time"
@@ -67,12 +67,12 @@ const AddPage = () => {
 						placeholder="HH:MM"
 						value={startTime}
 						size="large"
-						onSlInput={(e) => setStartTime(e.target.value)}
+						onInput={(e) => setStartTime(e.target.value)}
 					/>
 				</div>
 				{!isOngoing && (
 					<div className="elem-group gap-x">
-						<SlInput
+						<WaInput
 							className="timer-date"
 							label="End Date"
 							type="date"
@@ -80,9 +80,9 @@ const AddPage = () => {
 							placeholder="YYYY-MM-DD"
 							value={endDate}
 							size="large"
-							onSlInput={(e) => setEndDate(e.target.value)}
+							onInput={(e) => setEndDate(e.target.value)}
 						/>
-						<SlInput
+						<WaInput
 							className="timer-time"
 							label="End Time"
 							type="time"
@@ -90,27 +90,27 @@ const AddPage = () => {
 							placeholder="HH:MM"
 							value={endTime}
 							size="large"
-							onSlInput={(e) => setEndTime(e.target.value)}
+							onInput={(e) => setEndTime(e.target.value)}
 						/>
 					</div>
 				)}
 				<div className="fixed-to-bottom controls dark-bg elem-group gap-sm">
-					<SlButton
+					<WaButton
 						className="btn-gloss full-width"
 						onClick={handleCancel}
 						size="large"
 						pill
 					>
 						Cancel
-					</SlButton>
-					<SlButton
+					</WaButton>
+					<WaButton
 						className="btn-accent full-width"
 						onClick={handleSave}
 						size="large"
 						pill
 					>
 						Save
-					</SlButton>
+					</WaButton>
 				</div>
 			</div>
 		</div>
