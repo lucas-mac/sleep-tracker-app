@@ -328,7 +328,7 @@ const Timeline = () => {
 	};
 
 	return (
-		<div className="wrapper full-height space-between column justify-between">
+		<div className="wrapper full-height space-between column justify-between page">
 			<div className="column">
 				{header}
 				{loading ? (

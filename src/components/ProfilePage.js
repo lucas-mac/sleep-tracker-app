@@ -10,7 +10,10 @@ import WaTab from "@web.awesome.me/webawesome-pro/dist/react/tab";
 import WaTabGroup from "@web.awesome.me/webawesome-pro/dist/react/tab-group";
 import WaTabPanel from "@web.awesome.me/webawesome-pro/dist/react/tab-panel";
 import WaSpinner from "@web.awesome.me/webawesome-pro/dist/react/spinner";
+import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
+
+import {House} from "lucide-react";
 
 import "./ProfilePage.css";
 
@@ -82,7 +85,17 @@ const ProfilePage = () => {
 
 	return (
 		<div className="profile-page page">
-			<h1>Profile</h1>
+			<div className="elem-group gap-lg full-width justify-between align-center">
+				<h1 className="no-bottom">Profile</h1>
+				<WaButton
+					className="btn-transparent btn-round icon-gloss"
+					href="/"
+					id="home-button"
+				>
+					<House size={24} />
+				</WaButton>
+				<WaTooltip for="home-button">Home</WaTooltip>
+			</div>
 			<WaTabGroup>
 				<WaTab
 					slot="nav"
@@ -135,15 +148,25 @@ const ProfilePage = () => {
 							readOnly
 						></WaInput>
 
-						<WaButton
-							className="btn-accent"
-							onClick={handleUserSave}
-							size="large"
-							pill
-							disabled={saving}
-						>
-							{saving ? "Saving..." : "Save Changes"}
-						</WaButton>
+						<div className="elem-group gap-sm">
+							<WaButton
+								className="btn-accent"
+								onClick={handleUserSave}
+								size="large"
+								pill
+								disabled={saving}
+							>
+								{saving ? "Saving..." : "Save"}
+							</WaButton>
+							<WaButton
+								className="btn-gloss"
+								size="large"
+								onClick={() => (location.href = "/")}
+								pill
+							>
+								Cancel
+							</WaButton>
+						</div>
 					</div>
 				</WaTabPanel>
 				<WaTabPanel
