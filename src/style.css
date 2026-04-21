@@ -86,22 +86,35 @@ wa-button::part(base) {
 	padding-right: var(--padd-lg);
 }
 
+wa-button[slot="trigger"]::part(base) {
+     border-radius: 4px;
+}
+
 wa-button.btn-round::part(base),
-wa-icon-button.btn-round::part(base),
 button.btn-round {
 	aspect-ratio: 1/1;
 	border-radius: 999px;
+    box-sizing: border-box;
+    padding:var(--padd-sm);
+}
+
+wa-button.btn-round::part(label){
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 wa-button.btn-transparent::part(base),
-wa-icon-button.btn-transparent::part(base),
 button.btn-transparent {
 	background-color: transparent;
-	border: 4px solid var(--text);
+}
+
+wa-button.btn-transparent:hover::part(base),
+button.btn-transparent:hover {
+	background-color: color-mix(in lch, var(--gloss) 70%, transparent 100%);
 }
 
 wa-button.btn-outline::part(base),
-wa-icon-button.btn-outline::part(base),
 button.btn-outline {
     background-color:transparent;
 	border: 0px;
@@ -109,8 +122,12 @@ button.btn-outline {
 	outline-offset: -1px;
 }
 
+wa-button.btn-outline--thick::part(base),
+button.btn-outline--thick {
+    border: 4px solid var(--text);
+}
+
 wa-button.btn-outline::part(base):hover,
-wa-icon-button.btn-outline::part(base):hover,
 button.btn-outline:hover {
 	outline: 1px solid var(--gloss-hover);
 }
@@ -124,25 +141,24 @@ button.btn-gloss {
 }
 
 wa-button::part(base):hover,
-wa-icon-button.btn-gloss::part(base):hover,
 button.btn-gloss:hover {
 	background-color: var(--gloss-hover);
 	color: var(--bg);
 }
 
-wa-icon-button.icon-gloss::part(base),
-button.icon-gloss {
+wa-button.icon-gloss::part(base),
+button.icon-gloss,
+.icon-gloss {
 	color: var(--gloss);
 }
 
-wa-icon-button.icon-gloss::part(base):hover,
-button.icon-gloss:hover {
+wa-button.icon-gloss::part(base):hover,
+button.icon-gloss:hover,
+.icon-gloss:hover {
 	color: var(--gloss-hover);
 }
 
 wa-button.btn-accent::part(base),
-wa-icon-button.btn-accent::part(base),
-wa-icon-button.btn-accent::part(base),
 button.btn-accent,
 button.fui-button {
 	background-color: var(--accent);
@@ -152,19 +168,18 @@ button.fui-button {
 }
 
 wa-button.btn-accent::part(base):hover,
-wa-icon-button.btn-accent::part(base):hover,
 button.btn-accent:hover,
 button.fui-button:hover {
 	background-color: color-mix(in lch, var(--accent) 100%, var(--solvent) 35%);
 	color: var(--bg);
 }
 
-wa-icon-button.icon-accent::part(base),
+wa-button.icon-accent::part(base),
 button.icon-accent {
 	color: var(--accent);
 }
 
-wa-icon-button.icon-accent::part(base):hover,
+wa-button.icon-accent::part(base):hover,
 button.icon-accent:hover {
 	color: color-mix(in lch, var(--accent) 100%, var(--solvent) 35%);
 }
@@ -483,9 +498,16 @@ table.scroll tbody tr td:first-of-type{
 	bottom: 8px;
 }
 
-wa-icon[library="lucide"] > svg,
-.lucide {
+wa-icon[library="lucide"]{
+    aspect-ratio: 1/1;
+    height:20px;
+    width:20px;
 	/* stroke-width: 5px; */
+}
+
+wa-icon[library="lucide"] > svg{
+    /* width:100%; */
+    /* height:100%; */
 }
 
 .btn-stack{

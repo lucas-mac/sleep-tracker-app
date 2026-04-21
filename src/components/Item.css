@@ -52,7 +52,7 @@
 .timeline-item .badge {
 	color: var(--bg);
 	display: inline-flex;
-	padding: calc(var(--padd-sm) - 0.5px);
+	padding: calc(var(--padd-sm) + 1px);
 }
 
 .timeline-item.nighttime .badge {

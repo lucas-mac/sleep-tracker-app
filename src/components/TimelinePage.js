@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {db} from "../firebase";
+import {auth, db} from "../firebase";
 import {
 	addDoc,
 	collection,
@@ -19,10 +19,13 @@ import Item from "./Item";
 import "./Timeline.css";
 import "./controls.css";
 
-import {Play, Pause, Square} from "lucide-react";
+import {Play, Pause, Square, Circle} from "lucide-react";
 import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesome.js";
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
+import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
+
+import {CircleUser, LogOut} from "lucide-react";
 
 import {ulid} from "ulid";
 
@@ -193,45 +196,52 @@ const Timeline = () => {
 		day: "numeric",
 	}).format(currentDay);
 
+	const logout = () => {
+		auth.signOut();
+	};
+
 	const header = (
-		<div className="pagination align-center space-between">
+		<div className="pagination align-center space-between full-width">
+			<WaButton
+				className="btn-transparent btn-round icon-gloss"
+				onClick={logout}
+				id="logout-button"
+			>
+				<LogOut size={36} />
+			</WaButton>
+			<WaTooltip for="logout-button">Log out</WaTooltip>
 			<WaButton
 				slot="trigger"
-				className="btn-round btn-gloss"
+				className="btn-round btn-gloss btn-icon"
 				onClick={getPrevDay}
 			>
 				<WaIcon
 					name="chevron-left"
 					library="lucide"
+					className=""
 				/>
 			</WaButton>
-			<div className="elem-group gap-md">
-				<h3>{headerDate}</h3>
-				<WaButton
-					slot="trigger"
-					className="btn-transparent icon-gloss btn-outline"
-					onClick={getToday}
-				>
-					<WaIcon
-						name="calendar"
-						library="lucide"
-					/>
-				</WaButton>
-			</div>
-			{currentDay.getTime() < todayDay.getTime() ? (
-				<WaButton
-					slot="trigger"
-					className="btn-round btn-gloss"
-					onClick={getNextDay}
-				>
-					<WaIcon
-						name="chevron-right"
-						library="lucide"
-					/>
-				</WaButton>
-			) : (
-				""
-			)}
+			<h3>{headerDate}</h3>
+
+			<WaButton
+				slot="trigger"
+				className="btn-round btn-gloss"
+				onClick={getNextDay}
+				style={currentDay.getTime() < todayDay.getTime() ? {} : {visibility: "hidden"}}
+			>
+				<WaIcon
+					name="chevron-right"
+					library="lucide"
+				/>
+			</WaButton>
+			<WaButton
+				className="btn-transparent btn-round icon-gloss"
+				href="/profile"
+				id="profile-button"
+			>
+				<CircleUser size={36} />
+			</WaButton>
+			<WaTooltip for="profile-button">Profile</WaTooltip>
 		</div>
 	);
 
@@ -319,7 +329,7 @@ const Timeline = () => {
 
 	return (
 		<div className="wrapper full-height space-between column justify-between">
-			<div>
+			<div className="column">
 				{header}
 				{loading ? (
 					""
@@ -344,7 +354,7 @@ const Timeline = () => {
 			<div className="controls elem-group">
 				<div className="elem-group gap-md">
 					<button
-						className="btn-play btn-round btn-transparent"
+						className="btn-play btn-round btn-transparent btn-outline--thick"
 						onClick={handleStartPause}
 					>
 						{isRunning ? (
@@ -365,7 +375,7 @@ const Timeline = () => {
 					</button>
 					{isRunning && (
 						<button
-							className="btn-stop btn-round btn-transparent"
+							className="btn-stop btn-round btn-transparent btn-outline--thick"
 							onClick={handleStop}
 						>
 							<Square

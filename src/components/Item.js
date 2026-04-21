@@ -9,6 +9,8 @@ import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-i
 import {getFirestore, doc, deleteDoc} from "firebase/firestore";
 import {db} from "../firebase"; // Import your Firestore instance
 
+import {RefreshCw} from "lucide-react";
+
 import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesome.js";
 
 registerIconLibrary("lucide", {
@@ -129,14 +131,7 @@ const Item = ({id, entry}) => {
 			<div className="timeline-item-content">
 				<div className={`elem-group align-baseline`}>
 					<div className={`item-duration`}>
-						{!entry.end ? (
-							<WaIcon
-								name="arrow-repeat"
-								className="ongoing"
-							/>
-						) : (
-							durationString
-						)}
+						{!entry.end ? <RefreshCw className="ongoing icon-gloss" /> : durationString}
 					</div>
 					<div className="item-range">
 						{startTimeString} - {endTimeString}
