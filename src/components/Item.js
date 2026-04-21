@@ -9,7 +9,7 @@ import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-i
 import {getFirestore, doc, deleteDoc} from "firebase/firestore";
 import {db} from "../firebase"; // Import your Firestore instance
 
-import {RefreshCw} from "lucide-react";
+import {RefreshCw, EllipsisVertical} from "lucide-react";
 
 import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesome.js";
 
@@ -156,12 +156,12 @@ const Item = ({id, entry}) => {
 					<WaDropdown>
 						<WaButton
 							slot="trigger"
-							className="btn-gloss"
+							className="btn-transparent icon-gloss btn-square"
 							size="small"
 						>
-							<WaIcon
-								name="chevron-down"
-								library="lucide"
+							<EllipsisVertical
+								className="icon-gloss"
+								size={18}
 							/>
 						</WaButton>
 						<WaDropdownItem
