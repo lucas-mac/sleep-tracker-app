@@ -303,6 +303,6 @@ const ChildPage = () => {
 			</div>
 		</div>
 	);
-};;;;
+};
 
 export default ChildPage;
