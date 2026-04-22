@@ -28,6 +28,7 @@ import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import ProfilePage from "./components/ProfilePage";
 import ChildPage from "./components/ChildPage";
+import MilestonePage from "./components/MilestonePage";
 import {signOut} from "firebase/auth";
 import {auth} from "./firebase";
 
@@ -90,6 +91,14 @@ const App = () => {
 								element={
 									<ProtectedRoute>
 										<ChildPage />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path="/milestones"
+								element={
+									<ProtectedRoute>
+										<MilestonePage />
 									</ProtectedRoute>
 								}
 							/>
