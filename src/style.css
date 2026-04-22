@@ -146,7 +146,13 @@ button.btn-outline--thick {
 
 wa-button.btn-outline::part(base):hover,
 button.btn-outline:hover {
-	outline: 1px solid var(--gloss-hover);
+	background-color: var(--gloss);
+    color:var(--solvent);
+}
+
+wa-button.btn-outline:hover .icon-gloss,
+button.btn-outline:hover .icon-gloss{
+    color: var(--bg);
 }
 
 wa-button.btn-gloss::part(base),
