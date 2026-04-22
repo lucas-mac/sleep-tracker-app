@@ -10,6 +10,10 @@ import WaOption from "@web.awesome.me/webawesome-pro/dist/react/option";
 import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 import WaColorPicker from "@web.awesome.me/webawesome-pro/dist/react/color-picker";
+import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
+import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
+
+import {House} from "lucide-react";
 
 import IconSelector from "./IconSelector";
 
@@ -114,7 +118,16 @@ const ChildPage = () => {
 
 	return (
 		<div className="child-page page">
-			<h1>Child Profile</h1>
+			<div className="page-meta">
+				<h1>Child Profile</h1>
+				<WaBreadcrumb>
+					<WaBreadcrumbItem href="/">
+						<House size={24} />
+					</WaBreadcrumbItem>
+					<WaBreadcrumbItem href="/profile">Profile</WaBreadcrumbItem>
+					<WaBreadcrumbItem href={`/child/${childId}`}>Child</WaBreadcrumbItem>
+				</WaBreadcrumb>
+			</div>
 			<div className="elem-group column gap-xl align-start">
 				<WaInput
 					label="Nickname"

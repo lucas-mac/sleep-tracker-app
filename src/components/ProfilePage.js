@@ -12,6 +12,9 @@ import WaTabPanel from "@web.awesome.me/webawesome-pro/dist/react/tab-panel";
 import WaSpinner from "@web.awesome.me/webawesome-pro/dist/react/spinner";
 import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
+import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
+import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
+
 
 import {House, LogOut} from "lucide-react";
 
@@ -85,16 +88,14 @@ const ProfilePage = () => {
 
 	return (
 		<div className="profile-page page">
-			<div className="elem-group gap-lg full-width justify-between align-center">
-				<h1 className="no-bottom">Profile</h1>
-				<WaButton
-					className="btn-transparent btn-round icon-gloss"
-					href="/"
-					id="home-button"
-				>
-					<House size={24} />
-				</WaButton>
-				<WaTooltip for="home-button">Home</WaTooltip>
+			<div className="page-meta">
+				<h1>Profile</h1>
+				<WaBreadcrumb>
+					<WaBreadcrumbItem href="/">
+						<House size={24} />
+					</WaBreadcrumbItem>
+					<WaBreadcrumbItem href="/profile">Profile</WaBreadcrumbItem>
+				</WaBreadcrumb>
 			</div>
 			<WaTabGroup>
 				<WaTab
