@@ -1,21 +1,33 @@
 .icon-selector {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+    grid-template-rows:auto;
 	gap: var(--padd-md);
 	margin-top: var(--padd-lg);
 	width: 100%;
 }
 
+.icon-option-wrapper,
 .icon-option {
-	aspect-ratio: 1/1;
-	font-size: 24px;
-	padding: var(--padd-lg);
-	background-color: var(--gloss);
+    background-color: var(--gloss);
 	border-radius: var(--radius);
 	cursor: pointer;
 	box-sizing: border-box;
+    width:100%;
 }
 
+.icon-option {
+    aspect-ratio: 1/1;
+	font-size: 24px;
+    padding: var(--padd-lg);
+}
+
+.icon-option--selected {
+    outline: 2px solid var(--solvent);
+    outline-offset: -2px;
+}
+
+.icon-option-wrapper:hover,
 .icon-option:hover {
 	background-color: var(--gloss-hover);
 }

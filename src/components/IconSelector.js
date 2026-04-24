@@ -43,7 +43,7 @@ const IconSelector = ({value, onChange, avatarColor}) => {
 			<label class="large">Avatar Icon</label>
 			<div className="icon-selector grid-auto column gap-lg">
 				{icons.map((icon) => (
-					<div>
+					<div className="icon-option-wrapper">
 						<WaTooltip
 							key={icon}
 							content={icon}
@@ -59,14 +59,9 @@ const IconSelector = ({value, onChange, avatarColor}) => {
 							name={icon}
 							family="default"
 							size="large"
-							className="icon-option"
-							style={{
-								cursor: "pointer",
-								border:
-									value === icon
-										? "2px solid var(--solvent)"
-										: "2px solid transparent",
-							}}
+							className={
+								value === icon ? "icon-option--selected icon-option" : "icon-option"
+							}
 							onClick={() => onChange(icon)}
 						/>
 					</div>
