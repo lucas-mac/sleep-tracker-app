@@ -128,7 +128,7 @@ const ChildPage = () => {
 					<WaBreadcrumbItem href={`/child/${childId}`}>Child</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>
-			<div className="elem-group column gap-xl align-start">
+			<div className="page-content">
 				<WaInput
 					label="Nickname"
 					name="nickname"
@@ -137,7 +137,7 @@ const ChildPage = () => {
 					type="text"
 					// ref={nicknameRef}
 					value={nickname}
-					onchange={(e) => setNickname(e.target.value)}
+					onChange={(e) => setNickname(e.target.value)}
 				></WaInput>
 				<div className="elem-group gap-x">
 					<WaSelect

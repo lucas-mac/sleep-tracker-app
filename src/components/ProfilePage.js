@@ -116,7 +116,7 @@ const ProfilePage = () => {
 					name="user"
 					active={activeTab === "user"}
 				>
-					<div className="elem-group column gap-lg align-start">
+					<div className="page-content">
 						<WaInput
 							label="First Name"
 							name="first_name"
@@ -189,7 +189,7 @@ const ProfilePage = () => {
 					name="children"
 					active={activeTab === "children"}
 				>
-					<div className="elem-group gap-lg column align-start">
+					<div className="page-content">
 						<WaButton
 							className="btn-accent"
 							size="large"
