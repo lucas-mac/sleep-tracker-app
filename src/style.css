@@ -463,6 +463,7 @@ table.scroll tbody tr td:first-of-type{
     flex-direction:column;
     align-items: flex-start;
     gap:var(--padd-xl);
+    padding-bottom:var(--padd-xl);
 }
 
 .align-baseline {
