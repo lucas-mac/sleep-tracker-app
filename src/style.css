@@ -304,6 +304,7 @@ wa-tab[active]::part(base){
 .table-scroll-wrapper,
 table{
     outline:1px solid var(--gloss);
+    outline-offset:-1px;
     border-radius: 4px;
 }
 
@@ -446,11 +447,22 @@ table.scroll tbody tr td:first-of-type{
     display:flex;
     flex-direction:column;
     gap:var(--padd-md);
-    margin-bottom:var(--padd-lg);
+    padding-bottom:var(--padd-lg);
+    position:sticky;
+    top:0;
+    z-index:1;
+    background-color:var(--bg);
 
     & > h1 {
         margin-bottom:0;
     }
+}
+
+.page-content {
+    display:flex;
+    flex-direction:column;
+    align-items: flex-start;
+    gap:var(--padd-xl);
 }
 
 .align-baseline {
