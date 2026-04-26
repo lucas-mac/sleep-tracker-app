@@ -9,11 +9,12 @@ import WaSelect from "@web.awesome.me/webawesome-pro/dist/react/select";
 import WaOption from "@web.awesome.me/webawesome-pro/dist/react/option";
 import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
+import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 import WaColorPicker from "@web.awesome.me/webawesome-pro/dist/react/color-picker";
 import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
 import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
 
-import {House} from "lucide-react";
+import {X, House} from "lucide-react";
 
 import IconSelector from "./IconSelector";
 
@@ -233,7 +234,7 @@ const ChildPage = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{guardian && (
+							{guardian && guardianId && (
 								<tr>
 									<td>
 										{guardian}
@@ -242,13 +243,16 @@ const ChildPage = () => {
 									<td>Owner</td>
 									<td>
 										<WaButton
-											className="btn-gloss"
+											className="btn-gloss btn-round"
 											size="small"
-											pill
 											disabled
+											id={`revoke-${guardianId}`}
 										>
-											Revoke
+											<X size={24} />
 										</WaButton>
+										<WaTooltip for={`revoke-${guardianId}`}>
+											Revoke permission
+										</WaTooltip>
 									</td>
 								</tr>
 							)}
@@ -262,12 +266,15 @@ const ChildPage = () => {
 										<td>Viewer</td>
 										<td>
 											<WaButton
-												className="btn-gloss"
+												className="btn-gloss btn-round"
 												size="small"
-												pill
+												id={`revoke-${index}`}
 											>
-												Revoke
+												<X size={24} />
 											</WaButton>
+											<WaTooltip for={`revoke-${index}`}>
+												Revoke permission
+											</WaTooltip>
 										</td>
 									</tr>
 								))
