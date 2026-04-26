@@ -552,6 +552,12 @@ wa-icon[library="lucide"] > svg{
     /* height:100%; */
 }
 
+wa-tooltip::part(base__popup),
+wa-tooltip::part(base__arrow),
+wa-tooltip::part(body){
+    /* background-color:var(--bg-2); */
+}
+
 .btn-stack{
     display: grid !important;
 	grid-template-areas: "stack";
