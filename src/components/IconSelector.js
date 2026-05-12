@@ -58,7 +58,6 @@ const IconSelector = ({value, onChange, avatarColor}) => {
 							id={`icon-${icon}`}
 							name={icon}
 							family="default"
-							size="large"
 							className={
 								value === icon ? "icon-option--selected icon-option" : "icon-option"
 							}
