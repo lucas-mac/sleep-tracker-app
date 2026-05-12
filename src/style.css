@@ -564,11 +564,11 @@ wa-icon[library="lucide"] > svg{
 
 wa-icon[size="small"]::part(svg){
     height:16px;
-    width:16px;
+    width:19px;
 }
 wa-icon[size="medium"]::part(svg){
     height:22px;
-    width:22px;
+    width:24px;
 }
 wa-icon[size="large"]::part(svg){
     height:32px;

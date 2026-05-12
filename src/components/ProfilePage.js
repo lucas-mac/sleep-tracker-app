@@ -214,7 +214,7 @@ const ProfilePage = () => {
 											<WaIcon
 												family="default"
 												name={child.avatar_icon}
-												size="large"
+												size="small"
 												color={child.avatar_color}
 											/>
 										</div>
