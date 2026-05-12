@@ -69,6 +69,10 @@ a:visited {
     text-align: center;
 }
 
+.text-gloss {
+    color: var(--gloss-hover);
+}
+
 .no-bottom{
     margin-bottom:0;
 }

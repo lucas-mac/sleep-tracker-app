@@ -46,7 +46,11 @@ const Timeline = () => {
 	const [activeSleepEvent, setActiveSleepEvent] = useState(null);
 
 	const [children, setChildren] = useState([]);
-	const [activeChild, setActiveChild] = useState(null);
+	const [activeChild, setActiveChild] = useState(
+		localStorage.getItem("activeChild")
+			? JSON.parse(localStorage.getItem("activeChild"))
+			: null,
+	);
 
 	// timeline
 	const [entries, setEntries] = useState([]);
@@ -94,6 +98,7 @@ const Timeline = () => {
 		try {
 			const sleepQuery = query(
 				collection(db, "sleep"),
+				where("child_id", "==", activeChild.id),
 				where("start", ">=", startOfYesterdayTimestamp),
 				where("start", "<", startOfNextDayTimestamp),
 				orderBy("start", "desc"),
@@ -121,7 +126,12 @@ const Timeline = () => {
 			if (!querySnapshot.empty) {
 				setChildren(querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()})));
 				console.log(querySnapshot.docs[0].data());
-				setActiveChild({id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()});
+				const storedActiveChild = localStorage.getItem("activeChild");
+				setActiveChild(
+					storedActiveChild
+						? JSON.parse(storedActiveChild)
+						: {id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()},
+				);
 			} else {
 				console.warn("No child found for user");
 				return null;
@@ -130,6 +140,11 @@ const Timeline = () => {
 			console.error("Error fetching child data:", error);
 			return null;
 		}
+	};
+
+	const handleSetActiveChild = (child) => {
+		setActiveChild(child);
+		localStorage.setItem("activeChild", JSON.stringify(child));
 	};
 
 	const getPrevDay = () => {
@@ -157,45 +172,7 @@ const Timeline = () => {
 	};
 
 	useEffect(() => {
-        fetchEntries(currentDay);
-        fetchChildren();
-		// eslint-disable-next-line
-
-		const checkLastEntry = async () => {
-			try {
-				// Query the last sleep entry ordered by the start timestamp
-				const sleepQuery = query(
-					collection(db, "sleep"),
-					orderBy("start", "desc"),
-					limit(1),
-				);
-				const querySnapshot = await getDocs(sleepQuery);
-
-				if (!querySnapshot.empty) {
-					const lastEntry = querySnapshot.docs[0];
-					const lastEntryData = lastEntry.data();
-
-					if (!lastEntryData.end) {
-						setIsAwake(false);
-						setIsRunning(true);
-						setActiveSleepEvent({id: lastEntry.id, ...lastEntryData});
-						setSleepId(lastEntry.id);
-
-						const currentTime = Timestamp.now().seconds;
-						const startTime = lastEntryData.start?.seconds;
-						if (startTime) {
-							const elapsedTime = currentTime - startTime;
-							setTime(elapsedTime);
-						}
-					}
-				}
-			} catch (error) {
-				console.error("Error checking last sleep entry:", error);
-				// TODO: handle error (e.g., show notification to user)
-			}
-		};
-
-		checkLastEntry();
+		fetchChildren();
 	}, []);
 
 	useEffect(() => {
@@ -242,6 +219,49 @@ const Timeline = () => {
 		setGroupedEntries(result);
 	}, [entries]);
 
+	useEffect(() => {
+		if (activeChild) {
+			fetchEntries(currentDay, activeChild);
+			// eslint-disable-next-line
+
+			const checkLastEntry = async () => {
+				try {
+					// Query the last sleep entry ordered by the start timestamp
+					const sleepQuery = query(
+						collection(db, "sleep"),
+						orderBy("start", "desc"),
+						limit(1),
+					);
+					const querySnapshot = await getDocs(sleepQuery);
+
+					if (!querySnapshot.empty) {
+						const lastEntry = querySnapshot.docs[0];
+						const lastEntryData = lastEntry.data();
+
+						if (!lastEntryData.end) {
+							setIsAwake(false);
+							setIsRunning(true);
+							setActiveSleepEvent({id: lastEntry.id, ...lastEntryData});
+							setSleepId(lastEntry.id);
+
+							const currentTime = Timestamp.now().seconds;
+							const startTime = lastEntryData.start?.seconds;
+							if (startTime) {
+								const elapsedTime = currentTime - startTime;
+								setTime(elapsedTime);
+							}
+						}
+					}
+				} catch (error) {
+					console.error("Error checking last sleep entry:", error);
+					// TODO: handle error (e.g., show notification to user)
+				}
+			};
+
+			checkLastEntry();
+		}
+	}, [activeChild]);
+
 	const headerDate = new Intl.DateTimeFormat("en-CA", {
 		weekday: "short",
 		month: "short",
@@ -267,7 +287,7 @@ const Timeline = () => {
 						<WaDropdownItem
 							key={child.id}
 							value={child.id}
-							onClick={() => setActiveChild(child)}
+							onClick={() => handleSetActiveChild(child)}
 						>
 							<WaIcon
 								family="default"
@@ -479,7 +499,7 @@ const Timeline = () => {
 									/>
 								))
 							) : (
-								<p>No entries found</p>
+								<p className="text-gloss text-center">No entries found</p>
 							)}
 						</div>
 					</div>
