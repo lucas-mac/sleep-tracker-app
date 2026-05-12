@@ -24,6 +24,8 @@ import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesom
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
 import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
+import WaDropdown from "@web.awesome.me/webawesome-pro/dist/react/dropdown";
+import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-item";
 
 import {CircleUser, Calendar} from "lucide-react";
 
@@ -42,6 +44,13 @@ const Timeline = () => {
 	const [sleepId, setSleepId] = useState(null);
 	const [awakeId, setAwakeId] = useState(0);
 	const [activeSleepEvent, setActiveSleepEvent] = useState(null);
+
+	const [children, setChildren] = useState([]);
+	const [activeChild, setActiveChild] = useState(
+		localStorage.getItem("activeChild")
+			? JSON.parse(localStorage.getItem("activeChild"))
+			: null,
+	);
 
 	// timeline
 	const [entries, setEntries] = useState([]);
@@ -89,6 +98,7 @@ const Timeline = () => {
 		try {
 			const sleepQuery = query(
 				collection(db, "sleep"),
+				where("child_id", "==", activeChild.id),
 				where("start", ">=", startOfYesterdayTimestamp),
 				where("start", "<", startOfNextDayTimestamp),
 				orderBy("start", "desc"),
@@ -104,6 +114,37 @@ const Timeline = () => {
 			console.error("Error fetching sleep entries:", error);
 		}
 		setLoading(false);
+	};
+
+	const fetchChildren = async () => {
+		try {
+			const childrenQuery = query(
+				collection(db, "child"),
+				where("guardian", "==", auth.currentUser.uid),
+			);
+			const querySnapshot = await getDocs(childrenQuery);
+			if (!querySnapshot.empty) {
+				setChildren(querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()})));
+				console.log(querySnapshot.docs[0].data());
+				const storedActiveChild = localStorage.getItem("activeChild");
+				setActiveChild(
+					storedActiveChild
+						? JSON.parse(storedActiveChild)
+						: {id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()},
+				);
+			} else {
+				console.warn("No child found for user");
+				return null;
+			}
+		} catch (error) {
+			console.error("Error fetching child data:", error);
+			return null;
+		}
+	};
+
+	const handleSetActiveChild = (child) => {
+		setActiveChild(child);
+		localStorage.setItem("activeChild", JSON.stringify(child));
 	};
 
 	const getPrevDay = () => {
@@ -131,44 +172,7 @@ const Timeline = () => {
 	};
 
 	useEffect(() => {
-		fetchEntries(currentDay);
-		// eslint-disable-next-line
-
-		const checkLastEntry = async () => {
-			try {
-				// Query the last sleep entry ordered by the start timestamp
-				const sleepQuery = query(
-					collection(db, "sleep"),
-					orderBy("start", "desc"),
-					limit(1),
-				);
-				const querySnapshot = await getDocs(sleepQuery);
-
-				if (!querySnapshot.empty) {
-					const lastEntry = querySnapshot.docs[0];
-					const lastEntryData = lastEntry.data();
-
-					if (!lastEntryData.end) {
-						setIsAwake(false);
-						setIsRunning(true);
-						setActiveSleepEvent({id: lastEntry.id, ...lastEntryData});
-						setSleepId(lastEntry.id);
-
-						const currentTime = Timestamp.now().seconds;
-						const startTime = lastEntryData.start?.seconds;
-						if (startTime) {
-							const elapsedTime = currentTime - startTime;
-							setTime(elapsedTime);
-						}
-					}
-				}
-			} catch (error) {
-				console.error("Error checking last sleep entry:", error);
-				// TODO: handle error (e.g., show notification to user)
-			}
-		};
-
-		checkLastEntry();
+		fetchChildren();
 	}, []);
 
 	useEffect(() => {
@@ -215,6 +219,49 @@ const Timeline = () => {
 		setGroupedEntries(result);
 	}, [entries]);
 
+	useEffect(() => {
+		if (activeChild) {
+			fetchEntries(currentDay, activeChild);
+			// eslint-disable-next-line
+
+			const checkLastEntry = async () => {
+				try {
+					// Query the last sleep entry ordered by the start timestamp
+					const sleepQuery = query(
+						collection(db, "sleep"),
+						orderBy("start", "desc"),
+						limit(1),
+					);
+					const querySnapshot = await getDocs(sleepQuery);
+
+					if (!querySnapshot.empty) {
+						const lastEntry = querySnapshot.docs[0];
+						const lastEntryData = lastEntry.data();
+
+						if (!lastEntryData.end) {
+							setIsAwake(false);
+							setIsRunning(true);
+							setActiveSleepEvent({id: lastEntry.id, ...lastEntryData});
+							setSleepId(lastEntry.id);
+
+							const currentTime = Timestamp.now().seconds;
+							const startTime = lastEntryData.start?.seconds;
+							if (startTime) {
+								const elapsedTime = currentTime - startTime;
+								setTime(elapsedTime);
+							}
+						}
+					}
+				} catch (error) {
+					console.error("Error checking last sleep entry:", error);
+					// TODO: handle error (e.g., show notification to user)
+				}
+			};
+
+			checkLastEntry();
+		}
+	}, [activeChild]);
+
 	const headerDate = new Intl.DateTimeFormat("en-CA", {
 		weekday: "short",
 		month: "short",
@@ -223,13 +270,36 @@ const Timeline = () => {
 
 	const header = (
 		<div className="pagination align-center space-between full-width">
-			<WaButton
-				className="btn-transparent btn-round icon-gloss"
-				onClick={getToday}
-			>
-				<Calendar size={36} />
-			</WaButton>
-			<WaTooltip for="logout-button">Log out</WaTooltip>
+			<WaDropdown>
+				<WaButton
+					className="btn-transparent btn-round icon-gloss"
+					slot="trigger"
+				>
+					<WaIcon
+						family="default"
+						name={activeChild ? activeChild.avatar_icon : undefined}
+						size="large"
+						color={activeChild ? activeChild.avatar_color : undefined}
+					/>
+				</WaButton>
+				{children.length > 0 &&
+					children.map((child) => (
+						<WaDropdownItem
+							key={child.id}
+							value={child.id}
+							onClick={() => handleSetActiveChild(child)}
+						>
+							<WaIcon
+								family="default"
+								name={child.avatar_icon}
+								size="large"
+								color={child.avatar_color}
+								slot="icon"
+							/>
+							{child.nickname}
+						</WaDropdownItem>
+					))}
+			</WaDropdown>
 			<WaButton
 				slot="trigger"
 				className="btn-round btn-gloss btn-icon"
@@ -241,7 +311,17 @@ const Timeline = () => {
 					className=""
 				/>
 			</WaButton>
-			<h3>{headerDate}</h3>
+			<div className="text-center elem-group gap-sm">
+				<h3>{headerDate}</h3>
+				{currentDay.getTime() !== todayDay.getTime() && (
+					<WaButton
+						className="btn-transparent btn-round icon-gloss"
+						onClick={getToday}
+					>
+						<Calendar size={36} />
+					</WaButton>
+				)}
+			</div>
 
 			<WaButton
 				slot="trigger"
@@ -300,7 +380,7 @@ const Timeline = () => {
 			if (!activeSleepEvent) {
 				eventUlid = ulid();
 				sleepEntry = {
-					child_id: "01KNYE1GXDTQ0R5W85MGXTAAN2", // TODO: replace with dynamic child ID
+					child_id: activeChild ? activeChild.id : null,
 					start: Timestamp.now(),
 					end: null,
 					duration: null,
@@ -368,7 +448,7 @@ const Timeline = () => {
 		try {
 			await updateDoc(sleepDocRef, sleepEntry);
 			setActiveSleepEvent((prevEvent) => {
-                if (!prevEvent) return prevEvent;
+				if (!prevEvent) return prevEvent;
 				const duration = endTime.seconds - prevEvent.start.seconds;
 				const updatedSleepEvent = {...prevEvent, end: endTime, duration: duration};
 				upsertEntry(updatedSleepEvent);
@@ -419,7 +499,7 @@ const Timeline = () => {
 									/>
 								))
 							) : (
-								<p>No entries found</p>
+								<p className="text-gloss text-center">No entries found</p>
 							)}
 						</div>
 					</div>

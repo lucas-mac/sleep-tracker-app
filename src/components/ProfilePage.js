@@ -175,13 +175,12 @@ const ProfilePage = () => {
 								location.href = "/";
 							}}
 						>
-							<div class="elem-group gap-sm">
-								Logout
-								<LogOut
-									size={18}
-									className="icon-gloss"
-								/>
-							</div>
+							Logout
+							<LogOut
+								size={18}
+								className="icon-gloss"
+								slot="end"
+							/>
 						</WaButton>
 					</div>
 				</WaTabPanel>
