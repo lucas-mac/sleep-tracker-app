@@ -36,13 +36,16 @@ registerIconLibrary("lucide", {
 const Timeline = () => {
 	// controls
 	const [isRunning, setIsRunning] = useState(false);
-	const [isAwake, setIsAwake] = useState(false);
+	const [isAwake, setIsAwake] = useState(true);
+	const [isPaused, setIsPaused] = useState(false);
 	const [time, setTime] = useState(0);
 	const [sleepId, setSleepId] = useState(null);
 	const [awakeId, setAwakeId] = useState(0);
+	const [activeSleepEvent, setActiveSleepEvent] = useState(null);
 
 	// timeline
 	const [entries, setEntries] = useState([]);
+	const [groupedEntries, setGroupedEntries] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [currentDay, setCurrentDay] = useState(() => {
 		const now = new Date();
@@ -50,6 +53,29 @@ const Timeline = () => {
 	});
 	const now = new Date();
 	const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+
+	const upsertEntry = (updatedEntry) => {
+		if (!updatedEntry?.id) return;
+		setEntries((prevEntries) => {
+			const existingIndex = prevEntries.findIndex((entry) => entry.id === updatedEntry.id);
+			if (existingIndex === -1) {
+				return [updatedEntry, ...prevEntries];
+			}
+			return prevEntries.map((entry) =>
+				entry.id === updatedEntry.id ? updatedEntry : entry,
+			);
+		});
+	};
+
+	const removeEntry = (entryId) => {
+		setEntries((prevEntries) => prevEntries.filter((entry) => entry.id !== entryId));
+		if (activeSleepEvent?.id === entryId) {
+			setActiveSleepEvent(null);
+			setIsRunning(false);
+			setIsAwake(true);
+			setTime(0);
+		}
+	};
 
 	const fetchEntries = async (startOfDay) => {
 		setLoading(true);
@@ -123,22 +149,22 @@ const Timeline = () => {
 					const lastEntryData = lastEntry.data();
 
 					if (!lastEntryData.end) {
-						setSleepId(lastEntry.id);
+						setIsAwake(false);
 						setIsRunning(true);
-						setTime(0);
+						setActiveSleepEvent({id: lastEntry.id, ...lastEntryData});
+						setSleepId(lastEntry.id);
+
 						const currentTime = Timestamp.now().seconds;
 						const startTime = lastEntryData.start?.seconds;
 						if (startTime) {
 							const elapsedTime = currentTime - startTime;
 							setTime(elapsedTime);
 						}
-						console.log("Resuming sleep entry with ID:", lastEntry.id);
-					} else {
-						console.log("Last entry end time:", lastEntryData.end?.seconds);
 					}
 				}
 			} catch (error) {
 				console.error("Error checking last sleep entry:", error);
+				// TODO: handle error (e.g., show notification to user)
 			}
 		};
 
@@ -157,7 +183,7 @@ const Timeline = () => {
 		return () => clearInterval(timer); // Cleanup on unmount
 	}, [isRunning]);
 
-	const processEntriesWithAwake = (entries) => {
+	useEffect(() => {
 		const sleepEntries = entries.map((entry) => ({
 			...entry,
 			type: "sleep",
@@ -186,19 +212,14 @@ const Timeline = () => {
 				});
 			}
 		}
-		return result;
-	};
+		setGroupedEntries(result);
+	}, [entries]);
 
-	const groupedEntries = processEntriesWithAwake(entries);
 	const headerDate = new Intl.DateTimeFormat("en-CA", {
 		weekday: "short",
 		month: "short",
 		day: "numeric",
 	}).format(currentDay);
-
-	const logout = () => {
-		auth.signOut();
-	};
 
 	const header = (
 		<div className="pagination align-center space-between full-width">
@@ -244,72 +265,123 @@ const Timeline = () => {
 		</div>
 	);
 
-	// Start or pause the timer
-	const handleStartPause = async () => {
-		setIsRunning((prevState) => !prevState); // Toggle the running state
+	const handleStart = async () => {
+		setIsRunning(true);
+		if (isPaused) {
+			setIsPaused(false);
+			// get last wake entry and update end time
+			if (activeSleepEvent && activeSleepEvent.wake && activeSleepEvent.wake.length > 0) {
+				const lastWakeEntry = activeSleepEvent.wake[activeSleepEvent.wake.length - 1];
+				const endTime = Timestamp.now();
+				const duration = endTime.seconds - lastWakeEntry.start.seconds;
 
-		if (!isRunning) {
-			// If starting the timer, save the start time to Firestore
-			if (isAwake && awakeId) {
-				const docRef = doc(db, "wake", awakeId); // Get the DocumentReference
 				try {
-					const awakeDocSnapshot = await getDoc(docRef); // Get the DocumentSnapshot
-					const duration =
-						Timestamp.now().seconds - awakeDocSnapshot.data().start.seconds;
-					await updateDoc(docRef, {duration: duration}); // Use docRef here
-					setAwakeId(null); // Reset awake ID
-					console.log("Awake entry updated with ID: ", awakeId);
+					const updatedSleepEvent = {
+						...activeSleepEvent,
+						wake: activeSleepEvent.wake.slice(0, -1).concat({
+							...lastWakeEntry,
+							end: endTime,
+							duration: duration,
+						}),
+					};
+					await updateDoc(doc(db, "sleep", activeSleepEvent.id), {
+						wake: updatedSleepEvent.wake,
+					});
+					setActiveSleepEvent(updatedSleepEvent);
+					upsertEntry(updatedSleepEvent);
 				} catch (error) {
-					console.error("Error updating awake entry: ", error);
+					// TODO: handle error (e.g., show notification to user)
+					console.error("Error updating wake entry: ", error);
 				}
 			}
-			setIsAwake(false);
-			const sleepEntry = {
-				start: Timestamp.now(),
-				end: null,
-			};
-			setEntries([sleepEntry, ...entries]);
+		} else {
+			let eventUlid;
+			let sleepEntry;
+			if (!activeSleepEvent) {
+				eventUlid = ulid();
+				sleepEntry = {
+					child_id: "01KNYE1GXDTQ0R5W85MGXTAAN2", // TODO: replace with dynamic child ID
+					start: Timestamp.now(),
+					end: null,
+					duration: null,
+					wake: [],
+					notes: "",
+				};
+			} else {
+				eventUlid = activeSleepEvent.id;
+				// get last wake entry for this sleep event
+				sleepEntry = {
+					...activeSleepEvent,
+				};
+			}
 			try {
-				const eventUlid = ulid();
-				const eventDocRef = await setDoc(doc(db, "events", eventUlid), sleepEntry);
-				const docRef = await addDoc(collection(db, "sleep"), sleepEntry);
-				console.log("Sleep entry added with ID: ", eventDocRef.id);
-				setSleepId(eventDocRef.id); // Store the sleep ID
+				await setDoc(doc(db, "sleep", eventUlid), sleepEntry);
+				const sleepEntryWithId = {id: eventUlid, ...sleepEntry};
+				setActiveSleepEvent(sleepEntryWithId);
+				upsertEntry(sleepEntryWithId);
+				setSleepId(eventUlid); // Store the sleep ID
 			} catch (error) {
 				console.error("Error adding sleep entry: ", error);
+				// TODO: handle error (e.g., show notification to user)
 			}
-		} else {
-			// If pausing the timer, save the pause time to Firestore
-			setIsAwake(true);
-			const wakeEntry = {
-				start: Timestamp.now(),
-				sleep: sleepId,
+		}
+
+		setIsAwake(false);
+	};
+
+	const handlePause = async () => {
+		// setIsRunning(false);
+		setIsAwake(true);
+		setIsPaused(true);
+		const wakeStart = Timestamp.now();
+
+		const updatedWakeEntries = activeSleepEvent.wake
+			? [...activeSleepEvent.wake, {start: wakeStart}]
+			: [{start: wakeStart}];
+
+		try {
+			await updateDoc(doc(db, "sleep", activeSleepEvent.id), {
+				wake: updatedWakeEntries,
+			});
+			const updatedSleepEvent = {
+				...activeSleepEvent,
+				wake: updatedWakeEntries,
 			};
-			try {
-				const docRef = await addDoc(collection(db, "wake"), wakeEntry);
-				console.log("Wake entry added with ID: ", docRef.id);
-				setAwakeId(docRef.id);
-			} catch (error) {
-				console.error("Error adding wake entry: ", error);
-			}
+			setActiveSleepEvent(updatedSleepEvent);
+			upsertEntry(updatedSleepEvent);
+		} catch (error) {
+			// TODO: handle error (e.g., show notification to user)
+			console.error("Error updating wake entry: ", error);
 		}
 	};
 
 	// Stop the timer and reset the time
 	const handleStop = async () => {
-		setIsRunning(false);
-		setTime(0); // Reset the timer
+		// TODO: need to check for active wake entry and delete if no duration has been set, otherwise the wake entry will be orphaned without a corresponding sleep entry
+
+		const endTime = Timestamp.now();
 		const sleepEntry = {
-			end: Timestamp.now(),
+			end: endTime,
 		};
 		const sleepDocRef = doc(db, "sleep", sleepId);
 		try {
 			await updateDoc(sleepDocRef, sleepEntry);
+			setActiveSleepEvent((prevEvent) => {
+				if (!prevEvent) return prevEvent;
+				const updatedSleepEvent = {...prevEvent, end: endTime};
+				upsertEntry(updatedSleepEvent);
+				return updatedSleepEvent;
+			});
+			setActiveSleepEvent(null);
 			console.log("Sleep entry updated with ID: ", sleepId);
 			setSleepId(null);
 		} catch (error) {
 			console.error("Error updating sleep entry: ", error);
 		}
+
+		setTime(0); // Reset the timer
+		setIsRunning(false);
+		setIsAwake(true);
 	};
 
 	// Format time in hours:minutes:seconds
@@ -341,6 +413,7 @@ const Timeline = () => {
 										key={entry.id}
 										id={entry.id}
 										entry={entry}
+										onRemoveEntry={removeEntry}
 									/>
 								))
 							) : (
@@ -352,26 +425,33 @@ const Timeline = () => {
 			</div>
 			<div className="controls elem-group">
 				<div className="elem-group gap-md">
-					<button
-						className="btn-play btn-round btn-transparent btn-outline--thick"
-						onClick={handleStartPause}
-					>
-						{isRunning ? (
-							<Pause
-								size={24}
-								fill="currentColor"
-								strokeWidth={2}
-								absoluteStrokeWidth={true}
-							/>
-						) : (
+					{!isRunning && (
+						<button
+							className="btn-play btn-round btn-transparent btn-outline--thick"
+							onClick={handleStart}
+						>
 							<Play
 								size={24}
 								fill="currentColor"
 								strokeWidth={2}
 								absoluteStrokeWidth={true}
 							/>
-						)}
-					</button>
+						</button>
+					)}
+
+					{isRunning && (
+						<button
+							className="btn-pause btn-round btn-transparent btn-outline--thick"
+							onClick={handlePause}
+						>
+							<Pause
+								size={24}
+								fill="currentColor"
+								strokeWidth={2}
+								absoluteStrokeWidth={true}
+							/>
+						</button>
+					)}
 					{isRunning && (
 						<button
 							className="btn-stop btn-round btn-transparent btn-outline--thick"
