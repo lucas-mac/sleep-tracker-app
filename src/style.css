@@ -562,6 +562,19 @@ wa-icon[library="lucide"] > svg{
     /* height:100%; */
 }
 
+wa-icon[size="small"]::part(svg){
+    height:16px;
+    width:19px;
+}
+wa-icon[size="medium"]::part(svg){
+    height:22px;
+    width:24px;
+}
+wa-icon[size="large"]::part(svg){
+    height:32px;
+    width:32px;
+}
+
 wa-tooltip::part(base__popup),
 wa-tooltip::part(base__arrow),
 wa-tooltip::part(body){

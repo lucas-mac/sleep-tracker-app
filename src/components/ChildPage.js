@@ -210,7 +210,6 @@ const ChildPage = () => {
 							<WaIcon
 								family="default"
 								name={avatarIcon}
-								size="large"
 								color={avatarColor}
 							/>
 						</div>

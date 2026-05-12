@@ -221,7 +221,7 @@ const Timeline = () => {
 
 	useEffect(() => {
 		if (activeChild) {
-			fetchEntries(currentDay, activeChild);
+			fetchEntries(currentDay);
 			// eslint-disable-next-line
 
 			const checkLastEntry = async () => {
@@ -278,7 +278,7 @@ const Timeline = () => {
 					<WaIcon
 						family="default"
 						name={activeChild ? activeChild.avatar_icon : undefined}
-						size="large"
+						size="medium"
 						color={activeChild ? activeChild.avatar_color : undefined}
 					/>
 				</WaButton>
@@ -292,7 +292,7 @@ const Timeline = () => {
 							<WaIcon
 								family="default"
 								name={child.avatar_icon}
-								size="large"
+								size="small"
 								color={child.avatar_color}
 								slot="icon"
 							/>
