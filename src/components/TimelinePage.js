@@ -293,12 +293,14 @@ const Timeline = () => {
 			</WaButton>
 			<div className="text-center elem-group gap-sm">
 				<h3>{headerDate}</h3>
-				<WaButton
-					className="btn-transparent btn-round icon-gloss"
-					onClick={getToday}
-				>
-					<Calendar size={36} />
-				</WaButton>
+				{currentDay.getTime() !== todayDay.getTime() && (
+					<WaButton
+						className="btn-transparent btn-round icon-gloss"
+						onClick={getToday}
+					>
+						<Calendar size={36} />
+					</WaButton>
+				)}
 			</div>
 
 			<WaButton
