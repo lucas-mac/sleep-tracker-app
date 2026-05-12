@@ -120,12 +120,14 @@ const Timeline = () => {
 		try {
 			const childrenQuery = query(
 				collection(db, "child"),
-				where("guardian", "==", auth.currentUser.uid),
+				// or(
+				// 	where("guardian", "==", auth.currentUser.uid),
+				// 	where("shared_with", "array-contains", auth.currentUser.uid),
+				// ),
 			);
 			const querySnapshot = await getDocs(childrenQuery);
 			if (!querySnapshot.empty) {
 				setChildren(querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()})));
-				console.log(querySnapshot.docs[0].data());
 				const storedActiveChild = localStorage.getItem("activeChild");
 				setActiveChild(
 					storedActiveChild
