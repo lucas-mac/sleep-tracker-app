@@ -380,7 +380,7 @@ const Timeline = () => {
 			if (!activeSleepEvent) {
 				eventUlid = ulid();
 				sleepEntry = {
-					child_id: "01KNYE1GXDTQ0R5W85MGXTAAN2", // TODO: replace with dynamic child ID
+					child_id: activeChild ? activeChild.id : null,
 					start: Timestamp.now(),
 					end: null,
 					duration: null,
