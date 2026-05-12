@@ -362,13 +362,15 @@ const Timeline = () => {
 		const endTime = Timestamp.now();
 		const sleepEntry = {
 			end: endTime,
+			duration: endTime.seconds - activeSleepEvent.start.seconds,
 		};
 		const sleepDocRef = doc(db, "sleep", sleepId);
 		try {
 			await updateDoc(sleepDocRef, sleepEntry);
 			setActiveSleepEvent((prevEvent) => {
-				if (!prevEvent) return prevEvent;
-				const updatedSleepEvent = {...prevEvent, end: endTime};
+                if (!prevEvent) return prevEvent;
+				const duration = endTime.seconds - prevEvent.start.seconds;
+				const updatedSleepEvent = {...prevEvent, end: endTime, duration: duration};
 				upsertEntry(updatedSleepEvent);
 				return updatedSleepEvent;
 			});
