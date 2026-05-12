@@ -36,6 +36,8 @@ const IconSelector = ({value, onChange, avatarColor}) => {
 		"sun",
 		"cookie-bite",
 		"ice-cream",
+		"robot",
+		"snowman",
 	];
 
 	return (
