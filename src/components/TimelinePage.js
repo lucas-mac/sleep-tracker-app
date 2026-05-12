@@ -24,6 +24,8 @@ import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesom
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
 import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
+import WaDropdown from "@web.awesome.me/webawesome-pro/dist/react/dropdown";
+import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-item";
 
 import {CircleUser, Calendar} from "lucide-react";
 
@@ -42,6 +44,9 @@ const Timeline = () => {
 	const [sleepId, setSleepId] = useState(null);
 	const [awakeId, setAwakeId] = useState(0);
 	const [activeSleepEvent, setActiveSleepEvent] = useState(null);
+
+	const [children, setChildren] = useState([]);
+	const [activeChild, setActiveChild] = useState(null);
 
 	// timeline
 	const [entries, setEntries] = useState([]);
@@ -106,6 +111,27 @@ const Timeline = () => {
 		setLoading(false);
 	};
 
+	const fetchChildren = async () => {
+		try {
+			const childrenQuery = query(
+				collection(db, "child"),
+				where("guardian", "==", auth.currentUser.uid),
+			);
+			const querySnapshot = await getDocs(childrenQuery);
+			if (!querySnapshot.empty) {
+				setChildren(querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()})));
+				console.log(querySnapshot.docs[0].data());
+				setActiveChild({id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()});
+			} else {
+				console.warn("No child found for user");
+				return null;
+			}
+		} catch (error) {
+			console.error("Error fetching child data:", error);
+			return null;
+		}
+	};
+
 	const getPrevDay = () => {
 		const prevDay = new Date(currentDay.getTime() - 24 * 60 * 60 * 1000);
 		setCurrentDay(prevDay);
@@ -131,7 +157,8 @@ const Timeline = () => {
 	};
 
 	useEffect(() => {
-		fetchEntries(currentDay);
+        fetchEntries(currentDay);
+        fetchChildren();
 		// eslint-disable-next-line
 
 		const checkLastEntry = async () => {
@@ -223,13 +250,36 @@ const Timeline = () => {
 
 	const header = (
 		<div className="pagination align-center space-between full-width">
-			<WaButton
-				className="btn-transparent btn-round icon-gloss"
-				onClick={getToday}
-			>
-				<Calendar size={36} />
-			</WaButton>
-			<WaTooltip for="logout-button">Log out</WaTooltip>
+			<WaDropdown>
+				<WaButton
+					className="btn-transparent btn-round icon-gloss"
+					slot="trigger"
+				>
+					<WaIcon
+						family="default"
+						name={activeChild ? activeChild.avatar_icon : undefined}
+						size="large"
+						color={activeChild ? activeChild.avatar_color : undefined}
+					/>
+				</WaButton>
+				{children.length > 0 &&
+					children.map((child) => (
+						<WaDropdownItem
+							key={child.id}
+							value={child.id}
+							onClick={() => setActiveChild(child)}
+						>
+							<WaIcon
+								family="default"
+								name={child.avatar_icon}
+								size="large"
+								color={child.avatar_color}
+								slot="icon"
+							/>
+							{child.nickname}
+						</WaDropdownItem>
+					))}
+			</WaDropdown>
 			<WaButton
 				slot="trigger"
 				className="btn-round btn-gloss btn-icon"
@@ -241,7 +291,15 @@ const Timeline = () => {
 					className=""
 				/>
 			</WaButton>
-			<h3>{headerDate}</h3>
+			<div className="text-center elem-group gap-sm">
+				<h3>{headerDate}</h3>
+				<WaButton
+					className="btn-transparent btn-round icon-gloss"
+					onClick={getToday}
+				>
+					<Calendar size={36} />
+				</WaButton>
+			</div>
 
 			<WaButton
 				slot="trigger"
@@ -368,7 +426,7 @@ const Timeline = () => {
 		try {
 			await updateDoc(sleepDocRef, sleepEntry);
 			setActiveSleepEvent((prevEvent) => {
-                if (!prevEvent) return prevEvent;
+				if (!prevEvent) return prevEvent;
 				const duration = endTime.seconds - prevEvent.start.seconds;
 				const updatedSleepEvent = {...prevEvent, end: endTime, duration: duration};
 				upsertEntry(updatedSleepEvent);
