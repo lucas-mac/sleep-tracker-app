@@ -18,7 +18,7 @@ registerIconLibrary("lucide", {
 	mutator: (svg) => svg.setAttribute("fill", "none"),
 });
 
-const Item = ({id, entry}) => {
+const Item = ({id, entry, onRemoveEntry}) => {
 	const [time, setTime] = useState(0);
 	const options = {
 		weekday: "short",
@@ -181,8 +181,9 @@ const Item = ({id, entry}) => {
 								const deleteEntry = async () => {
 									try {
 										await deleteDoc(doc(db, "sleep", id));
-										const entry = e.target.closest(".timeline-item");
-										entry.remove();
+										if (typeof onRemoveEntry === "function") {
+											onRemoveEntry(id);
+										}
 									} catch (error) {
 										console.error("Error deleting document: ", error);
 									}
