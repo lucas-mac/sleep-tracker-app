@@ -65,6 +65,14 @@ a:visited {
 	color: var(--accent);
 }
 
+hr.divider{
+    height:1px;
+    width:100%;
+    background: var(--gloss);
+    border:none;
+    margin:0;
+}
+
 .text-center {
     text-align: center;
 }
