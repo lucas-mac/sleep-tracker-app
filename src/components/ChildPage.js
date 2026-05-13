@@ -319,6 +319,27 @@ const ChildPage = () => {
 						Cancel
 					</WaButton>
 				</div>
+				<hr className="divider" />
+				<div class="elem-group gap-sm">
+					<WaButton
+						className="btn-outline"
+						size="small"
+						onClick={() => alert("Export functionality not implemented yet")}
+						pill
+						disabled
+					>
+						Export Child Data
+					</WaButton>
+					<WaButton
+						className="btn-outline"
+						size="small"
+						onClick={() => alert("Delete functionality not implemented yet")}
+						pill
+						disabled
+					>
+						Delete Child
+					</WaButton>
+				</div>
 			</div>
 		</div>
 	);
