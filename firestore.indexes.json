@@ -1,4 +1,13 @@
 {
-  "indexes": [],
-  "fieldOverrides": []
+	"indexes": [
+		{
+			"collectionGroup": "sleep",
+			"queryScope": "COLLECTION",
+			"fields": [
+				{"fieldPath": "child_id", "order": "ASCENDING"},
+				{"fieldPath": "start", "order": "DESCENDING"}
+			]
+		}
+	],
+	"fieldOverrides": []
 }

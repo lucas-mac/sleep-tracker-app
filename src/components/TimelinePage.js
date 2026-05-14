@@ -129,12 +129,17 @@ const Timeline = () => {
 			const querySnapshot = await getDocs(childrenQuery);
 			if (!querySnapshot.empty) {
 				setChildren(querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()})));
-				const storedActiveChild = localStorage.getItem("activeChild");
-				setActiveChild(
-					storedActiveChild
-						? JSON.parse(storedActiveChild)
-						: {id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()},
-				);
+                const storedActiveChildId = localStorage.getItem("ST_activeChildId");
+				if (storedActiveChildId) {
+					const storedActiveChild = querySnapshot.docs
+						.map((doc) => ({id: doc.id, ...doc.data()}))
+						.find((child) => child.id === storedActiveChildId);
+					if (storedActiveChild) {
+						setActiveChild(storedActiveChild);
+					}
+				} else {
+					setActiveChild({id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()});
+				}
 			} else {
 				console.warn("No child found for user");
 				return null;
@@ -147,7 +152,7 @@ const Timeline = () => {
 
 	const handleSetActiveChild = (child) => {
 		setActiveChild(child);
-		localStorage.setItem("activeChild", JSON.stringify(child));
+		localStorage.setItem("ST_activeChildId", child.id);
 	};
 
 	const getPrevDay = () => {
@@ -273,7 +278,7 @@ const Timeline = () => {
 
 	const header = (
 		<div className="pagination align-center space-between full-width">
-			<WaDropdown>
+			<WaDropdown id="child-switcher">
 				<WaButton
 					className="btn-transparent btn-round icon-gloss"
 					slot="trigger"
@@ -303,6 +308,12 @@ const Timeline = () => {
 						</WaDropdownItem>
 					))}
 			</WaDropdown>
+			<WaTooltip
+				for="child-switcher"
+				placement="bottom"
+			>
+				{activeChild ? "Selected child: " + activeChild.nickname : "Select child"}
+			</WaTooltip>
 			<WaButton
 				slot="trigger"
 				className="btn-round btn-gloss btn-icon"
