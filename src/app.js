@@ -22,13 +22,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import Controls from "./components/Controls";
 import Timeline from "./components/TimelinePage";
-import EditPage from "./components/EditPage";
-import AddPage from "./components/AddPage";
+import SleepEntryPage from "./components/SleepEntryPage";
 import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import ProfilePage from "./components/ProfilePage";
 import ChildPage from "./components/ChildPage";
-import MilestonePage from "./components/MilestonePage";
+import MilestoneEntryPage from "./components/MilestoneEntryPage";
+import MilestonesPage from "./components/MilestonesPage";
 import {signOut} from "firebase/auth";
 import {auth} from "./firebase";
 
@@ -48,8 +48,7 @@ const App = () => {
 							style={{display: "none"}}
 						>
 							<Link to="/">Index</Link>
-							<Link to="/edit">Edit</Link>
-							<Link to="/add">Add</Link>
+							<Link to="/milestones">Milestones</Link>
 							<Link to="/profile">Profile</Link>
 							<button onClick={handleLogout}>Logout</button>
 						</nav>
@@ -63,18 +62,10 @@ const App = () => {
 								}
 							/>
 							<Route
-								path="/edit/:entryId"
+								path="/sleep/:entryId?"
 								element={
 									<ProtectedRoute>
-										<EditPage />
-									</ProtectedRoute>
-								}
-							/>
-							<Route
-								path="/add"
-								element={
-									<ProtectedRoute>
-										<AddPage />
+										<SleepEntryPage />
 									</ProtectedRoute>
 								}
 							/>
@@ -95,10 +86,18 @@ const App = () => {
 								}
 							/>
 							<Route
+								path="/milestone-entry/:entryId?"
+								element={
+									<ProtectedRoute>
+										<MilestoneEntryPage />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
 								path="/milestones"
 								element={
 									<ProtectedRoute>
-										<MilestonePage />
+										<MilestonesPage />
 									</ProtectedRoute>
 								}
 							/>

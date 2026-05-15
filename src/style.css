@@ -97,6 +97,10 @@ label,
     color:color-mix(in lch, var(--solvent) 100%, var(--bg) 65%);
 }
 
+*::part(count){
+    color:var(--gloss);
+}
+
 label.large{
     font-size:21px;
     line-height: 24px;
@@ -228,6 +232,7 @@ button.icon-accent:hover {
 input,
 textarea,
 wa-input::part(base),
+wa-textarea::part(base),
 wa-select::part(combobox),
 wa-select::part(listbox) {
 	width: 100%;
@@ -239,6 +244,7 @@ wa-select::part(listbox) {
 input,
 textarea,
 wa-input::part(input),
+wa-textarea::part(input),
 wa-select::part(combobox),
 wa-select::part(listbox),
 wa-select::part(expand-icon) {
@@ -275,6 +281,7 @@ wa-input[readonly]::part(input) {
 input::placeholder,
 textarea::placeholder,
 wa-input::part(input)::placeholder,
+wa-textarea::part(textarea)::placeholder,
 wa-select::part(display-input)::placeholder {
 	color: color-mix(in lch, var(--solvent) 100%, var(--bg) 65%) !important;
 }

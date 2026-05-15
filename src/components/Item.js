@@ -92,7 +92,7 @@ const Item = ({id, entry, onRemoveEntry}) => {
 	};
 
 	const handleEdit = () => {
-		window.location.href = `/edit/${id}`;
+		window.location.href = `/sleep/${id}`;
 	};
 
 	return isAwake ? (
@@ -111,7 +111,7 @@ const Item = ({id, entry, onRemoveEntry}) => {
 					<WaButton
 						label="Add Entry"
 						className="btn-round btn-gloss"
-						href={`/add/`}
+						href={`/sleep/`}
 					>
 						<WaIcon
 							name="plus"

@@ -1,38 +1,66 @@
+// TODO: change file name to SleepEntryPage or something more generic, since this will also be used for creating new entries (just with empty fields at the start)
+// TODO: add note field and ability to add wake events
+// TODO: use ulid for entry IDs instead of Firestore's auto-generated IDs, to make it easier to create new entries on the client side before saving to Firestore
+
 import React, {useState, useEffect} from "react";
 import {doc, getDoc, updateDoc, Timestamp} from "firebase/firestore";
 import {db} from "../firebase";
 import {useParams, useNavigate} from "react-router-dom";
-import WaInput from "@web.awesome.me/webawesome-pro/dist/react/input";
-import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
-import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
-import WaSwitch from "@web.awesome.me/webawesome-pro/dist/react/switch";
-import "./EditPage.css"; // Import your CSS styles
+import {
+	WaSwitch,
+	WaIcon,
+	WaButton,
+	WaInput,
+	WaTextarea,
+	WaBreadcrumb,
+	WaBreadcrumbItem,
+} from "@web.awesome.me/webawesome-pro/dist/react";
+import "./SleepPage.css"; // Import your CSS styles
 
-const EditPage = () => {
+import {House} from "lucide-react";
+
+const SleepEntryPage = () => {
 	const {entryId} = useParams();
 	const navigate = useNavigate();
 	const [startDate, setStartDate] = useState("");
 	const [startTime, setStartTime] = useState("");
 	const [endDate, setEndDate] = useState("");
 	const [endTime, setEndTime] = useState("");
+	const [note, setNote] = useState("");
 	const [isOngoing, setIsOngoing] = useState(false);
 
 	const handleSave = async () => {
-		if (!entryId) return;
-		const docRef = doc(db, "sleep", entryId);
-		const data = {
-			start: Timestamp.fromDate(new Date(`${startDate}T${startTime}`)),
-			end: !isOngoing ? Timestamp.fromDate(new Date(`${endDate}T${endTime}`)) : null,
-		};
-		try {
-			await updateDoc(docRef, {
-				start: data.start,
-				end: data.end,
-			});
-			console.log("Entry updated successfully");
-			navigate(`/`); // Redirect to the main page after saving
-		} catch (error) {
-			console.error("Error updating entry:", error);
+		if (!entryId) {
+			const data = {
+				start: Timestamp.fromDate(new Date(`${startDate}T${startTime}`)),
+				end: !isOngoing ? Timestamp.fromDate(new Date(`${endDate}T${endTime}`)) : null,
+				note: note, // TODO: add note field to the form
+			};
+			try {
+				await addDoc(collection(db, "sleep"), data);
+				console.log("Entry created successfully");
+				navigate(`/`); // Redirect to the main page after saving
+			} catch (error) {
+				console.error("Error creating entry:", error);
+			}
+		} else {
+			const docRef = doc(db, "sleep", entryId);
+			const data = {
+				start: Timestamp.fromDate(new Date(`${startDate}T${startTime}`)),
+				end: !isOngoing ? Timestamp.fromDate(new Date(`${endDate}T${endTime}`)) : null,
+				note: note, // TODO: add note field to the form
+			};
+			try {
+				await updateDoc(docRef, {
+					start: data.start,
+					end: data.end,
+					note: data.note,
+				});
+				console.log("Entry updated successfully");
+				navigate(`/`); // Redirect to the main page after saving
+			} catch (error) {
+				console.error("Error updating entry:", error);
+			}
 		}
 	};
 
@@ -55,12 +83,12 @@ const EditPage = () => {
 							"-" +
 							String(startDateObj.getMonth() + 1).padStart(2, "0") +
 							"-" +
-							String(startDateObj.getDate()).padStart(2, "0")
+							String(startDateObj.getDate()).padStart(2, "0"),
 					);
 					setStartTime(
 						String(startDateObj.getHours()).padStart(2, "0") +
 							":" +
-							String(startDateObj.getMinutes()).padStart(2, "0")
+							String(startDateObj.getMinutes()).padStart(2, "0"),
 					);
 				}
 				if (data.end) {
@@ -70,24 +98,34 @@ const EditPage = () => {
 							"-" +
 							String(endDateObj.getMonth() + 1).padStart(2, "0") +
 							"-" +
-							String(endDateObj.getDate()).padStart(2, "0")
+							String(endDateObj.getDate()).padStart(2, "0"),
 					);
 					setEndTime(
 						String(endDateObj.getHours()).padStart(2, "0") +
 							":" +
-							String(endDateObj.getMinutes()).padStart(2, "0")
+							String(endDateObj.getMinutes()).padStart(2, "0"),
 					);
 				} else {
 					setIsOngoing(true);
 				}
+				setNote(data.note || "");
 			}
 		};
 		fetchEntry();
 	}, [entryId]);
 
 	return (
-		<div className="wrapper">
-			<div className="elem-group column gap-lg">
+		<div className="page">
+			<div className="page-meta">
+				<h1>{entryId ? "Edit Sleep" : "Add Sleep"}</h1>
+				<WaBreadcrumb>
+					<WaBreadcrumbItem href="/">
+						<House size={24} />
+					</WaBreadcrumbItem>
+					<WaBreadcrumbItem href={`/sleep/${entryId}`}>Sleep</WaBreadcrumbItem>
+				</WaBreadcrumb>
+			</div>
+			<div className="page-content">
 				<WaSwitch
 					label="Ongoing"
 					checked={isOngoing}
@@ -142,22 +180,34 @@ const EditPage = () => {
 						/>
 					</div>
 				)}
-				<div className="fixed-to-bottom controls dark-bg elem-group gap-sm">
+				<WaTextarea
+					label="Note"
+					placeholder="Add any notes about this sleep..."
+					value={note}
+					onInput={(e) => setNote(e.target.value)}
+					hint="e.g. 'Had trouble falling asleep', 'Woke up multiple times', etc."
+					size="large"
+					resize="auto"
+					rows="2"
+					with-count
+					maxlength="100"
+				/>
+				<div className="elem-group gap-sm">
 					<WaButton
-						className="btn-gloss full-width"
-						onClick={handleCancel}
-						size="large"
-						pill
-					>
-						Cancel
-					</WaButton>
-					<WaButton
-						className="btn-accent full-width"
+						className="btn-accent"
 						onClick={handleSave}
 						size="large"
 						pill
 					>
 						Save
+					</WaButton>
+					<WaButton
+						className="btn-gloss"
+						onClick={handleCancel}
+						size="large"
+						pill
+					>
+						Cancel
 					</WaButton>
 				</div>
 			</div>
@@ -165,4 +215,4 @@ const EditPage = () => {
 	);
 };
 
-export default EditPage;
+export default SleepEntryPage;

@@ -278,10 +278,11 @@ const Timeline = () => {
 
 	const header = (
 		<div className="pagination align-center space-between full-width">
-			<WaDropdown id="child-switcher">
+			<WaDropdown>
 				<WaButton
 					className="btn-transparent btn-round icon-gloss"
 					slot="trigger"
+					id="child-switcher"
 				>
 					<WaIcon
 						family="default"
@@ -312,7 +313,7 @@ const Timeline = () => {
 				for="child-switcher"
 				placement="bottom"
 			>
-				{activeChild ? "Selected child: " + activeChild.nickname : "Select child"}
+				{activeChild.nickname}
 			</WaTooltip>
 			<WaButton
 				slot="trigger"
