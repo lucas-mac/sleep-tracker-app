@@ -3,7 +3,7 @@ import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcru
 
 import {House} from "lucide-react";
 
-const MilestonePage = () => {
+const MilestoneEntryPage = () => {
 	return (
 		<div className="milestone-page page">
 			<div className="page-meta">
@@ -20,4 +20,4 @@ const MilestonePage = () => {
 	);
 };
 
-export default MilestonePage;
+export default MilestoneEntryPage;
