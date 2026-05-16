@@ -189,8 +189,9 @@ const SleepEntryPage = () => {
 					size="large"
 					resize="auto"
 					rows="2"
-					with-count
+					// with-count
 					maxlength="100"
+					className="full-width"
 				/>
 				<div className="elem-group gap-sm">
 					<WaButton

@@ -241,6 +241,13 @@ wa-select::part(listbox) {
     border-radius: 8px;
 }
 
+wa-input::part(base),
+wa-textarea::part(textarea),
+wa-select::part(combobox),
+wa-select::part(listbox){
+    padding-inline: var(--padd-md);
+}
+
 input,
 textarea,
 wa-input::part(input),
