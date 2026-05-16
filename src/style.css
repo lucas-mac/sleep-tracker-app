@@ -245,7 +245,7 @@ wa-input::part(base),
 wa-textarea::part(textarea),
 wa-select::part(combobox),
 wa-select::part(listbox){
-    /* padding-inline: var(--padd-md); */
+    padding-inline: var(--padd-md);
 }
 
 input,
