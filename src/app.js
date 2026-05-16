@@ -27,6 +27,9 @@ import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import ProfilePage from "./components/ProfilePage";
 import ChildPage from "./components/ChildPage";
+import FeedPage from "./components/FeedPage";
+import DiaperPage from "./components/DiaperPage";
+import HealthPage from "./components/HealthPage";
 import MilestoneEntryPage from "./components/MilestoneEntryPage";
 import MilestonesPage from "./components/MilestonesPage";
 import {signOut} from "firebase/auth";
@@ -86,7 +89,7 @@ const App = () => {
 								}
 							/>
 							<Route
-								path="/milestone-entry/:entryId?"
+								path="/milestone/:entryId?"
 								element={
 									<ProtectedRoute>
 										<MilestoneEntryPage />
@@ -98,6 +101,30 @@ const App = () => {
 								element={
 									<ProtectedRoute>
 										<MilestonesPage />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path="/feed/:entryId?"
+								element={
+									<ProtectedRoute>
+										<FeedPage />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path="/diaper/:entryId?"
+								element={
+									<ProtectedRoute>
+										<DiaperPage />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path="/health/:entryId?"
+								element={
+									<ProtectedRoute>
+										<HealthPage />
 									</ProtectedRoute>
 								}
 							/>
