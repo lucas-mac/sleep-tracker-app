@@ -134,7 +134,7 @@ const SleepEntryPage = () => {
 				>
 					Ongoing Sleep
 				</WaSwitch>
-				<div className="elem-group gap-md">
+				<div className="elem-group gap-md flex-wrap">
 					<WaInput
 						className="timer-date"
 						label="Start Date"
@@ -157,7 +157,7 @@ const SleepEntryPage = () => {
 					/>
 				</div>
 				{!isOngoing && (
-					<div className="elem-group gap-md">
+					<div className="elem-group gap-md flex-wrap">
 						<WaInput
 							className="timer-date"
 							label="End Date"

@@ -428,7 +428,6 @@ table.scroll tbody tr td:first-of-type{
 .elem-group {
 	display: flex;
 	flex-direction: row;
-    flex-wrap: wrap;
 	justify-content: flex-start;
 	align-items: center;
 	gap: var(--padd-sm);
@@ -719,4 +718,8 @@ wa-dropdown-item:hover {
 
 wa-dropdown-item::part(icon) {
 	color: var(--text);
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
 }
