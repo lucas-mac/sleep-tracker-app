@@ -245,7 +245,7 @@ wa-input::part(base),
 wa-textarea::part(textarea),
 wa-select::part(combobox),
 wa-select::part(listbox){
-    padding-inline: var(--padd-md);
+    /* padding-inline: var(--padd-md); */
 }
 
 input,
@@ -428,7 +428,8 @@ table.scroll tbody tr td:first-of-type{
 .elem-group {
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
+    flex-wrap: wrap;
+	justify-content: flex-start;
 	align-items: center;
 	gap: var(--padd-sm);
 }
