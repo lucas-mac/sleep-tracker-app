@@ -723,3 +723,7 @@ wa-dropdown-item::part(icon) {
 .flex-wrap {
     flex-wrap: wrap;
 }
+
+.justify-center {
+    justify-content: center;
+}

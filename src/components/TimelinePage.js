@@ -313,7 +313,7 @@ const Timeline = () => {
 				for="child-switcher"
 				placement="bottom"
 			>
-				{activeChild.nickname}
+				{activeChild ? activeChild.nickname : "Select Child"}
 			</WaTooltip>
 			<WaButton
 				slot="trigger"
@@ -326,7 +326,7 @@ const Timeline = () => {
 					className=""
 				/>
 			</WaButton>
-			<div className="text-center elem-group gap-sm">
+			<div className="text-center elem-group justify-center gap-sm">
 				<h3>{headerDate}</h3>
 				{currentDay.getTime() !== todayDay.getTime() && (
 					<WaButton
