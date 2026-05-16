@@ -28,7 +28,7 @@ import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 import WaDropdown from "@web.awesome.me/webawesome-pro/dist/react/dropdown";
 import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-item";
 
-import {CircleUser, Calendar} from "lucide-react";
+import {CircleUser, Calendar, Sparkles, Moon, Cross, Milk, Toilet} from "lucide-react";
 
 import {ulid} from "ulid";
 
@@ -563,6 +563,54 @@ const Timeline = () => {
 					)}
 				</div>
 				<div className="timer">{formatTime(time)}</div>
+				<WaDropdown placement="top-end">
+					<WaButton
+						className="btn-accent btn-round icon-gloss"
+						slot="trigger"
+						id="child-switcher"
+					>
+						<WaIcon
+							family="default"
+							name="add"
+							size="medium"
+						/>
+					</WaButton>
+					<WaDropdownItem onClick={() => (window.location.href = "/diaper")}>
+						<Toilet
+							size={18}
+							slot="icon"
+						/>
+						Diaper
+					</WaDropdownItem>
+					<WaDropdownItem onClick={() => (window.location.href = "/feed")}>
+						<Milk
+							slot="icon"
+							size={18}
+						/>
+						Feed
+					</WaDropdownItem>
+					<WaDropdownItem onClick={() => (window.location.href = "/health")}>
+						<Cross
+							slot="icon"
+							size={18}
+						/>
+						Health
+					</WaDropdownItem>
+					<WaDropdownItem onClick={() => (window.location.href = "/milestone")}>
+						<Sparkles
+							slot="icon"
+							size={18}
+						/>
+						Milestone
+					</WaDropdownItem>
+					<WaDropdownItem onClick={() => (window.location.href = "/sleep")}>
+						<Moon
+							slot="icon"
+							size={18}
+						/>
+						Sleep
+					</WaDropdownItem>
+				</WaDropdown>
 			</div>
 		</div>
 	);

@@ -8,8 +8,7 @@ import {doc, addDoc, collection, Timestamp} from "firebase/firestore";
 import {ulid} from "ulid";
 import WaDropdown from "@web.awesome.me/webawesome-pro/dist/components/dropdown/dropdown.js";
 
-const AddEventPage = (childId, eventType) => {
-	const {childId} = useParams();
+const AddEventPage = () => {
 	const [eventType, setEventType] = useState("awake");
 	const [startTime, setStartTime] = useState("");
 	const [endTime, setEndTime] = useState("");
