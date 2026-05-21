@@ -52,16 +52,6 @@ export const MainMenu = ({activePage}) => {
 						Diapers
 					</WaButton>
 					<WaButton
-						href="/sleep"
-						className={`align-start ${activePage === "sleep" ? "btn-accent" : "btn-transparent"}`}
-					>
-						<Moon
-							size={24}
-							slot="start"
-						/>
-						Sleep
-					</WaButton>
-					<WaButton
 						href="/feeds"
 						className={`align-start ${activePage === "feed" ? "btn-accent" : "btn-transparent"}`}
 					>
