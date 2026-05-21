@@ -84,18 +84,13 @@ const FeedListPage = () => {
 								feedEntries.map((entry) => (
 									<tr key={entry.id}>
 										<td>
-											<div className="elem-group gap-x flex-wrap">
-												<span className="no-wrap">
-													{moment(entry.timestamp.toDate()).format(
-														"h:mm a",
-													)}
-												</span>
-												<small className="text-gloss text-uppercase">
-													{moment(entry.timestamp.toDate()).format(
-														"MMM D",
-													)}
-												</small>
-											</div>
+											<span className="no-wrap">
+												{moment(entry.timestamp.toDate()).format("h:mm a")}
+											</span>
+											<br />
+											<small className="text-gloss text-uppercase">
+												{moment(entry.timestamp.toDate()).format("MMM D")}
+											</small>
 										</td>
 										<td>{toTitleCase(entry.type)}</td>
 										<td>
