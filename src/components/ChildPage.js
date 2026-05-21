@@ -14,6 +14,7 @@ import WaColorPicker from "@web.awesome.me/webawesome-pro/dist/react/color-picke
 import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
 import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
 
+import {MainMenu} from "./Menu";
 import {X, House} from "lucide-react";
 
 import IconSelector from "./IconSelector";
@@ -120,7 +121,10 @@ const ChildPage = () => {
 	return (
 		<div className="child-page page">
 			<div className="page-meta">
-				<h1>Child Profile</h1>
+				<div className="elem-group gap-lg justify-between align-center">
+					<h1>Child Profile</h1>
+					<MainMenu activePage="profile" />
+				</div>
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<House size={24} />
@@ -191,7 +195,7 @@ const ChildPage = () => {
 					<WaOption value="Female">Female</WaOption>
 					<WaOption value="Unset">Prefer Not To Say</WaOption>
 				</WaSelect>
-				<div class="elem-group gap-lg full-width justify-between">
+				<div className="elem-group gap-lg full-width justify-between">
 					<WaColorPicker
 						label="Avatar Color"
 						name="avatar_color"
@@ -222,9 +226,9 @@ const ChildPage = () => {
 					onChange={(icon) => setAvatarIcon(icon)}
 				/>
 
-				<label class="large">Permissions</label>
-				<div class="table-scroll-wrapper">
-					<table class="scroll">
+				<label className="large">Permissions</label>
+				<div className="table-scroll-wrapper">
+					<table className="scroll">
 						<thead>
 							<tr>
 								<th>Name</th>
@@ -320,7 +324,7 @@ const ChildPage = () => {
 					</WaButton>
 				</div>
 				<hr className="divider" />
-				<div class="elem-group gap-sm">
+				<div className="elem-group gap-sm">
 					<WaButton
 						className="btn-outline"
 						size="small"

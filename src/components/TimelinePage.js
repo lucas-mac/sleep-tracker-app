@@ -1,13 +1,11 @@
 import React, {useState, useEffect} from "react";
 import {auth, db} from "../firebase";
+import {useActiveChild} from "./ActiveChildContext";
 import {
-	addDoc,
 	collection,
 	doc,
-	getDoc,
 	getDocs,
 	limit,
-	or,
 	orderBy,
 	query,
 	setDoc,
@@ -15,16 +13,17 @@ import {
 	updateDoc,
 	where,
 } from "firebase/firestore";
+import {useNavigate} from "react-router-dom";
 
 import Item from "./Item";
 import "./Timeline.css";
 import "./controls.css";
+import Header from "./Header";
 
 import {Play, Pause, Square, Circle} from "lucide-react";
 import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesome.js";
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
-import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 import WaDropdown from "@web.awesome.me/webawesome-pro/dist/react/dropdown";
 import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-item";
 
@@ -46,12 +45,7 @@ const Timeline = () => {
 	const [awakeId, setAwakeId] = useState(0);
 	const [activeSleepEvent, setActiveSleepEvent] = useState(null);
 
-	const [children, setChildren] = useState([]);
-	const [activeChild, setActiveChild] = useState(
-		localStorage.getItem("activeChild")
-			? JSON.parse(localStorage.getItem("activeChild"))
-			: null,
-	);
+	const {activeChild, activeChildId} = useActiveChild();
 
 	// timeline
 	const [entries, setEntries] = useState([]);
@@ -62,7 +56,10 @@ const Timeline = () => {
 		return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
 	});
 	const now = new Date();
-	const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    const navigate = useNavigate();
+
+	const handlePageChange = (page) => () => navigate(`/${page}`);
 
 	const upsertEntry = (updatedEntry) => {
 		if (!updatedEntry?.id) return;
@@ -88,6 +85,11 @@ const Timeline = () => {
 	};
 
 	const fetchEntries = async (startOfDay) => {
+		if (!activeChildId) {
+			setEntries([]);
+			setLoading(false);
+			return;
+		}
 		setLoading(true);
 		// window.history.replaceState(null, "", `/?d=${startOfDay.toISOString().split('T')[0]}`);
 		const startOfNextDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
@@ -99,7 +101,7 @@ const Timeline = () => {
 		try {
 			const sleepQuery = query(
 				collection(db, "sleep"),
-				where("child_id", "==", activeChild.id),
+				where("child_id", "==", activeChildId),
 				where("start", ">=", startOfYesterdayTimestamp),
 				where("start", "<", startOfNextDayTimestamp),
 				orderBy("start", "desc"),
@@ -117,43 +119,6 @@ const Timeline = () => {
 		setLoading(false);
 	};
 
-	const fetchChildren = async () => {
-		try {
-			const childrenQuery = query(
-				collection(db, "child"),
-				// or(
-				// 	where("guardian", "==", auth.currentUser.uid),
-				// 	where("shared_with", "array-contains", auth.currentUser.uid),
-				// ),
-			);
-			const querySnapshot = await getDocs(childrenQuery);
-			if (!querySnapshot.empty) {
-				setChildren(querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()})));
-                const storedActiveChildId = localStorage.getItem("ST_activeChildId");
-				if (storedActiveChildId) {
-					const storedActiveChild = querySnapshot.docs
-						.map((doc) => ({id: doc.id, ...doc.data()}))
-						.find((child) => child.id === storedActiveChildId);
-					if (storedActiveChild) {
-						setActiveChild(storedActiveChild);
-					}
-				} else {
-					setActiveChild({id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()});
-				}
-			} else {
-				console.warn("No child found for user");
-				return null;
-			}
-		} catch (error) {
-			console.error("Error fetching child data:", error);
-			return null;
-		}
-	};
-
-	const handleSetActiveChild = (child) => {
-		setActiveChild(child);
-		localStorage.setItem("ST_activeChildId", child.id);
-	};
 
 	const getPrevDay = () => {
 		const prevDay = new Date(currentDay.getTime() - 24 * 60 * 60 * 1000);
@@ -178,10 +143,6 @@ const Timeline = () => {
 		setCurrentDay(nextDay);
 		fetchEntries(nextDay);
 	};
-
-	useEffect(() => {
-		fetchChildren();
-	}, []);
 
 	useEffect(() => {
 		let timer;
@@ -276,88 +237,46 @@ const Timeline = () => {
 		day: "numeric",
 	}).format(currentDay);
 
-	const header = (
-		<div className="pagination align-center space-between full-width">
-			<WaDropdown>
+	const centerContent = (
+		<div className="text-center elem-group justify-center gap-sm">
+			<h3>{headerDate}</h3>
+			{currentDay.getTime() !== todayDay.getTime() && (
 				<WaButton
 					className="btn-transparent btn-round icon-gloss"
-					slot="trigger"
-					id="child-switcher"
+					onClick={getToday}
 				>
-					<WaIcon
-						family="default"
-						name={activeChild ? activeChild.avatar_icon : undefined}
-						size="medium"
-						color={activeChild ? activeChild.avatar_color : undefined}
-					/>
+					<Calendar size={36} />
 				</WaButton>
-				{children.length > 0 &&
-					children.map((child) => (
-						<WaDropdownItem
-							key={child.id}
-							value={child.id}
-							onClick={() => handleSetActiveChild(child)}
-						>
-							<WaIcon
-								family="default"
-								name={child.avatar_icon}
-								size="small"
-								color={child.avatar_color}
-								slot="icon"
-							/>
-							{child.nickname}
-						</WaDropdownItem>
-					))}
-			</WaDropdown>
-			<WaTooltip
-				for="child-switcher"
-				placement="bottom"
-			>
-				{activeChild ? activeChild.nickname : "Select Child"}
-			</WaTooltip>
-			<WaButton
-				slot="trigger"
-				className="btn-round btn-gloss btn-icon"
-				onClick={getPrevDay}
-			>
-				<WaIcon
-					name="chevron-left"
-					library="lucide"
-					className=""
-				/>
-			</WaButton>
-			<div className="text-center elem-group justify-center gap-sm">
-				<h3>{headerDate}</h3>
-				{currentDay.getTime() !== todayDay.getTime() && (
-					<WaButton
-						className="btn-transparent btn-round icon-gloss"
-						onClick={getToday}
-					>
-						<Calendar size={36} />
-					</WaButton>
-				)}
-			</div>
-
-			<WaButton
-				slot="trigger"
-				className="btn-round btn-gloss"
-				onClick={getNextDay}
-				style={currentDay.getTime() < todayDay.getTime() ? {} : {visibility: "hidden"}}
-			>
-				<WaIcon
-					name="chevron-right"
-					library="lucide"
-				/>
-			</WaButton>
-			<WaButton
-				className="btn-transparent btn-round icon-gloss"
-				href="/profile"
-				id="profile-button"
-			>
-				<CircleUser size={36} />
-			</WaButton>
-			<WaTooltip for="profile-button">Profile</WaTooltip>
+			)}
 		</div>
+	);
+
+	const leftContent = (
+		<WaButton
+			slot="trigger"
+			className="btn-round btn-gloss btn-icon"
+			onClick={getPrevDay}
+		>
+			<WaIcon
+				name="chevron-left"
+				library="lucide"
+				className=""
+			/>
+		</WaButton>
+	);
+
+	const rightContent = (
+		<WaButton
+			slot="trigger"
+			className="btn-round btn-gloss"
+			onClick={getNextDay}
+			style={currentDay.getTime() < todayDay.getTime() ? {} : {visibility: "hidden"}}
+		>
+			<WaIcon
+				name="chevron-right"
+				library="lucide"
+			/>
+		</WaButton>
 	);
 
 	const handleStart = async () => {
@@ -498,7 +417,12 @@ const Timeline = () => {
 	return (
 		<div className="wrapper full-height space-between column justify-between page">
 			<div className="column">
-				{header}
+				<Header
+					activePage="timeline"
+					centerContent={centerContent}
+					leftContent={leftContent}
+					rightContent={rightContent}
+				/>
 				{loading ? (
 					""
 				) : (
@@ -575,35 +499,35 @@ const Timeline = () => {
 							size="medium"
 						/>
 					</WaButton>
-					<WaDropdownItem onClick={() => (window.location.href = "/diaper")}>
+					<WaDropdownItem onClick={handlePageChange("/diaper")}>
 						<Toilet
 							size={18}
 							slot="icon"
 						/>
 						Diaper
 					</WaDropdownItem>
-					<WaDropdownItem onClick={() => (window.location.href = "/feed")}>
+					<WaDropdownItem onClick={handlePageChange("feed")}>
 						<Milk
 							slot="icon"
 							size={18}
 						/>
 						Feed
 					</WaDropdownItem>
-					<WaDropdownItem onClick={() => (window.location.href = "/health")}>
+					<WaDropdownItem onClick={handlePageChange("health")}>
 						<Cross
 							slot="icon"
 							size={18}
 						/>
 						Health
 					</WaDropdownItem>
-					<WaDropdownItem onClick={() => (window.location.href = "/milestone")}>
+					<WaDropdownItem onClick={handlePageChange("milestone")}>
 						<Sparkles
 							slot="icon"
 							size={18}
 						/>
 						Milestone
 					</WaDropdownItem>
-					<WaDropdownItem onClick={() => (window.location.href = "/sleep")}>
+					<WaDropdownItem onClick={handlePageChange("sleep")}>
 						<Moon
 							slot="icon"
 							size={18}

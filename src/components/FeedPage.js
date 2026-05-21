@@ -1,16 +1,19 @@
 // breast, bottle, solids
 
-import {useState} from "react";
-import {useParams, useNavigate} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {House} from "lucide-react";
 import {WaBreadcrumb, WaBreadcrumbItem} from "@web.awesome.me/webawesome-pro/dist/react";
+import Header from "./Header";
 
 const FeedPage = () => {
 	const {entryId} = useParams();
 	return (
 		<div className="page">
+			<Header
+				activePage="feed"
+				title={entryId ? "Edit Feed" : "Add Feed"}
+			/>
 			<div className="page-meta">
-				<h1>{entryId ? "Edit Feed" : "Add Feed"}</h1>
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<House size={24} />

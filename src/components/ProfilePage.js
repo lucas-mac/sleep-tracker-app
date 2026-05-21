@@ -15,7 +15,7 @@ import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
 import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
 
-
+import {MainMenu} from "./Menu";
 import {House, LogOut} from "lucide-react";
 
 import "./ProfilePage.css";
@@ -89,7 +89,10 @@ const ProfilePage = () => {
 	return (
 		<div className="profile-page page">
 			<div className="page-meta">
-				<h1>Profile</h1>
+				<div className="elem-group gap-lg justify-between align-center">
+					<h1>Profile</h1>
+					<MainMenu activePage="profile" />
+				</div>
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<House size={24} />

@@ -3,12 +3,14 @@
 // TODO: use ulid for entry IDs instead of Firestore's auto-generated IDs, to make it easier to create new entries on the client side before saving to Firestore
 
 import React, {useState, useEffect} from "react";
-import {doc, getDoc, updateDoc, Timestamp} from "firebase/firestore";
+import {doc, getDoc, setDoc, updateDoc, Timestamp} from "firebase/firestore";
 import {db} from "../firebase";
 import {useParams, useNavigate} from "react-router-dom";
+import {ulid} from "ulid";
+import {useActiveChild} from "./ActiveChildContext";
+import Header from "./Header";
 import {
 	WaSwitch,
-	WaIcon,
 	WaButton,
 	WaInput,
 	WaTextarea,
@@ -28,16 +30,18 @@ const SleepEntryPage = () => {
 	const [endTime, setEndTime] = useState("");
 	const [note, setNote] = useState("");
 	const [isOngoing, setIsOngoing] = useState(false);
+	const {activeChildId} = useActiveChild();
 
 	const handleSave = async () => {
 		if (!entryId) {
 			const data = {
+				child_id: activeChildId,
 				start: Timestamp.fromDate(new Date(`${startDate}T${startTime}`)),
 				end: !isOngoing ? Timestamp.fromDate(new Date(`${endDate}T${endTime}`)) : null,
 				note: note, // TODO: add note field to the form
 			};
 			try {
-				await addDoc(collection(db, "sleep"), data);
+				await setDoc(doc(db, "sleep", ulid()), data);
 				console.log("Entry created successfully");
 				navigate(`/`); // Redirect to the main page after saving
 			} catch (error) {
@@ -46,12 +50,14 @@ const SleepEntryPage = () => {
 		} else {
 			const docRef = doc(db, "sleep", entryId);
 			const data = {
+				child_id: activeChildId,
 				start: Timestamp.fromDate(new Date(`${startDate}T${startTime}`)),
 				end: !isOngoing ? Timestamp.fromDate(new Date(`${endDate}T${endTime}`)) : null,
 				note: note, // TODO: add note field to the form
 			};
 			try {
 				await updateDoc(docRef, {
+					child_id: data.child_id,
 					start: data.start,
 					end: data.end,
 					note: data.note,
@@ -116,8 +122,11 @@ const SleepEntryPage = () => {
 
 	return (
 		<div className="page">
+			<Header
+				activePage="sleep"
+				title={entryId ? "Edit Sleep" : "Add Sleep"}
+			/>
 			<div className="page-meta">
-				<h1>{entryId ? "Edit Sleep" : "Add Sleep"}</h1>
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<House size={24} />

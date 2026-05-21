@@ -1,15 +1,18 @@
 // illnesses [cold, fever, etc.], medications, temperature, etc.
-import {useState} from "react";
-import {useParams, useNavigate} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {House} from "lucide-react";
 import {WaBreadcrumb, WaBreadcrumbItem} from "@web.awesome.me/webawesome-pro/dist/react";
+import Header from "./Header";
 
 const HealthPage = () => {
 	const {entryId} = useParams();
 	return (
 		<div className="page">
+			<Header
+				activePage="health"
+				title={entryId ? "Edit Health" : "Add Health"}
+			/>
 			<div className="page-meta">
-				<h1>{entryId ? "Edit Health" : "Add Health"}</h1>
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<House size={24} />

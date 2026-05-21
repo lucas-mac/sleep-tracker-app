@@ -73,8 +73,17 @@ hr.divider{
     margin:0;
 }
 
+wa-drawer::part(body),
+wa-drawer::part(header) {
+    background-color: var(--bg);
+}
+
 .text-center {
     text-align: center;
+}
+
+.text-left {
+    text-align: left;
 }
 
 .text-gloss {
@@ -151,6 +160,7 @@ button.btn-transparent {
 wa-button.btn-transparent:hover::part(base),
 button.btn-transparent:hover {
 	background-color: color-mix(in lch, var(--gloss) 70%, transparent 100%);
+    color:var(--solvent);
 }
 
 wa-button.btn-outline::part(base),
@@ -338,6 +348,7 @@ table{
     outline:1px solid var(--gloss);
     outline-offset:-1px;
     border-radius: 4px;
+    border-collapse: separate;
 }
 
 table thead,
@@ -378,11 +389,16 @@ table tr td{
 .table-scroll-wrapper{
     overflow-x:scroll;
     width:100%;
+    border:1px solid var(--gloss);
 }
 
 table.scroll {
     border-spacing: 0;
     width:100%;
+}
+
+.table-scroll-wrapper > table.scroll{
+    outline:none;
 }
 
 table.scroll thead tr th:first-of-type,
@@ -399,6 +415,23 @@ table.scroll tfoot tr td:first-of-type{
 }
 
 table.scroll tbody tr td:first-of-type{
+    background-color: var(--bg);
+}
+
+table.scroll thead tr th.sticky-right,
+table.scroll tbody tr td.sticky-right,
+table.scroll tfoot tr td.sticky-right{
+    position:sticky;
+    right:0;
+    z-index:1;
+}
+
+table.scroll thead tr th.sticky-right,
+table.scroll tfoot tr td.sticky-right{
+    background-color: var(--bg-2);
+}
+
+table.scroll tbody tr td.sticky-right{
     background-color: var(--bg);
 }
 
@@ -485,7 +518,7 @@ table.scroll tbody tr td:first-of-type{
     z-index:1;
     background-color:var(--bg);
 
-    & > h1 {
+    & h1 {
         margin-bottom:0;
     }
 }
