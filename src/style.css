@@ -242,6 +242,7 @@ button.icon-accent:hover {
 input,
 textarea,
 wa-input::part(base),
+wa-number-input::part(base),
 wa-textarea::part(base),
 wa-select::part(combobox),
 wa-select::part(listbox) {
@@ -258,9 +259,19 @@ wa-select::part(listbox){
     padding-inline: var(--padd-md);
 }
 
+wa-number-input::part(stepper){
+    color:var(--solvent);
+    background-color:transparent;
+}
+
+wa-number-input::part(stepper):hover{
+    background-color:var(--gloss-hover);
+}
+
 input,
 textarea,
 wa-input::part(input),
+wa-number-input::part(input),
 wa-textarea::part(input),
 wa-select::part(combobox),
 wa-select::part(listbox),

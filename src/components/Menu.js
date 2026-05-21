@@ -62,7 +62,7 @@ export const MainMenu = ({activePage}) => {
 						Sleep
 					</WaButton>
 					<WaButton
-						href="/feed"
+						href="/feeds"
 						className={`align-start ${activePage === "feed" ? "btn-accent" : "btn-transparent"}`}
 					>
 						<Milk

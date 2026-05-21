@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {collection, getDocs, orderBy, query, where} from "firebase/firestore";
-// get list of all diaper entries for active child, sorted by date desc
-// show date, time, type (pee/poop), consistency, colour, note
-// clicking on entry opens edit page
 
 import {toTitleCase} from "../utils/format";
 
@@ -17,31 +14,31 @@ import {
 import {House} from "lucide-react";
 import Header from "./Header";
 
-const DiaperListPage = () => {
-	const [diaperEntries, setDiaperEntries] = useState([]);
+const FeedListPage = () => {
+	const [feedEntries, setFeedEntries] = useState([]);
 	const {activeChild, activeChildId} = useActiveChild();
 
-	const fetchDiaperEntries = async () => {
+	const fetchFeedEntries = async () => {
 		if (!activeChildId) return;
-		const diaperQuery = query(
-			collection(db, "diaper"),
+		const feedQuery = query(
+			collection(db, "feed"),
 			where("child_id", "==", activeChildId),
 			orderBy("timestamp", "desc"),
 		);
-		const querySnapshot = await getDocs(diaperQuery);
+		const querySnapshot = await getDocs(feedQuery);
 		const entries = querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
-		setDiaperEntries(entries);
+		setFeedEntries(entries);
 	};
 
 	useEffect(() => {
-		fetchDiaperEntries();
+		fetchFeedEntries();
 	}, [activeChildId]);
 
 	return (
 		<div className="page">
 			<Header
-				activePage="diapers"
-				title="Diapers"
+				activePage="feeds"
+				title="Feeds"
 			/>
 
 			<div className="page-meta">
@@ -49,50 +46,52 @@ const DiaperListPage = () => {
 					<WaBreadcrumbItem href="/">
 						<House size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/diapers`}>
-						{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Diapers
+					<WaBreadcrumbItem href={`/feeds`}>
+						{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Feeds
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>
 			<div className="page-content">
 				<WaButton
 					className="btn-gloss"
-					href="/diaper/"
+					href="/feed/"
 				>
 					<WaIcon
 						family="default"
 						name="plus"
 						slot="start"
 					/>
-					Add Diaper
+					Add Feed
 				</WaButton>
 				<div className="table-scroll-wrapper">
-					<table className="diaper-table scroll">
+					<table className="feed-table scroll">
 						<thead>
 							<tr>
 								<th>Date</th>
 								<th>Type</th>
-								<th>Consistency</th>
-								<th>Colour</th>
+								<th>Amount</th>
 								<th>Note</th>
 								<th className="sticky-right"></th>
 							</tr>
 						</thead>
 						<tbody>
-							{diaperEntries.length === 0 ? (
+							{feedEntries.length === 0 ? (
 								<tr>
-									<td colSpan="6">No diaper entries found</td>
+									<td colSpan="5">No feed entries found</td>
 								</tr>
 							) : (
-								diaperEntries.map((entry) => (
+								feedEntries.map((entry) => (
 									<tr key={entry.id}>
 										<td>{entry.timestamp.toDate().toLocaleString()}</td>
 										<td>{toTitleCase(entry.type)}</td>
-										<td>{toTitleCase(entry.consistency)}</td>
-										<td>{toTitleCase(entry.colour)}</td>
+										<td>
+											{entry.type === "breast"
+												? entry.duration + " mins"
+												: entry.amount + " ml"}
+										</td>
 										<td>{entry.note}</td>
 										<td className="sticky-right">
-											<a href={`/diaper/${entry.id}`}>
+											<a href={`/feed/${entry.id}`}>
 												<WaButton
 													className="btn-gloss btn-round"
 													size="medium"
@@ -110,7 +109,7 @@ const DiaperListPage = () => {
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colSpan="6">Total: {diaperEntries.length}</td>
+								<td colSpan="5">Total: {feedEntries.length}</td>
 							</tr>
 						</tfoot>
 					</table>
@@ -120,4 +119,4 @@ const DiaperListPage = () => {
 	);
 };
 
-export default DiaperListPage;
+export default FeedListPage;

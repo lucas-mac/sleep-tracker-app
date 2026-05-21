@@ -28,7 +28,8 @@ import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import ProfilePage from "./components/ProfilePage";
 import ChildPage from "./components/ChildPage";
-import FeedPage from "./components/FeedPage";
+import FeedEntryPage from "./components/FeedEntryPage";
+import FeedListPage from "./components/FeedListPage";
 import DiaperEntryPage from "./components/DiaperEntryPage";
 import DiaperListPage from "./components/DiaperListPage";
 import HealthPage from "./components/HealthPage";
@@ -108,10 +109,18 @@ const App = () => {
 									}
 								/>
 								<Route
+									path="/feeds"
+									element={
+										<ProtectedRoute>
+											<FeedListPage />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
 									path="/feed/:entryId?"
 									element={
 										<ProtectedRoute>
-											<FeedPage />
+											<FeedEntryPage />
 										</ProtectedRoute>
 									}
 								/>
