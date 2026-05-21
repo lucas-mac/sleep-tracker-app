@@ -239,6 +239,19 @@ button.icon-accent:hover {
 	color: color-mix(in lch, var(--accent) 100%, var(--solvent) 35%);
 }
 
+wa-button.btn-danger::part(base),
+button.btn-danger {
+    background-color: var(--error);
+    border:none;
+    color: var(--bg);
+}
+
+wa-button.btn-danger::part(base):hover,
+button.btn-danger:hover {    
+    background-color: color-mix(in lch, var(--error) 100%, var(--solvent) 35%);
+    color: var(--bg);
+}
+
 input,
 textarea,
 wa-input::part(base),

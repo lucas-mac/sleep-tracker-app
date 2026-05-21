@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import {useActiveChild} from "./ActiveChildContext";
-import {setDoc, doc, Timestamp, updateDoc, getDoc} from "firebase/firestore";
+import {setDoc, doc, Timestamp, updateDoc, getDoc, deleteDoc} from "firebase/firestore";
 import {ulid} from "ulid";
 import {db} from "../firebase";
 import {House} from "lucide-react";
@@ -37,7 +37,7 @@ const FeedEntryPage = () => {
 	const [note, setNote] = useState("");
 	const navigate = useNavigate();
 
-	const {activeChildId} = useActiveChild();
+    const {activeChild, activeChildId} = useActiveChild();
 
 	const showToast = async (message, variant = "neutral") => {
 		const toast = document.querySelector("wa-toast");
@@ -77,7 +77,20 @@ const FeedEntryPage = () => {
 			await showToast("Could not save feed entry. Please try again.", "danger");
 		}
 	};
-	const handleCancel = () => navigate(-1);
+    const handleCancel = () => navigate(-1);
+    
+    const handleDelete = async () => {
+		if (!entryId) return;
+		if (confirm("Are you sure you want to delete this entry?")) {
+			try {
+				await deleteDoc(doc(db, "feed", entryId));
+				navigate(-1);
+			} catch (error) {
+				console.error("Error deleting feed entry:", error);
+				await showToast("Could not delete feed entry. Please try again.", "danger");
+			}
+		}
+	};
 
 	useEffect(() => {
 		const fetchEntry = async () => {
@@ -103,7 +116,7 @@ const FeedEntryPage = () => {
 					);
 				}
 				setNote(data.note || "");
-				setType(data.type || "pee");
+				setType(data.type || "breast");
 				setDuration(data.duration || "");
 				setAmount(data.amount || "");
 			}
@@ -121,6 +134,9 @@ const FeedEntryPage = () => {
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<House size={24} />
+					</WaBreadcrumbItem>
+					<WaBreadcrumbItem href={`/feeds/`}>
+						{activeChild ? activeChild.nickname + "'s " : ""}Feeds
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/feed/${entryId}`}>
 						{entryId ? "Edit Feed" : "Add Feed"}
@@ -209,6 +225,16 @@ const FeedEntryPage = () => {
 					>
 						Cancel
 					</WaButton>
+					{entryId && (
+						<WaButton
+							className="btn-outline"
+							onClick={handleDelete}
+							size="large"
+							pill
+						>
+							Delete
+						</WaButton>
+					)}
 				</div>
 			</div>
 		</div>

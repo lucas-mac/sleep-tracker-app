@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import {useActiveChild} from "./ActiveChildContext";
-import {setDoc, doc, Timestamp, updateDoc, getDoc} from "firebase/firestore";
+import {setDoc, doc, Timestamp, updateDoc, getDoc, deleteDoc} from "firebase/firestore";
 import {ulid} from "ulid";
 import {db} from "../firebase";
 import {House} from "lucide-react";
@@ -36,7 +36,7 @@ const DiaperEntryPage = () => {
 	const [note, setNote] = useState("");
 	const navigate = useNavigate();
 
-	const {activeChildId} = useActiveChild();
+    const {activeChild, activeChildId} = useActiveChild();
 
 	const showToast = async (message, variant = "neutral") => {
 		const toast = document.querySelector("wa-toast");
@@ -76,7 +76,20 @@ const DiaperEntryPage = () => {
 			await showToast("Could not save diaper entry. Please try again.", "danger");
 		}
 	};
-	const handleCancel = () => navigate(-1);
+    const handleCancel = () => navigate(-1);
+    
+    const handleDelete = async () => {
+		if (!entryId) return;
+		if (confirm("Are you sure you want to delete this entry?")) {
+			try {
+				await deleteDoc(doc(db, "diaper", entryId));
+				navigate(-1);
+			} catch (error) {
+				console.error("Error deleting diaper entry:", error);
+				await showToast("Could not delete diaper entry. Please try again.", "danger");
+			}
+		}
+	};
 
 	useEffect(() => {
 		const fetchEntry = async () => {
@@ -120,6 +133,9 @@ const DiaperEntryPage = () => {
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<House size={24} />
+					</WaBreadcrumbItem>
+					<WaBreadcrumbItem href={`/diapers/`}>
+						{activeChild ? activeChild.nickname + "'s " : ""}Diapers
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/diaper/${entryId}`}>
 						{entryId ? "Edit Diaper" : "Add Diaper"}
@@ -220,6 +236,16 @@ const DiaperEntryPage = () => {
 					>
 						Cancel
 					</WaButton>
+					{entryId && (
+						<WaButton
+							className="btn-outline"
+							onClick={handleDelete}
+							size="large"
+							pill
+						>
+							Delete
+						</WaButton>
+					)}
 				</div>
 			</div>
 		</div>
