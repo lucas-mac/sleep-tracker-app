@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {collection, getDocs, orderBy, query, where} from "firebase/firestore";
+import {collection, getDocs, orderBy, query, where, limit} from "firebase/firestore";
 
 import {toTitleCase} from "../utils/format";
 
@@ -25,6 +25,7 @@ const FeedListPage = () => {
 			collection(db, "feed"),
 			where("child_id", "==", activeChildId),
 			orderBy("timestamp", "desc"),
+			limit(10),
 		);
 		const querySnapshot = await getDocs(feedQuery);
 		const entries = querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));

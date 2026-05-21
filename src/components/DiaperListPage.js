@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {collection, getDocs, orderBy, query, where} from "firebase/firestore";
+import {collection, getDocs, orderBy, query, where, limit} from "firebase/firestore";
 // get list of all diaper entries for active child, sorted by date desc
 // show date, time, type (pee/poop), consistency, colour, note
 // clicking on entry opens edit page
@@ -28,6 +28,7 @@ const DiaperListPage = () => {
 			collection(db, "diaper"),
 			where("child_id", "==", activeChildId),
 			orderBy("timestamp", "desc"),
+			limit(10),
 		);
 		const querySnapshot = await getDocs(diaperQuery);
 		const entries = querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
