@@ -7,6 +7,14 @@
 				{"fieldPath": "child_id", "order": "ASCENDING"},
 				{"fieldPath": "start", "order": "DESCENDING"}
 			]
+		},
+		{
+			"collectionGroup": "diaper",
+			"queryScope": "COLLECTION",
+			"fields": [
+				{"fieldPath": "child_id", "order": "ASCENDING"},
+				{"fieldPath": "timestamp", "order": "DESCENDING"}
+			]
 		}
 	],
 	"fieldOverrides": []
