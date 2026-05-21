@@ -90,10 +90,17 @@ wa-drawer::part(header) {
     color: var(--gloss-hover);
 }
 
+.text-uppercase {
+    text-transform: uppercase;
+}
+
 .no-bottom{
     margin-bottom:0;
 }
 
+.no-wrap{
+    white-space: nowrap;
+}
 button {
 	padding: var(--padd-sm) var(--padd-lg);
 }
@@ -400,8 +407,9 @@ table tfoot tr td:last-child{
     border-bottom-right-radius: 4px;
 }
 
-table tr{
-    border-color:var(--gloss);
+table thead th,
+table tbody td{
+    border-bottom: 1px solid var(--gloss);
 }
 
 table tr th,

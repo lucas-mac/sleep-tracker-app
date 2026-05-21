@@ -13,6 +13,7 @@ import {
 } from "@web.awesome.me/webawesome-pro/dist/react";
 import {House} from "lucide-react";
 import Header from "./Header";
+import moment from "moment";
 
 const FeedListPage = () => {
 	const [feedEntries, setFeedEntries] = useState([]);
@@ -67,7 +68,7 @@ const FeedListPage = () => {
 					<table className="feed-table scroll">
 						<thead>
 							<tr>
-								<th>Date</th>
+								<th>Time</th>
 								<th>Type</th>
 								<th>Amount</th>
 								<th>Note</th>
@@ -82,7 +83,20 @@ const FeedListPage = () => {
 							) : (
 								feedEntries.map((entry) => (
 									<tr key={entry.id}>
-										<td>{entry.timestamp.toDate().toLocaleString()}</td>
+										<td>
+											<div className="elem-group gap-x flex-wrap">
+												<span className="no-wrap">
+													{moment(entry.timestamp.toDate()).format(
+														"h:mm a",
+													)}
+												</span>
+												<small className="text-gloss text-uppercase">
+													{moment(entry.timestamp.toDate()).format(
+														"MMM D",
+													)}
+												</small>
+											</div>
+										</td>
 										<td>{toTitleCase(entry.type)}</td>
 										<td>
 											{entry.type === "breast"
