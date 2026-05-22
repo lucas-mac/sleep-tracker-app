@@ -108,15 +108,14 @@ export const MainMenu = ({activePage}) => {
 						Milestones
 					</WaButton>
 					<WaButton
-						href="/medications"
-						disabled
-						className={`align-start ${activePage === "medications" ? "btn-accent" : "btn-transparent"}`}
+						href="/health-history"
+						className={`align-start ${activePage === "health" ? "btn-accent" : "btn-transparent"}`}
 					>
 						<Cross
 							size={24}
 							slot="start"
 						/>
-						Medications
+						Health
 					</WaButton>
 				</div>
 

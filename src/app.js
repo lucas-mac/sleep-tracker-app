@@ -32,7 +32,8 @@ import FeedEntryPage from "./components/FeedEntryPage";
 import FeedListPage from "./components/FeedListPage";
 import DiaperEntryPage from "./components/DiaperEntryPage";
 import DiaperListPage from "./components/DiaperListPage";
-import MedicationEntryPage from "./components/MedicationEntryPage";
+import HealthListPage from "./components/HealthListPage";
+import HealthEntryPage from "./components/HealthEntryPage";
 import MeasurementListPage from "./components/MeasurementListPage";
 import MeasurementEntryPage from "./components/MeasurementEntryPage";
 import MilestoneEntryPage from "./components/MilestoneEntryPage";
@@ -158,10 +159,18 @@ const App = () => {
 									}
 								/>
 								<Route
-									path="/medication/:entryId?"
+									path="/health-history"
 									element={
 										<ProtectedRoute>
-											<MedicationEntryPage />
+											<HealthListPage />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/health/:entryId?"
+									element={
+										<ProtectedRoute>
+											<HealthEntryPage />
 										</ProtectedRoute>
 									}
 								/>

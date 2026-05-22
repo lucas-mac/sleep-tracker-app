@@ -520,6 +520,13 @@ const Timeline = () => {
 						/>
 						Measurement
 					</WaDropdownItem>
+					<WaDropdownItem onClick={handlePageChange("health")}>
+						<Cross
+							slot="icon"
+							size={18}
+						/>
+						Health
+					</WaDropdownItem>
 					<WaDropdownItem onClick={handlePageChange("milestone")}>
 						<Sparkles
 							slot="icon"
