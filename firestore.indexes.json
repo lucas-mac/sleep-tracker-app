@@ -23,6 +23,14 @@
 				{"fieldPath": "child_id", "order": "ASCENDING"},
 				{"fieldPath": "timestamp", "order": "DESCENDING"}
 			]
+		},
+		{
+			"collectionGroup": "measurement",
+			"queryScope": "COLLECTION",
+			"fields": [
+				{"fieldPath": "child_id", "order": "ASCENDING"},
+				{"fieldPath": "timestamp", "order": "DESCENDING"}
+			]
 		}
 	],
 	"fieldOverrides": []

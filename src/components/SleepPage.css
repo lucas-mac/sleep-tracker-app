@@ -50,9 +50,9 @@ wa-switch:state(checked)::part(label) {
 }
 
 .timer-date {
-	min-width: 16ch;
+	/* min-width: 16ch; */
 }
 
 .timer-time {
-	min-width: 13ch;
+	/* min-width: 13ch; */
 }

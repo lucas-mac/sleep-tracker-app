@@ -1,5 +1,15 @@
 import React from "react";
-import {House, CircleUser, Calendar, Sparkles, Moon, Cross, Milk, Toilet} from "lucide-react";
+import {
+	House,
+	CircleUser,
+	Calendar,
+	Sparkles,
+	Moon,
+	Cross,
+	Milk,
+	Toilet,
+	PencilRuler,
+} from "lucide-react";
 import {
 	WaBreadcrumb,
 	WaBreadcrumbItem,
@@ -62,6 +72,17 @@ export const MainMenu = ({activePage}) => {
 						Feedings
 					</WaButton>
 					<WaButton
+						href="/measurements"
+						className={`align-start ${activePage === "measurements" ? "btn-accent" : "btn-transparent"}`}
+					>
+						<PencilRuler
+							size={24}
+							slot="start"
+						/>
+						Measurements
+					</WaButton>
+					<WaButton
+						hidden="false"
 						href="/milestones"
 						className={`align-start ${activePage === "milestones" ? "btn-accent" : "btn-transparent"}`}
 					>
@@ -72,14 +93,15 @@ export const MainMenu = ({activePage}) => {
 						Milestones
 					</WaButton>
 					<WaButton
-						href="/health"
-						className={`align-start ${activePage === "health" ? "btn-accent" : "btn-transparent"}`}
+						href="/medications"
+						disabled
+						className={`align-start ${activePage === "medications" ? "btn-accent" : "btn-transparent"}`}
 					>
 						<Cross
 							size={24}
 							slot="start"
 						/>
-						Health
+						Medications
 					</WaButton>
 					<WaButton
 						href="/profile"

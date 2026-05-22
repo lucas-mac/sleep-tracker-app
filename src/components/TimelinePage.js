@@ -20,14 +20,14 @@ import "./Timeline.css";
 import "./controls.css";
 import Header from "./Header";
 
-import {Play, Pause, Square, Circle} from "lucide-react";
+import {Play, Pause, Square, Circle, Pencil} from "lucide-react";
 import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesome.js";
 import WaIcon from "@web.awesome.me/webawesome-pro/dist/react/icon";
 import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
 import WaDropdown from "@web.awesome.me/webawesome-pro/dist/react/dropdown";
 import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-item";
 
-import {CircleUser, Calendar, Sparkles, Moon, Cross, Milk, Toilet} from "lucide-react";
+import {CircleUser, Calendar, Sparkles, Moon, Cross, Milk, Toilet, PencilRuler} from "lucide-react";
 
 import {ulid} from "ulid";
 
@@ -513,12 +513,12 @@ const Timeline = () => {
 						/>
 						Feed
 					</WaDropdownItem>
-					<WaDropdownItem onClick={handlePageChange("health")}>
-						<Cross
+					<WaDropdownItem onClick={handlePageChange("measurement")}>
+						<PencilRuler
 							slot="icon"
 							size={18}
 						/>
-						Health
+						Measurement
 					</WaDropdownItem>
 					<WaDropdownItem onClick={handlePageChange("milestone")}>
 						<Sparkles

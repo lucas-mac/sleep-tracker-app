@@ -32,7 +32,9 @@ import FeedEntryPage from "./components/FeedEntryPage";
 import FeedListPage from "./components/FeedListPage";
 import DiaperEntryPage from "./components/DiaperEntryPage";
 import DiaperListPage from "./components/DiaperListPage";
-import HealthPage from "./components/HealthPage";
+import MedicationEntryPage from "./components/MedicationEntryPage";
+import MeasurementListPage from "./components/MeasurementListPage";
+import MeasurementEntryPage from "./components/MeasurementEntryPage";
 import MilestoneEntryPage from "./components/MilestoneEntryPage";
 import MilestonesPage from "./components/MilestonesPage";
 import {signOut} from "firebase/auth";
@@ -141,10 +143,26 @@ const App = () => {
 									}
 								/>
 								<Route
-									path="/health/:entryId?"
+									path="/measurements/"
 									element={
 										<ProtectedRoute>
-											<HealthPage />
+											<MeasurementListPage />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/measurement/:entryId?"
+									element={
+										<ProtectedRoute>
+											<MeasurementEntryPage />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/medication/:entryId?"
+									element={
+										<ProtectedRoute>
+											<MedicationEntryPage />
 										</ProtectedRoute>
 									}
 								/>

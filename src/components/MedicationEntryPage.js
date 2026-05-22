@@ -4,12 +4,12 @@ import {House} from "lucide-react";
 import {WaBreadcrumb, WaBreadcrumbItem} from "@web.awesome.me/webawesome-pro/dist/react";
 import Header from "./Header";
 
-const HealthPage = () => {
+const MedicationEntryPage = () => {
 	const {entryId} = useParams();
 	return (
 		<div className="page">
 			<Header
-				activePage="health"
+				activePage="medications"
 				title={entryId ? "Edit Health" : "Add Health"}
 			/>
 			<div className="page-meta">
@@ -17,7 +17,8 @@ const HealthPage = () => {
 					<WaBreadcrumbItem href="/">
 						<House size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/health/${entryId}`}>Health</WaBreadcrumbItem>
+					<WaBreadcrumbItem href={`/medications/`}>Medications</WaBreadcrumbItem>
+					<WaBreadcrumbItem href={`/medication/${entryId}`}>Medication</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>
 			<div className="page-content">
@@ -27,4 +28,4 @@ const HealthPage = () => {
 	);
 };
 
-export default HealthPage;
+export default MedicationEntryPage;
