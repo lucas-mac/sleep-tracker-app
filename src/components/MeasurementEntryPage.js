@@ -133,7 +133,7 @@ const MeasurementEntryPage = () => {
 						{activeChild ? activeChild.nickname + "'s " : ""}Measurements
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/measurement/${entryId}`}>
-						{entryId ? "Edit Measurement" : "Add Measurement"}
+						{entryId ? "Edit" : "Add"}
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>

@@ -138,7 +138,7 @@ const DiaperEntryPage = () => {
 						{activeChild ? activeChild.nickname + "'s " : ""}Diapers
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/diaper/${entryId}`}>
-						{entryId ? "Edit Diaper" : "Add Diaper"}
+						{entryId ? "Edit" : "Add"}
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>

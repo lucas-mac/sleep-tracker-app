@@ -139,7 +139,7 @@ const FeedEntryPage = () => {
 						{activeChild ? activeChild.nickname + "'s " : ""}Feeds
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/feed/${entryId}`}>
-						{entryId ? "Edit Feed" : "Add Feed"}
+						{entryId ? "Edit" : "Add"}
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>
