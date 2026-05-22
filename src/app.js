@@ -52,18 +52,17 @@ const App = () => {
 				<AuthProvider>
 					<ActiveChildProvider>
 						<Router>
-							<nav
-								className="menu"
-								style={{display: "none"}}
-							>
-								<Link to="/">Index</Link>
-								<Link to="/milestones">Milestones</Link>
-								<Link to="/profile">Profile</Link>
-								<button onClick={handleLogout}>Logout</button>
-							</nav>
 							<Routes>
 								<Route
 									path="/"
+									element={
+										<ProtectedRoute>
+											<Timeline />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/sleeps"
 									element={
 										<ProtectedRoute>
 											<Timeline />

@@ -74,7 +74,8 @@ hr.divider{
 }
 
 wa-drawer::part(body),
-wa-drawer::part(header) {
+wa-drawer::part(header),
+wa-drawer::part(footer) {
     background-color: var(--bg);
 }
 

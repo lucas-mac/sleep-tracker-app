@@ -16,7 +16,7 @@ import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
 import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
 
 import {MainMenu} from "./Menu";
-import {LayoutGrid, LogOut} from "lucide-react";
+import {LayoutGrid} from "lucide-react";
 
 import "./ProfilePage.css";
 
@@ -169,22 +169,6 @@ const ProfilePage = () => {
 								Cancel
 							</WaButton>
 						</div>
-						<WaButton
-							label="Logout"
-							className="btn-outline"
-							size="medium"
-							onClick={() => {
-								auth.signOut();
-								location.href = "/";
-							}}
-						>
-							Logout
-							<LogOut
-								size={18}
-								className="icon-gloss"
-								slot="end"
-							/>
-						</WaButton>
 					</div>
 				</WaTabPanel>
 				<WaTabPanel

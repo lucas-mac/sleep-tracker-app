@@ -9,6 +9,7 @@ import {
 	Milk,
 	Toilet,
 	PencilRuler,
+	LogOut,
 } from "lucide-react";
 import {
 	WaBreadcrumb,
@@ -19,9 +20,12 @@ import {
 	WaIcon,
 } from "@web.awesome.me/webawesome-pro/dist/react";
 import {useActiveChild} from "./ActiveChildContext";
+import {auth} from "../firebase";
+import {useNavigate} from "react-router-dom";
 
 export const MainMenu = ({activePage}) => {
 	const {activeChild} = useActiveChild();
+	const navigate = useNavigate();
 
 	return (
 		<div>
@@ -50,6 +54,17 @@ export const MainMenu = ({activePage}) => {
 							slot="start"
 						/>
 						Home
+					</WaButton>
+					<WaButton
+						href="/sleeps"
+						className={`align-start ${activePage === "sleep" ? "btn-accent" : "btn-transparent"}`}
+						disabled
+					>
+						<Moon
+							size={24}
+							slot="start"
+						/>
+						Sleep
 					</WaButton>
 					<WaButton
 						href="/diapers"
@@ -103,17 +118,33 @@ export const MainMenu = ({activePage}) => {
 						/>
 						Medications
 					</WaButton>
-					<WaButton
-						href="/profile"
-						className={`align-start ${activePage === "profile" ? "btn-accent" : "btn-transparent"}`}
-					>
-						<CircleUser
-							size={24}
-							slot="start"
-						/>
-						Profile
-					</WaButton>
 				</div>
+
+				<WaButton
+					href="/profile"
+					className={`align-start full-width ${activePage === "profile" ? "btn-accent" : "btn-transparent"}`}
+					slot="footer"
+				>
+					<CircleUser
+						size={24}
+						slot="start"
+					/>
+					Profile
+				</WaButton>
+				<WaButton
+					onClick={() => {
+						auth.signOut();
+						navigate("/");
+					}}
+					className="align-start btn-transparent full-width"
+					slot="footer"
+				>
+					<LogOut
+						size={24}
+						slot="start"
+					/>
+					Logout
+				</WaButton>
 			</WaDrawer>
 		</div>
 	);
