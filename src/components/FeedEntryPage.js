@@ -208,23 +208,25 @@ const FeedEntryPage = () => {
 					maxlength="100"
 					className="full-width"
 				/>
-				<div className="elem-group gap-sm">
-					<WaButton
-						className="btn-accent"
-						onClick={handleSave}
-						size="large"
-						pill
-					>
-						Save
-					</WaButton>
-					<WaButton
-						className="btn-gloss"
-						onClick={handleCancel}
-						size="large"
-						pill
-					>
-						Cancel
-					</WaButton>
+				<div className="page-footer">
+					<div className="elem-group gap-sm">
+						<WaButton
+							className="btn-accent"
+							onClick={handleSave}
+							size="large"
+							pill
+						>
+							Save
+						</WaButton>
+						<WaButton
+							className="btn-gloss"
+							onClick={handleCancel}
+							size="large"
+							pill
+						>
+							Cancel
+						</WaButton>
+					</div>
 					{entryId && (
 						<WaButton
 							className="btn-outline"

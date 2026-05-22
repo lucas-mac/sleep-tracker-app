@@ -564,6 +564,15 @@ table.scroll tbody tr td.sticky-right{
     padding-bottom:var(--padd-xl);
 }
 
+.page-footer{
+    width:100%;
+    display:flex;
+    flex-wrap: wrap;
+    gap:var(--padd-sm);
+    justify-content: space-between;
+    align-items:center;
+}
+
 .align-baseline {
 	align-items: baseline;
 }

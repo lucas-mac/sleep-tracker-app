@@ -70,6 +70,18 @@ const SleepEntryPage = () => {
 		}
 	};
 
+    const handleDelete = async () => {
+		if (!entryId) return;
+		const docRef = doc(db, "sleep", entryId);
+		try {
+			await deleteDoc(docRef);
+			console.log("Entry deleted successfully");
+			navigate(-1);
+		} catch (error) {
+			console.error("Error deleting entry:", error);
+		}
+	};
+
 	const handleCancel = () => {
 		navigate(-1); // Navigate back to the previous page
 	};
@@ -202,23 +214,35 @@ const SleepEntryPage = () => {
 					maxlength="100"
 					className="full-width"
 				/>
-				<div className="elem-group gap-sm">
-					<WaButton
-						className="btn-accent"
-						onClick={handleSave}
-						size="large"
-						pill
-					>
-						Save
-					</WaButton>
-					<WaButton
-						className="btn-gloss"
-						onClick={handleCancel}
-						size="large"
-						pill
-					>
-						Cancel
-					</WaButton>
+				<div className="page-footer">
+					<div className="elem-group gap-sm">
+						<WaButton
+							className="btn-accent"
+							onClick={handleSave}
+							size="large"
+							pill
+						>
+							Save
+						</WaButton>
+						<WaButton
+							className="btn-gloss"
+							onClick={handleCancel}
+							size="large"
+							pill
+						>
+							Cancel
+						</WaButton>
+					</div>
+					{entryId && (
+						<WaButton
+							className="btn-outline"
+							size="large"
+							onClick={handleDelete}
+							pill
+						>
+							Delete
+						</WaButton>
+					)}
 				</div>
 			</div>
 		</div>
