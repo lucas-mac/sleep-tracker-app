@@ -42,8 +42,7 @@ const SleepEntryPage = () => {
 			};
 			try {
 				await setDoc(doc(db, "sleep", ulid()), data);
-				console.log("Entry created successfully");
-				navigate(`/`); // Redirect to the main page after saving
+				navigate(-1); // Redirect to the main page after saving
 			} catch (error) {
 				console.error("Error creating entry:", error);
 			}
@@ -62,8 +61,7 @@ const SleepEntryPage = () => {
 					end: data.end,
 					note: data.note,
 				});
-				console.log("Entry updated successfully");
-				navigate(`/`); // Redirect to the main page after saving
+				navigate(-1);
 			} catch (error) {
 				console.error("Error updating entry:", error);
 			}

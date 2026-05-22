@@ -71,7 +71,7 @@ const FeedEntryPage = () => {
 				await setDoc(doc(db, "feed", id), payload);
 			}
 
-			navigate("/");
+			navigate(-1);
 		} catch (error) {
 			console.error("Error saving feed entry:", error);
 			await showToast("Could not save feed entry. Please try again.", "danger");

@@ -70,7 +70,7 @@ const DiaperEntryPage = () => {
 				await setDoc(doc(db, "diaper", id), payload);
 			}
 
-			navigate("/");
+			navigate(-1);
 		} catch (error) {
 			console.error("Error saving diaper entry:", error);
 			await showToast("Could not save diaper entry. Please try again.", "danger");

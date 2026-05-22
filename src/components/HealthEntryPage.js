@@ -83,7 +83,7 @@ const HealthEntryPage = () => {
 				await setDoc(doc(db, "health", id), payload);
 			}
 
-			navigate("/");
+			navigate(-1);
 		} catch (error) {
 			console.error("Error saving health entry:", error);
 			await showToast("Could not save health entry. Please try again.", "danger");
