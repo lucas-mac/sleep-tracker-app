@@ -48,7 +48,7 @@ const HealthListPage = () => {
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/health`}>
+					<WaBreadcrumbItem href={`/health-history/`}>
 						{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Health
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>

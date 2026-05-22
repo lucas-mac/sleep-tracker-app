@@ -42,9 +42,17 @@ const HealthEntryPage = () => {
 	const navigate = useNavigate();
 	const {activeChild, activeChildId} = useActiveChild();
 
-	const handleDelete = () => {
-		// Implement delete functionality here
-		console.log("Delete entry with ID:", entryId);
+	const handleDelete = async () => {
+		if (!entryId) return;
+		if (confirm("Are you sure you want to delete this entry?")) {
+			try {
+				await deleteDoc(doc(db, "health", entryId));
+				navigate(-1);
+			} catch (error) {
+				console.error("Error deleting health entry:", error);
+				await showToast("Could not delete health entry. Please try again.", "danger");
+			}
+		}
 	};
 
 	const handleSave = async () => {
@@ -132,7 +140,7 @@ const HealthEntryPage = () => {
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/health/`}>
+					<WaBreadcrumbItem href={`/health-history/`}>
 						{activeChild ? activeChild.nickname + "'s " : ""}Health
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/health/${entryId}`}>
