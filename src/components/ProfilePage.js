@@ -16,7 +16,7 @@ import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
 import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
 
 import {MainMenu} from "./Menu";
-import {House, LogOut} from "lucide-react";
+import {LayoutGrid, LogOut} from "lucide-react";
 
 import "./ProfilePage.css";
 
@@ -95,7 +95,7 @@ const ProfilePage = () => {
 				</div>
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
-						<House size={24} />
+						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href="/profile">Profile</WaBreadcrumbItem>
 				</WaBreadcrumb>

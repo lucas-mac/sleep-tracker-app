@@ -7,6 +7,7 @@ import {
 	WaIcon,
 	WaTooltip,
 } from "@web.awesome.me/webawesome-pro/dist/react";
+import {useNavigate} from "react-router-dom";
 
 const Header = ({
 	activePage,
@@ -16,7 +17,8 @@ const Header = ({
 	rightContent,
 	showProfileTooltip = true,
 }) => {
-	const {children, activeChild, selectChild} = useActiveChild();
+    const {children, activeChild, selectChild} = useActiveChild();
+	const navigate = useNavigate();
 
 	return (
 		<div className="pagination align-center space-between full-width">
@@ -50,6 +52,18 @@ const Header = ({
 							{child.nickname}
 						</WaDropdownItem>
 					))}
+				<WaDropdownItem
+					key="add-child"
+					onClick={() => navigate("/child/")}
+				>
+					<WaIcon
+						family="default"
+						name="plus"
+						size="small"
+						slot="icon"
+					/>
+					Add Child
+				</WaDropdownItem>
 			</WaDropdown>
 			<WaTooltip
 				for="child-switcher"

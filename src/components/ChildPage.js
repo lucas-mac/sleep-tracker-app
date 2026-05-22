@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from "react";
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import {doc, setDoc, getDoc} from "firebase/firestore";
 import {db, auth} from "../firebase";
 import {ulid} from "ulid";
@@ -15,12 +15,13 @@ import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
 import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
 
 import {MainMenu} from "./Menu";
-import {X, House} from "lucide-react";
+import {X, LayoutGrid} from "lucide-react";
 
 import IconSelector from "./IconSelector";
 
 const ChildPage = () => {
-	const {childId} = useParams();
+    const {childId} = useParams();
+	const navigate = useNavigate();
 
 	const [nickname, setNickname] = useState("");
 	const [birthMonth, setBirthMonth] = useState("");
@@ -127,7 +128,7 @@ const ChildPage = () => {
 				</div>
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
-						<House size={24} />
+						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href="/profile">Profile</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/child/${childId}`}>Child</WaBreadcrumbItem>
@@ -317,7 +318,7 @@ const ChildPage = () => {
 					<WaButton
 						className="btn-gloss"
 						size="large"
-						onClick={() => (location.href = "/profile#children")}
+						onClick={() => navigate(-1)}
 						pill
 					>
 						Cancel

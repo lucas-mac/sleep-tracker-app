@@ -1,4 +1,4 @@
-import {House} from "lucide-react";
+import {LayoutGrid} from "lucide-react";
 import {WaBreadcrumb, WaBreadcrumbItem} from "@web.awesome.me/webawesome-pro/dist/react";
 import Header from "./Header";
 
@@ -12,7 +12,7 @@ const MilestonesPage = () => {
 			<div className="page-meta">
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
-						<House size={24} />
+						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href="/milestones">Milestones</WaBreadcrumbItem>
 				</WaBreadcrumb>

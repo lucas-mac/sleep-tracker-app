@@ -11,7 +11,7 @@ import {
 	WaButton,
 	WaIcon,
 } from "@web.awesome.me/webawesome-pro/dist/react";
-import {House} from "lucide-react";
+import {LayoutGrid} from "lucide-react";
 import Header from "./Header";
 import moment from "moment";
 
@@ -46,7 +46,7 @@ const MeasurementListPage = () => {
 			<div className="page-meta">
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
-						<House size={24} />
+						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/measurements`}>
 						{activeChild ? activeChild.nickname + "'s" : "Select Child for"}{" "}

@@ -4,7 +4,7 @@ import {useActiveChild} from "./ActiveChildContext";
 import {setDoc, doc, Timestamp, updateDoc, getDoc, deleteDoc} from "firebase/firestore";
 import {ulid} from "ulid";
 import {db} from "../firebase";
-import {House} from "lucide-react";
+import {LayoutGrid} from "lucide-react";
 import {
 	WaBreadcrumb,
 	WaBreadcrumbItem,
@@ -70,7 +70,7 @@ const MeasurementEntryPage = () => {
 				await setDoc(doc(db, "measurement", id), payload);
 			}
 
-			navigate("/");
+			navigate(-1);
 		} catch (error) {
 			console.error("Error saving measurement entry:", error);
 			await showToast("Could not save measurement entry. Please try again.", "danger");
@@ -127,7 +127,7 @@ const MeasurementEntryPage = () => {
 			<div className="page-meta">
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
-						<House size={24} />
+						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/measurements/`}>
 						{activeChild ? activeChild.nickname + "'s " : ""}Measurements

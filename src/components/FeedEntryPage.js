@@ -4,7 +4,7 @@ import {useActiveChild} from "./ActiveChildContext";
 import {setDoc, doc, Timestamp, updateDoc, getDoc, deleteDoc} from "firebase/firestore";
 import {ulid} from "ulid";
 import {db} from "../firebase";
-import {House} from "lucide-react";
+import {LayoutGrid} from "lucide-react";
 import {
 	WaBreadcrumb,
 	WaBreadcrumbItem,
@@ -133,7 +133,7 @@ const FeedEntryPage = () => {
 			<div className="page-meta">
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
-						<House size={24} />
+						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/feeds/`}>
 						{activeChild ? activeChild.nickname + "'s " : ""}Feeds

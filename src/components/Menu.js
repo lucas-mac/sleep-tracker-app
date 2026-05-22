@@ -1,6 +1,6 @@
 import React from "react";
 import {
-	House,
+	LayoutGrid,
 	CircleUser,
 	Calendar,
 	Sparkles,
@@ -45,7 +45,7 @@ export const MainMenu = ({activePage}) => {
 						href="/"
 						className={`align-start ${activePage === "timeline" ? "btn-accent" : "btn-transparent"}`}
 					>
-						<House
+						<LayoutGrid
 							size={24}
 							slot="start"
 						/>

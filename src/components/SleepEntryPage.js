@@ -19,7 +19,7 @@ import {
 } from "@web.awesome.me/webawesome-pro/dist/react";
 import "./SleepPage.css"; // Import your CSS styles
 
-import {House} from "lucide-react";
+import {LayoutGrid} from "lucide-react";
 
 const SleepEntryPage = () => {
 	const {entryId} = useParams();
@@ -129,7 +129,7 @@ const SleepEntryPage = () => {
 			<div className="page-meta">
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
-						<House size={24} />
+						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/sleep/${entryId}`}>Sleep</WaBreadcrumbItem>
 				</WaBreadcrumb>
