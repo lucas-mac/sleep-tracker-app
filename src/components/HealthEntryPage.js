@@ -167,6 +167,7 @@ const HealthEntryPage = () => {
 					label="Type"
 					value={type}
 					onChange={(e) => setType(e.target.value)}
+					size="large"
 				>
 					<WaOption value="medication">Medication</WaOption>
 					<WaOption value="temperature">Temperature</WaOption>
@@ -174,17 +175,20 @@ const HealthEntryPage = () => {
 				{type === "temperature" && (
 					<div className="elem-group gap-xl flex-wrap">
 						<WaNumberInput
-							label="Temperature (°C)"
+							label="Temperature"
 							value={temperature || ""}
 							onChange={(e) => setTemperature(e.target.value)}
 							min="30"
 							max="45"
 							step="0.1"
+							size="large"
 						/>
 						<WaSelect
 							label="Unit"
 							value={temperatureUnit}
 							onChange={(e) => setTemperatureUnit(e.target.value)}
+							size="large"
+							style={{width: "120px"}}
 						>
 							<WaOption value="C">°C</WaOption>
 							<WaOption value="F">°F</WaOption>
@@ -199,17 +203,21 @@ const HealthEntryPage = () => {
 							onInput={(e) => setMedicationName(e.target.value)}
 							maxLength="100"
 							className="full-width"
+							size="large"
 						/>
 						<WaNumberInput
 							label="Amount"
 							value={amount}
 							onChange={(e) => setAmount(e.target.value)}
 							min="0"
+							size="large"
 						/>
 						<WaSelect
 							label="Unit"
 							value={amountUnit}
 							onChange={(e) => setAmountUnit(e.target.value)}
+							size="large"
+							style={{width: "120px"}}
 						>
 							<WaOption value="ml">ml</WaOption>
 							<WaOption value="tsp">tsp</WaOption>

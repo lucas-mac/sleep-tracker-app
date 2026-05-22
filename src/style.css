@@ -300,6 +300,11 @@ wa-select::part(expand-icon) {
 	color: var(--solvent);
 }
 
+wa-number-input::part(input){
+    width:4ch;
+    box-sizing: content-box;
+}
+
 wa-select::part(listbox){
     padding:var(--padd-xs);
 }
