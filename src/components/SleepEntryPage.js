@@ -1,7 +1,3 @@
-// TODO: change file name to SleepEntryPage or something more generic, since this will also be used for creating new entries (just with empty fields at the start)
-// TODO: add note field and ability to add wake events
-// TODO: use ulid for entry IDs instead of Firestore's auto-generated IDs, to make it easier to create new entries on the client side before saving to Firestore
-
 import React, {useState, useEffect} from "react";
 import {doc, getDoc, setDoc, updateDoc, Timestamp} from "firebase/firestore";
 import {db} from "../firebase";
@@ -38,7 +34,7 @@ const SleepEntryPage = () => {
 				child_id: activeChildId,
 				start: Timestamp.fromDate(new Date(`${startDate}T${startTime}`)),
 				end: !isOngoing ? Timestamp.fromDate(new Date(`${endDate}T${endTime}`)) : null,
-				note: note, // TODO: add note field to the form
+				note: note,
 			};
 			try {
 				await setDoc(doc(db, "sleep", ulid()), data);
@@ -52,7 +48,7 @@ const SleepEntryPage = () => {
 				child_id: activeChildId,
 				start: Timestamp.fromDate(new Date(`${startDate}T${startTime}`)),
 				end: !isOngoing ? Timestamp.fromDate(new Date(`${endDate}T${endTime}`)) : null,
-				note: note, // TODO: add note field to the form
+				note: note,
 			};
 			try {
 				await updateDoc(docRef, {
@@ -68,7 +64,7 @@ const SleepEntryPage = () => {
 		}
 	};
 
-    const handleDelete = async () => {
+	const handleDelete = async () => {
 		if (!entryId) return;
 		const docRef = doc(db, "sleep", entryId);
 		try {

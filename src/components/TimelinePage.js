@@ -223,7 +223,7 @@ const Timeline = () => {
 					}
 				} catch (error) {
 					console.error("Error checking last sleep entry:", error);
-					// TODO: handle error (e.g., show notification to user)
+                    await showToast("Error checking last sleep entry. Please try again.", "danger");
 				}
 			};
 
@@ -304,7 +304,7 @@ const Timeline = () => {
 					setActiveSleepEvent(updatedSleepEvent);
 					upsertEntry(updatedSleepEvent);
 				} catch (error) {
-					// TODO: handle error (e.g., show notification to user)
+                    await showToast("Error updating wake entry. Please try again.", "danger");
 					console.error("Error updating wake entry: ", error);
 				}
 			}
@@ -335,8 +335,8 @@ const Timeline = () => {
 				upsertEntry(sleepEntryWithId);
 				setSleepId(eventUlid); // Store the sleep ID
 			} catch (error) {
-				console.error("Error adding sleep entry: ", error);
-				// TODO: handle error (e.g., show notification to user)
+                console.error("Error adding sleep entry: ", error);
+                await showToast("Error adding sleep entry. Please try again.", "danger");
 			}
 		}
 
@@ -364,7 +364,7 @@ const Timeline = () => {
 			setActiveSleepEvent(updatedSleepEvent);
 			upsertEntry(updatedSleepEvent);
 		} catch (error) {
-			// TODO: handle error (e.g., show notification to user)
+			await showToast("Error updating wake entry. Please try again.", "danger");
 			console.error("Error updating wake entry: ", error);
 		}
 	};
