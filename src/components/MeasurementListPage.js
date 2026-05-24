@@ -22,7 +22,7 @@ const MeasurementListPage = () => {
 	const fetchMeasurementEntries = async () => {
 		if (!activeChildId) return;
 		const measurementQuery = query(
-			collection(db, "measurement"),
+			collection(db, "growth"),
 			where("child_id", "==", activeChildId),
 			orderBy("timestamp", "desc"),
 			limit(10),
@@ -39,8 +39,8 @@ const MeasurementListPage = () => {
 	return (
 		<div className="page">
 			<Header
-				activePage="measurements"
-				title="Measurements"
+				activePage="growth"
+				title="Growth History"
 			/>
 
 			<div className="page-meta">
@@ -48,26 +48,25 @@ const MeasurementListPage = () => {
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/measurements`}>
-						{activeChild ? activeChild.nickname + "'s" : "Select Child for"}{" "}
-						Measurements
+					<WaBreadcrumbItem href={`/growth-history/`}>
+						{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Growth
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>
 			<div className="page-content">
 				<WaButton
 					className="btn-gloss"
-					href="/measurement/"
+					href="/growth/"
 				>
 					<WaIcon
 						family="default"
 						name="plus"
 						slot="start"
 					/>
-					Add Measurement
+					Add Growth Entry
 				</WaButton>
 				<div className="table-scroll-wrapper">
-					<table className="measurement-table scroll">
+					<table className="growth-table scroll">
 						<thead>
 							<tr>
 								<th>Date</th>
@@ -80,7 +79,7 @@ const MeasurementListPage = () => {
 						<tbody>
 							{measurementEntries.length === 0 ? (
 								<tr>
-									<td colSpan="5">No measurement entries found</td>
+									<td colSpan="5">No growth entries found</td>
 								</tr>
 							) : (
 								measurementEntries.map((entry) => (
@@ -97,7 +96,7 @@ const MeasurementListPage = () => {
 										<td>{entry.height} in.</td>
 										<td>{entry.note}</td>
 										<td className="sticky-right">
-											<a href={`/measurement/${entry.id}`}>
+											<a href={`/growth/${entry.id}`}>
 												<WaButton
 													className="btn-gloss btn-round"
 													size="medium"

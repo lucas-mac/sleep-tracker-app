@@ -63,17 +63,17 @@ const MeasurementEntryPage = () => {
 
 		try {
 			if (entryId) {
-				const entryRef = doc(db, "measurement", entryId);
+				const entryRef = doc(db, "growth", entryId);
 				await updateDoc(entryRef, payload);
 			} else {
 				const id = ulid();
-				await setDoc(doc(db, "measurement", id), payload);
+				await setDoc(doc(db, "growth", id), payload);
 			}
 
 			navigate(-1);
 		} catch (error) {
-			console.error("Error saving measurement entry:", error);
-			await showToast("Could not save measurement entry. Please try again.", "danger");
+			console.error("Error saving growth entry:", error);
+			await showToast("Could not save growth entry. Please try again.", "danger");
 		}
 	};
 	const handleCancel = () => navigate(-1);
@@ -82,11 +82,11 @@ const MeasurementEntryPage = () => {
 		if (!entryId) return;
 		if (confirm("Are you sure you want to delete this entry?")) {
 			try {
-				await deleteDoc(doc(db, "measurement", entryId));
+				await deleteDoc(doc(db, "growth", entryId));
 				navigate(-1);
 			} catch (error) {
-				console.error("Error deleting measurement entry:", error);
-				await showToast("Could not delete measurement entry. Please try again.", "danger");
+				console.error("Error deleting growth entry:", error);
+				await showToast("Could not delete growth entry. Please try again.", "danger");
 			}
 		}
 	};
@@ -94,7 +94,7 @@ const MeasurementEntryPage = () => {
 	useEffect(() => {
 		const fetchEntry = async () => {
 			if (!entryId) return;
-			const docRef = doc(db, "measurement", entryId);
+			const docRef = doc(db, "growth", entryId);
 			const docSnap = await getDoc(docRef);
 			if (docSnap.exists()) {
 				const data = docSnap.data();
@@ -121,18 +121,18 @@ const MeasurementEntryPage = () => {
 	return (
 		<div className="page">
 			<Header
-				activePage="measurement"
-				title={entryId ? "Edit Measurement" : "Add Measurement"}
+				activePage="growth"
+				title={entryId ? "Edit Growth Entry" : "Add Growth Entry"}
 			/>
 			<div className="page-meta">
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/measurements/`}>
-						{activeChild ? activeChild.nickname + "'s " : ""}Measurements
+					<WaBreadcrumbItem href={`/growth-history/`}>
+						{activeChild ? activeChild.nickname + "'s " : ""}Growth
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/measurement/${entryId}`}>
+					<WaBreadcrumbItem href={`/growth/${entryId}`}>
 						{entryId ? "Edit" : "Add"}
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>
@@ -182,7 +182,7 @@ const MeasurementEntryPage = () => {
 
 				<WaTextarea
 					label="Note"
-					placeholder="Add any notes about this measurement..."
+					placeholder="Add any notes about this growth entry..."
 					value={note}
 					onInput={(e) => setNote(e.target.value)}
 					hint="e.g. 'Baby seemed fussy during measurement', 'Baby measured for a long time', etc."

@@ -25,7 +25,7 @@
 			]
 		},
 		{
-			"collectionGroup": "measurement",
+			"collectionGroup": "growth",
 			"queryScope": "COLLECTION",
 			"fields": [
 				{"fieldPath": "child_id", "order": "ASCENDING"},

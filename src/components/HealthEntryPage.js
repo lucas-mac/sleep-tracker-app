@@ -179,6 +179,7 @@ const HealthEntryPage = () => {
 				>
 					<WaOption value="medication">Medication</WaOption>
 					<WaOption value="temperature">Temperature</WaOption>
+					<WaOption value="vaccine">Vaccine</WaOption>
 				</WaSelect>
 				{type === "temperature" && (
 					<div className="elem-group gap-xl flex-wrap">
@@ -203,10 +204,10 @@ const HealthEntryPage = () => {
 						</WaSelect>
 					</div>
 				)}
-				{type === "medication" && (
+				{["medication", "vaccine"].includes(type) && (
 					<div className="elem-group gap-xl flex-wrap">
 						<WaInput
-							label="Medication Name"
+							label={type === "medication" ? "Medication Name" : "Vaccine Name"}
 							value={toTitleCase(medicationName)}
 							onInput={(e) => setMedicationName(e.target.value)}
 							maxLength="100"
@@ -231,6 +232,7 @@ const HealthEntryPage = () => {
 							<WaOption value="tsp">tsp</WaOption>
 							<WaOption value="mg">mg</WaOption>
 							<WaOption value="pills">pills</WaOption>
+							<WaOption value="needle">needle</WaOption>
 						</WaSelect>
 					</div>
 				)}

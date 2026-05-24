@@ -513,12 +513,12 @@ const Timeline = () => {
 						/>
 						Feed
 					</WaDropdownItem>
-					<WaDropdownItem onClick={handlePageChange("measurement")}>
+					<WaDropdownItem onClick={handlePageChange("growth")}>
 						<PencilRuler
 							slot="icon"
 							size={18}
 						/>
-						Measurement
+						Growth
 					</WaDropdownItem>
 					<WaDropdownItem onClick={handlePageChange("health")}>
 						<Cross

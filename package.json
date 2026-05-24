@@ -12,6 +12,8 @@
 	"dependencies": {
 		"@firebase-oss/ui-react": "^7.0.2-beta",
 		"@shoelace-style/shoelace": "^2.20.1",
+		"@tabler/icons": "^3.44.0",
+		"@tabler/icons-react": "^3.44.0",
 		"@web.awesome.me/webawesome-pro": "^3.5.0",
 		"firebase": "^11.6.0",
 		"lucide-react": "^0.544.0",

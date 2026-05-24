@@ -1,17 +1,5 @@
 import React from "react";
 import {
-	LayoutGrid,
-	CircleUser,
-	Calendar,
-	Sparkles,
-	Moon,
-	Cross,
-	Milk,
-	Toilet,
-	PencilRuler,
-	LogOut,
-} from "lucide-react";
-import {
 	WaBreadcrumb,
 	WaBreadcrumbItem,
 	WaButton,
@@ -19,6 +7,18 @@ import {
 	WaDrawer,
 	WaIcon,
 } from "@web.awesome.me/webawesome-pro/dist/react";
+
+import {
+	IconDiaper,
+	IconBabyBottle,
+	IconMoonStars,
+	IconRulerMeasure2,
+	IconSparkles2,
+	IconHeart,
+	IconLayoutGrid,
+	IconUserCircle,
+	IconLogout,
+} from "@tabler/icons-react";
 import {useActiveChild} from "./ActiveChildContext";
 import {auth} from "../firebase";
 import {useNavigate} from "react-router-dom";
@@ -49,7 +49,7 @@ export const MainMenu = ({activePage}) => {
 						href="/"
 						className={`align-start ${activePage === "timeline" ? "btn-accent" : "btn-transparent"}`}
 					>
-						<LayoutGrid
+						<IconLayoutGrid
 							size={24}
 							slot="start"
 						/>
@@ -60,7 +60,7 @@ export const MainMenu = ({activePage}) => {
 						className={`align-start ${activePage === "sleep" ? "btn-accent" : "btn-transparent"}`}
 						disabled
 					>
-						<Moon
+						<IconMoonStars
 							size={24}
 							slot="start"
 						/>
@@ -70,7 +70,7 @@ export const MainMenu = ({activePage}) => {
 						href="/diapers"
 						className={`align-start ${activePage === "diapers" ? "btn-accent" : "btn-transparent"}`}
 					>
-						<Toilet
+						<IconDiaper
 							size={24}
 							slot="start"
 						/>
@@ -80,28 +80,28 @@ export const MainMenu = ({activePage}) => {
 						href="/feeds"
 						className={`align-start ${activePage === "feed" ? "btn-accent" : "btn-transparent"}`}
 					>
-						<Milk
+						<IconBabyBottle
 							size={24}
 							slot="start"
 						/>
 						Feedings
 					</WaButton>
 					<WaButton
-						href="/measurements"
-						className={`align-start ${activePage === "measurements" ? "btn-accent" : "btn-transparent"}`}
+						href="/growth"
+						className={`align-start ${activePage === "growth" ? "btn-accent" : "btn-transparent"}`}
 					>
-						<PencilRuler
+						<IconRulerMeasure2
 							size={24}
 							slot="start"
 						/>
-						Measurements
+						Growth
 					</WaButton>
 					<WaButton
 						hidden="false"
 						href="/milestones"
 						className={`align-start ${activePage === "milestones" ? "btn-accent" : "btn-transparent"}`}
 					>
-						<Sparkles
+						<IconSparkles2
 							size={24}
 							slot="start"
 						/>
@@ -111,7 +111,7 @@ export const MainMenu = ({activePage}) => {
 						href="/health-history"
 						className={`align-start ${activePage === "health" ? "btn-accent" : "btn-transparent"}`}
 					>
-						<Cross
+						<IconHeart
 							size={24}
 							slot="start"
 						/>
@@ -124,7 +124,7 @@ export const MainMenu = ({activePage}) => {
 					className={`align-start full-width ${activePage === "profile" ? "btn-accent" : "btn-transparent"}`}
 					slot="footer"
 				>
-					<CircleUser
+					<IconUserCircle
 						size={24}
 						slot="start"
 					/>
@@ -138,7 +138,7 @@ export const MainMenu = ({activePage}) => {
 					className="align-start btn-transparent full-width"
 					slot="footer"
 				>
-					<LogOut
+					<IconLogout
 						size={24}
 						slot="start"
 					/>

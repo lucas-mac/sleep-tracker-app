@@ -143,7 +143,7 @@ const App = () => {
 									}
 								/>
 								<Route
-									path="/measurements/"
+									path="/growth-history/"
 									element={
 										<ProtectedRoute>
 											<MeasurementListPage />
@@ -151,7 +151,7 @@ const App = () => {
 									}
 								/>
 								<Route
-									path="/measurement/:entryId?"
+									path="/growth/:entryId?"
 									element={
 										<ProtectedRoute>
 											<MeasurementEntryPage />
