@@ -27,7 +27,19 @@ import WaButton from "@web.awesome.me/webawesome-pro/dist/react/button";
 import WaDropdown from "@web.awesome.me/webawesome-pro/dist/react/dropdown";
 import WaDropdownItem from "@web.awesome.me/webawesome-pro/dist/react/dropdown-item";
 
-import {CircleUser, Calendar, Sparkles, Moon, Cross, Milk, Toilet, PencilRuler} from "lucide-react";
+import {Calendar} from "lucide-react";
+
+import {
+	IconPlus,
+	IconDiaper,
+	IconBabyBottle,
+	IconMoonStars,
+	IconRulerMeasure2,
+	IconSparkles2,
+	IconHeart,
+	IconPoo,
+	IconDroplets,
+} from "@tabler/icons-react";
 
 import {ulid} from "ulid";
 
@@ -56,8 +68,15 @@ const Timeline = () => {
 		return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
 	});
 	const now = new Date();
-    const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-    const navigate = useNavigate();
+	const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+	const navigate = useNavigate();
+
+	const showToast = async (message, variant = "neutral") => {
+		const toast = document.querySelector("wa-toast");
+		if (!toast) return;
+		toast.placement = "top-center";
+		await toast.create(message, {variant});
+	};
 
 	const handlePageChange = (page) => () => navigate(`/${page}`);
 
@@ -119,7 +138,6 @@ const Timeline = () => {
 		setLoading(false);
 	};
 
-
 	const getPrevDay = () => {
 		const prevDay = new Date(currentDay.getTime() - 24 * 60 * 60 * 1000);
 		setCurrentDay(prevDay);
@@ -142,6 +160,40 @@ const Timeline = () => {
 		const nextDay = new Date(currentDay.getTime() + 24 * 60 * 60 * 1000);
 		setCurrentDay(nextDay);
 		fetchEntries(nextDay);
+	};
+
+	const addNormalPee = async () => {
+		const newEntry = {
+			child_id: activeChildId,
+			type: "pee",
+			timestamp: Timestamp.now(),
+			note: "",
+		};
+		try {
+			await setDoc(doc(db, "diaper", ulid()), newEntry);
+			await showToast("Diaper entry added", "success");
+		} catch (error) {
+			console.error("Error adding diaper entry: ", error);
+			await showToast("Error adding diaper entry. Please try again.", "danger");
+		}
+	};
+
+	const addNormalPoop = async () => {
+		const newEntry = {
+			child_id: activeChildId,
+			type: "poop",
+			colour: "brown",
+			consistency: "normal",
+			timestamp: Timestamp.now(),
+			note: "",
+		};
+		try {
+			await setDoc(doc(db, "diaper", ulid()), newEntry);
+			await showToast("Diaper entry added", "success");
+		} catch (error) {
+			console.error("Error adding diaper entry: ", error);
+			await showToast("Error adding diaper entry. Please try again.", "danger");
+		}
 	};
 
 	useEffect(() => {
@@ -223,7 +275,7 @@ const Timeline = () => {
 					}
 				} catch (error) {
 					console.error("Error checking last sleep entry:", error);
-                    await showToast("Error checking last sleep entry. Please try again.", "danger");
+					await showToast("Error checking last sleep entry. Please try again.", "danger");
 				}
 			};
 
@@ -304,7 +356,7 @@ const Timeline = () => {
 					setActiveSleepEvent(updatedSleepEvent);
 					upsertEntry(updatedSleepEvent);
 				} catch (error) {
-                    await showToast("Error updating wake entry. Please try again.", "danger");
+					await showToast("Error updating wake entry. Please try again.", "danger");
 					console.error("Error updating wake entry: ", error);
 				}
 			}
@@ -335,8 +387,8 @@ const Timeline = () => {
 				upsertEntry(sleepEntryWithId);
 				setSleepId(eventUlid); // Store the sleep ID
 			} catch (error) {
-                console.error("Error adding sleep entry: ", error);
-                await showToast("Error adding sleep entry. Please try again.", "danger");
+				console.error("Error adding sleep entry: ", error);
+				await showToast("Error adding sleep entry. Please try again.", "danger");
 			}
 		}
 
@@ -499,43 +551,73 @@ const Timeline = () => {
 							size="medium"
 						/>
 					</WaButton>
-					<WaDropdownItem onClick={handlePageChange("/diaper")}>
-						<Toilet
+					<WaDropdownItem>
+						<IconDiaper
 							size={18}
 							slot="icon"
 						/>
 						Diaper
+						<WaDropdownItem
+							onClick={addNormalPee}
+							slot="submenu"
+						>
+							<IconDroplets
+								size={18}
+								slot="icon"
+							/>
+							Normal Pee
+						</WaDropdownItem>
+						<WaDropdownItem
+							onClick={addNormalPoop}
+							slot="submenu"
+						>
+							<IconPoo
+								size={18}
+								slot="icon"
+							/>
+							Normal Poop
+						</WaDropdownItem>
+						<WaDropdownItem
+							onClick={handlePageChange("/diaper")}
+							slot="submenu"
+						>
+							<IconPlus
+								size={18}
+								slot="icon"
+							/>
+							Custom...
+						</WaDropdownItem>
 					</WaDropdownItem>
 					<WaDropdownItem onClick={handlePageChange("feed")}>
-						<Milk
-							slot="icon"
+						<IconBabyBottle
 							size={18}
+							slot="icon"
 						/>
 						Feed
 					</WaDropdownItem>
 					<WaDropdownItem onClick={handlePageChange("growth")}>
-						<PencilRuler
+						<IconRulerMeasure2
 							slot="icon"
 							size={18}
 						/>
 						Growth
 					</WaDropdownItem>
 					<WaDropdownItem onClick={handlePageChange("health")}>
-						<Cross
+						<IconHeart
 							slot="icon"
 							size={18}
 						/>
 						Health
 					</WaDropdownItem>
 					<WaDropdownItem onClick={handlePageChange("milestone")}>
-						<Sparkles
+						<IconSparkles2
 							slot="icon"
 							size={18}
 						/>
 						Milestone
 					</WaDropdownItem>
 					<WaDropdownItem onClick={handlePageChange("sleep")}>
-						<Moon
+						<IconMoonStars
 							slot="icon"
 							size={18}
 						/>

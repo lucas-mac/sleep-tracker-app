@@ -780,7 +780,8 @@ wa-breadcrumb-item {
 }
 
 
-wa-dropdown::part(menu) {
+wa-dropdown::part(menu),
+wa-dropdown-item::part(submenu){
 	background-color: var(--bg);
 	border: none;
 	padding: var(--padd-xs);

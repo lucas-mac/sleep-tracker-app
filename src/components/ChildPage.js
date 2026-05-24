@@ -36,7 +36,14 @@ const ChildPage = () => {
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 
-	const birthYears = Array.from({length: 18}, (_, i) => new Date().getFullYear() - i);
+    const birthYears = Array.from({length: 18}, (_, i) => new Date().getFullYear() - i);
+
+	const showToast = async (message, variant = "neutral") => {
+		const toast = document.querySelector("wa-toast");
+		if (!toast) return;
+		toast.placement = "top-center";
+		await toast.create(message, {variant});
+	};
 
 	useEffect(() => {
 		const fetchChildData = async () => {
@@ -97,25 +104,27 @@ const ChildPage = () => {
 		if (user) {
 			setSaving(true);
 			const docId = childId || ulid(); // You can generate this ID as needed
-			await setDoc(doc(db, "child", docId), {
-				nickname: nickname || "",
-				birth_month: birthMonth || "",
-				birth_year: birthYear || "",
-				gender: gender || "",
-				avatar_icon: avatarIcon,
-				avatar_color: avatarColor || "",
-				guardian: user.uid,
-			});
-			setSaving(false);
-
-			const toast = document.querySelector("wa-toast");
-			toast.placement = "top-center";
-			await toast.create("Child profile saved", {
-				variant: "success",
-			});
+			try {
+				await setDoc(doc(db, "child", docId), {
+					nickname: nickname || "",
+					birth_month: birthMonth || "",
+					birth_year: birthYear || "",
+					gender: gender || "",
+					avatar_icon: avatarIcon,
+					avatar_color: avatarColor || "",
+					guardian: user.uid,
+				});
+				navigate("/profile#children");
+				await showToast("Child profile updated successfully", "success");
+			} catch (error) {
+				console.error("Error saving child profile: ", error);
+				await showToast("Error saving child profile", "danger");
+				return;
+			} finally {
+				setSaving(false);
+			}
 
 			// history.back();
-			location.href = "/profile#children";
 		}
 	};
 

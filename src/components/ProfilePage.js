@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import {doc, getDoc, getDocs, updateDoc, query, where, collection} from "firebase/firestore";
 import {db, auth} from "../firebase";
 import "./Login.css";
@@ -28,6 +29,8 @@ const ProfilePage = () => {
 	const [saving, setSaving] = useState(false);
 	const [children, setChildren] = useState([]);
 	const [activeTab, setActiveTab] = useState("user");
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -70,12 +73,27 @@ const ProfilePage = () => {
 		const user = auth.currentUser;
 		if (user) {
 			setSaving(true);
-			await updateDoc(doc(db, "user", user.uid), {
-				firstName,
-				lastName,
-			});
-			setSaving(false);
+			try {
+				await updateDoc(doc(db, "user", user.uid), {
+					firstName,
+					lastName,
+				});
+				await showToast("User profile updated successfully", "success");
+			} catch (error) {
+				console.error("Error updating user profile: ", error);
+				await showToast("Error updating profile", "danger");
+				return;
+			} finally {
+				setSaving(false);
+			}
 		}
+	};
+
+	const showToast = async (message, variant = "neutral") => {
+		const toast = document.querySelector("wa-toast");
+		if (!toast) return;
+		toast.placement = "top-center";
+		await toast.create(message, {variant});
 	};
 
 	if (loading) {
