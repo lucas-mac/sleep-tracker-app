@@ -34,8 +34,8 @@ import DiaperEntryPage from "./components/DiaperEntryPage";
 import DiaperListPage from "./components/DiaperListPage";
 import HealthListPage from "./components/HealthListPage";
 import HealthEntryPage from "./components/HealthEntryPage";
-import MeasurementListPage from "./components/MeasurementListPage";
-import MeasurementEntryPage from "./components/MeasurementEntryPage";
+import GrowthListPage from "./components/GrowthListPage";
+import GrowthEntryPage from "./components/GrowthEntryPage";
 import MilestoneEntryPage from "./components/MilestoneEntryPage";
 import MilestonesPage from "./components/MilestonesPage";
 import {signOut} from "firebase/auth";
@@ -146,7 +146,7 @@ const App = () => {
 									path="/growth-history/"
 									element={
 										<ProtectedRoute>
-											<MeasurementListPage />
+											<GrowthListPage />
 										</ProtectedRoute>
 									}
 								/>
@@ -154,7 +154,7 @@ const App = () => {
 									path="/growth/:entryId?"
 									element={
 										<ProtectedRoute>
-											<MeasurementEntryPage />
+											<GrowthEntryPage />
 										</ProtectedRoute>
 									}
 								/>

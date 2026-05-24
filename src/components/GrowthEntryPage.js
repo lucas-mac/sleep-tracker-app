@@ -26,7 +26,7 @@ const getInitialDateTime = () => {
 	return {date, time};
 };
 
-const MeasurementEntryPage = () => {
+const GrowthEntryPage = () => {
 	const {entryId} = useParams();
 	const initialDateTime = getInitialDateTime();
 	const [date, setDate] = useState(initialDateTime.date);
@@ -228,4 +228,4 @@ const MeasurementEntryPage = () => {
 	);
 };
 
-export default MeasurementEntryPage;
+export default GrowthEntryPage;

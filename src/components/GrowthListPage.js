@@ -15,7 +15,7 @@ import {LayoutGrid} from "lucide-react";
 import Header from "./Header";
 import moment from "moment";
 
-const MeasurementListPage = () => {
+const GrowthListPage = () => {
 	const [measurementEntries, setMeasurementEntries] = useState([]);
 	const {activeChild, activeChildId} = useActiveChild();
 
@@ -124,4 +124,4 @@ const MeasurementListPage = () => {
 	);
 };
 
-export default MeasurementListPage;
+export default GrowthListPage;
