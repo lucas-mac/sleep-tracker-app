@@ -22,7 +22,8 @@
 		"react-dom": "^19.0.0",
 		"react-router-dom": "^7.0.0",
 		"react-scripts": "^5.0.1",
-		"ulid": "^3.0.0"
+		"ulid": "^3.0.0",
+		"update-browserslist-db": "^1.2.3"
 	},
 	"browserslist": {
 		"production": [
