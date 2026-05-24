@@ -135,7 +135,7 @@ const FeedEntryPage = () => {
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/feeds/`}>
+					<WaBreadcrumbItem href={`/feed-history/`}>
 						{activeChild ? activeChild.nickname + "'s " : ""}Feeds
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/feed/${entryId}`}>

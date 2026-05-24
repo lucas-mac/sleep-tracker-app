@@ -56,7 +56,7 @@ export const MainMenu = ({activePage}) => {
 						Home
 					</WaButton>
 					<WaButton
-						href="/sleeps"
+						href="/sleep-history"
 						className={`align-start ${activePage === "sleep" ? "btn-accent" : "btn-transparent"}`}
 						disabled
 					>
@@ -67,7 +67,7 @@ export const MainMenu = ({activePage}) => {
 						Sleep
 					</WaButton>
 					<WaButton
-						href="/diapers"
+						href="/diaper-history"
 						className={`align-start ${activePage === "diapers" ? "btn-accent" : "btn-transparent"}`}
 					>
 						<IconDiaper
@@ -77,7 +77,7 @@ export const MainMenu = ({activePage}) => {
 						Diapers
 					</WaButton>
 					<WaButton
-						href="/feeds"
+						href="/feed-history"
 						className={`align-start ${activePage === "feed" ? "btn-accent" : "btn-transparent"}`}
 					>
 						<IconBabyBottle
@@ -87,7 +87,7 @@ export const MainMenu = ({activePage}) => {
 						Feedings
 					</WaButton>
 					<WaButton
-						href="/growth"
+						href="/growth-history"
 						className={`align-start ${activePage === "growth" ? "btn-accent" : "btn-transparent"}`}
 					>
 						<IconRulerMeasure2
@@ -98,7 +98,7 @@ export const MainMenu = ({activePage}) => {
 					</WaButton>
 					<WaButton
 						hidden="false"
-						href="/milestones"
+						href="/milestone-history"
 						className={`align-start ${activePage === "milestones" ? "btn-accent" : "btn-transparent"}`}
 					>
 						<IconSparkles2

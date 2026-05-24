@@ -39,8 +39,8 @@ const FeedListPage = () => {
 	return (
 		<div className="page">
 			<Header
-				activePage="feeds"
-				title="Feeds"
+				activePage="feed"
+				title="Feed History"
 			/>
 
 			<div className="page-meta">
@@ -48,7 +48,7 @@ const FeedListPage = () => {
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/feeds`}>
+					<WaBreadcrumbItem href={`/feed-history/`}>
 						{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Feeds
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>

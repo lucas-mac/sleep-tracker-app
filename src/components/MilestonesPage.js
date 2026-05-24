@@ -14,7 +14,7 @@ const MilestonesPage = () => {
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href="/milestones">Milestones</WaBreadcrumbItem>
+					<WaBreadcrumbItem href="/milestone-history">Milestones</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>
 			<div className="page-content">

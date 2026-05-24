@@ -63,7 +63,7 @@ const App = () => {
 									}
 								/>
 								<Route
-									path="/sleeps"
+									path="/sleep-history"
 									element={
 										<ProtectedRoute>
 											<Timeline />
@@ -103,7 +103,7 @@ const App = () => {
 									}
 								/>
 								<Route
-									path="/milestones"
+									path="/milestone-history"
 									element={
 										<ProtectedRoute>
 											<MilestonesPage />
@@ -111,7 +111,7 @@ const App = () => {
 									}
 								/>
 								<Route
-									path="/feeds"
+									path="/feed-history"
 									element={
 										<ProtectedRoute>
 											<FeedListPage />
@@ -127,7 +127,7 @@ const App = () => {
 									}
 								/>
 								<Route
-									path="/diapers"
+									path="/diaper-history"
 									element={
 										<ProtectedRoute>
 											<DiaperListPage />

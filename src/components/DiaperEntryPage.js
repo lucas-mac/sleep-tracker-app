@@ -134,7 +134,7 @@ const DiaperEntryPage = () => {
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/diapers/`}>
+					<WaBreadcrumbItem href={`/diaper-history/`}>
 						{activeChild ? activeChild.nickname + "'s " : ""}Diapers
 					</WaBreadcrumbItem>
 					<WaBreadcrumbItem href={`/diaper/${entryId}`}>
