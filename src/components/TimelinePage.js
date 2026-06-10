@@ -240,7 +240,7 @@ const Timeline = () => {
 		setGroupedEntries(result);
 	}, [entries]);
 
-	useEffect(() => {
+    useEffect(() => {
 		if (activeChild) {
 			fetchEntries(currentDay);
 			// eslint-disable-next-line
@@ -251,6 +251,7 @@ const Timeline = () => {
 					const sleepQuery = query(
 						collection(db, "sleep"),
 						orderBy("start", "desc"),
+						where("child_id", "==", activeChild.id),
 						limit(1),
 					);
 					const querySnapshot = await getDocs(sleepQuery);
@@ -272,6 +273,11 @@ const Timeline = () => {
 								setTime(elapsedTime);
 							}
 						}
+					} else {
+						setIsAwake(true);
+						setIsRunning(false);
+						setActiveSleepEvent(null);
+						setTime(0);
 					}
 				} catch (error) {
 					console.error("Error checking last sleep entry:", error);
