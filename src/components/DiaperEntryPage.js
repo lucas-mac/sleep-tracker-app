@@ -174,7 +174,7 @@ const DiaperEntryPage = () => {
 				>
 					<WaOption value="pee">Pee</WaOption>
 					<WaOption value="poop">Poop</WaOption>
-					<WaOption value="both">Both</WaOption>
+					<WaOption value="both">Pee and Poop</WaOption>
 				</WaSelect>
 				{type !== "pee" && (
 					<div className="elem-group gap-xl flex-wrap">
@@ -188,6 +188,7 @@ const DiaperEntryPage = () => {
 							<WaOption value="diarrhea">Diarrhea</WaOption>
 							<WaOption value="watery">Watery</WaOption>
 							<WaOption value="seedy">Seedy</WaOption>
+							<WaOption value="sticky">Sticky</WaOption>
 							<WaOption value="normal">Normal</WaOption>
 							<WaOption value="hard">Hard</WaOption>
 						</WaSelect>
@@ -198,10 +199,13 @@ const DiaperEntryPage = () => {
 							size="large"
 							className="full-width"
 						>
+							<WaOption value="black">Black</WaOption>
 							<WaOption value="brown">Brown</WaOption>
-							<WaOption value="grey">Grey</WaOption>
+							<WaOption value="tan">Tan</WaOption>
+							<WaOption value="clay">Clay</WaOption>
 							<WaOption value="green">Green</WaOption>
 							<WaOption value="yellow">Yellow</WaOption>
+							<WaOption value="orange">Orange</WaOption>
 							<WaOption value="red">Red</WaOption>
 						</WaSelect>
 					</div>
