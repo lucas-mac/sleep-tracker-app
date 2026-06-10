@@ -21,7 +21,7 @@ const Header = ({
 	const navigate = useNavigate();
 
 	return (
-		<div className="pagination align-center space-between full-width">
+		<header className="pagination align-center space-between full-width">
 			<WaDropdown>
 				<WaButton
 					className="btn-transparent btn-round icon-gloss"
@@ -84,7 +84,7 @@ const Header = ({
 
 			<MainMenu activePage={activePage} />
 			{showProfileTooltip && <WaTooltip for="profile-button">Profile</WaTooltip>}
-		</div>
+		</header>
 	);
 };
 

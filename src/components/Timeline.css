@@ -17,7 +17,7 @@
 	/* height: 100%; */
 }
 
-.pagination {
+header.pagination {
 	display: grid;
 	grid-template-columns: auto auto 1fr auto auto;
 	align-items: center;

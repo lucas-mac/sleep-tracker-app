@@ -102,6 +102,11 @@ wa-drawer::part(footer) {
 .no-wrap{
     white-space: nowrap;
 }
+
+.no-label::part(label){
+    display:none;
+}
+
 button {
 	padding: var(--padd-sm) var(--padd-lg);
 }
@@ -439,6 +444,15 @@ table.scroll {
     outline:none;
 }
 
+.table-scroll-wrapper > footer{
+    position:sticky;
+    left:0;
+    bottom:0;
+    z-index:1;
+    background-color: var(--bg-2);
+    padding: var(--padd-md);
+}
+
 table.scroll thead tr th:first-of-type,
 table.scroll tbody tr td:first-of-type,
 table.scroll tfoot tr td:first-of-type{
@@ -471,6 +485,19 @@ table.scroll tfoot tr td.sticky-right{
 
 table.scroll tbody tr td.sticky-right{
     background-color: var(--bg);
+}
+
+table.has-pagination{
+    margin-bottom:0;
+}
+
+footer.pagination{
+    display:flex;
+    gap:var(--padd-sm);
+    padding: var(--padd-sm) var(--padd-lg);
+    align-items:center;
+    position:sticky;
+    bottom:0;
 }
 
 .wrapper {

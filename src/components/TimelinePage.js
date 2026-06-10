@@ -473,7 +473,7 @@ const Timeline = () => {
 	};
 
 	return (
-		<div className="wrapper full-height space-between column justify-between page">
+		<div className="wrapper full-height justify-between column justify-between page">
 			<div className="column">
 				<Header
 					activePage="timeline"
