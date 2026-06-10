@@ -37,7 +37,7 @@ import HealthEntryPage from "./components/HealthEntryPage";
 import GrowthListPage from "./components/GrowthListPage";
 import GrowthEntryPage from "./components/GrowthEntryPage";
 import MilestoneEntryPage from "./components/MilestoneEntryPage";
-import MilestonesPage from "./components/MilestonesPage";
+import MilestoneListPage from "./components/MilestoneListPage";
 import {signOut} from "firebase/auth";
 import {auth} from "./firebase";
 
@@ -106,7 +106,7 @@ const App = () => {
 									path="/milestone-history"
 									element={
 										<ProtectedRoute>
-											<MilestonesPage />
+											<MilestoneListPage />
 										</ProtectedRoute>
 									}
 								/>

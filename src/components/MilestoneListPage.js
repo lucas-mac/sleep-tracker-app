@@ -9,11 +9,7 @@ import {
 	startAfter,
 	getCountFromServer,
 } from "firebase/firestore";
-
-import {toTitleCase} from "../utils/format";
-
-import {db} from "../firebase";
-import {useActiveChild} from "./ActiveChildContext";
+import {LayoutGrid} from "lucide-react";
 import {
 	WaBreadcrumb,
 	WaBreadcrumbItem,
@@ -22,53 +18,62 @@ import {
 	WaSelect,
 	WaOption,
 } from "@web.awesome.me/webawesome-pro/dist/react";
-import {LayoutGrid} from "lucide-react";
-import Header from "./Header";
 import moment from "moment";
 
-const FeedListPage = () => {
-	const [feedEntries, setFeedEntries] = useState([]);
-	const [totalFeedCount, setTotalFeedCount] = useState(0);
+import {db} from "../firebase";
+import {toTitleCase} from "../utils/format";
+import {useActiveChild} from "./ActiveChildContext";
+import Header from "./Header";
+
+const MilestoneListPage = () => {
+	const {activeChild, activeChildId} = useActiveChild();
+	const [milestoneEntries, setMilestoneEntries] = useState([]);
+	const [totalMilestoneCount, setTotalMilestoneCount] = useState(0);
 	const [firstCursor, setFirstCursor] = useState(null);
 	const [lastCursor, setLastCursor] = useState(null);
 	const [paginationLimit, setPaginationLimit] = useState(10);
 	const [pageStart, setPageStart] = useState(0);
-	const {activeChild, activeChildId} = useActiveChild();
 
-	const fetchFeedEntries = async () => {
+	const fetchMilestoneEntries = async () => {
 		if (!activeChildId) return;
-		const feedQuery = query(
-			collection(db, "feed"),
+
+		const milestoneQuery = query(
+			collection(db, "milestone"),
 			where("child_id", "==", activeChildId),
 			orderBy("timestamp", "desc"),
 			limit(paginationLimit),
 		);
-		const querySnapshot = await getDocs(feedQuery);
+
+		const querySnapshot = await getDocs(milestoneQuery);
 		const entries = querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
-		setFeedEntries(entries);
+		setMilestoneEntries(entries);
 		setPageStart(0);
 		setFirstCursor(querySnapshot.docs[0] ?? null);
 		setLastCursor(querySnapshot.docs[querySnapshot.docs.length - 1] ?? null);
 
-		const countQuery = query(collection(db, "feed"), where("child_id", "==", activeChildId));
+		const countQuery = query(
+			collection(db, "milestone"),
+			where("child_id", "==", activeChildId),
+		);
 		const countSnapshot = await getCountFromServer(countQuery);
-		setTotalFeedCount(countSnapshot.data().count);
+		setTotalMilestoneCount(countSnapshot.data().count);
 	};
 
 	const handlePagination = async (direction) => {
 		if (!activeChildId) return;
-		let feedQuery;
+		let milestoneQuery;
+
 		if (direction === "next" && lastCursor) {
-			feedQuery = query(
-				collection(db, "feed"),
+			milestoneQuery = query(
+				collection(db, "milestone"),
 				where("child_id", "==", activeChildId),
 				orderBy("timestamp", "desc"),
 				startAfter(lastCursor),
 				limit(paginationLimit),
 			);
 		} else if (direction === "prev" && firstCursor) {
-			feedQuery = query(
-				collection(db, "feed"),
+			milestoneQuery = query(
+				collection(db, "milestone"),
 				where("child_id", "==", activeChildId),
 				orderBy("timestamp", "asc"),
 				startAfter(firstCursor),
@@ -78,95 +83,107 @@ const FeedListPage = () => {
 			return;
 		}
 
-		const querySnapshot = await getDocs(feedQuery);
+		const querySnapshot = await getDocs(milestoneQuery);
 		const docs = querySnapshot.docs;
 		const entries = (direction === "prev" ? [...docs].reverse() : docs).map((doc) => ({
 			id: doc.id,
 			...doc.data(),
 		}));
+
 		if (entries.length === 0) return;
 
 		if (direction === "next") {
-			setPageStart((prev) => prev + feedEntries.length);
+			setPageStart((prev) => prev + milestoneEntries.length);
 		} else {
 			setPageStart((prev) => prev - entries.length);
 		}
 
-		setFeedEntries(entries);
+		setMilestoneEntries(entries);
 		setFirstCursor(direction === "prev" ? docs[docs.length - 1] : docs[0]);
 		setLastCursor(direction === "prev" ? docs[0] : docs[docs.length - 1]);
 	};
 
 	useEffect(() => {
-		fetchFeedEntries();
+		fetchMilestoneEntries();
 	}, [activeChildId, paginationLimit]);
+
+	const getMilestoneTitle = (entry) => {
+		return (
+			entry.title || entry.name || entry.milestone || entry.event || toTitleCase(entry.type) || "-"
+		);
+	};
+
+	const getMilestoneNote = (entry) => {
+		return entry.note || entry.details || entry.description || "";
+	};
+
+	const formatTimestamp = (timestamp) => {
+		if (!timestamp || typeof timestamp.toDate !== "function") return "-";
+		return moment(timestamp.toDate()).format("h:mm a");
+	};
+
+	const formatDate = (timestamp) => {
+		if (!timestamp || typeof timestamp.toDate !== "function") return "-";
+		return moment(timestamp.toDate()).format("MMM D");
+	};
 
 	return (
 		<div className="page">
 			<Header
-				activePage="feed"
-				title="Feed History"
+				activePage="milestones"
+				title="Milestones"
 			/>
-
 			<div className="page-meta">
 				<WaBreadcrumb>
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/feed-history/`}>
-						{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Feeds
+					<WaBreadcrumbItem href="/milestone-history">
+						{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Milestones
 					</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>
 			<div className="page-content">
 				<WaButton
 					className="btn-gloss"
-					href="/feed/"
+					href="/milestone/"
 				>
 					<WaIcon
 						family="default"
 						name="plus"
 						slot="start"
 					/>
-					Add Feed
+					Add Milestone
 				</WaButton>
 				<div className="table-scroll-wrapper">
-					<table className="feed-table scroll has-pagination">
+					<table className="milestone-table scroll has-pagination">
 						<thead>
 							<tr>
 								<th>Time</th>
-								<th>Type</th>
-								<th>Amount</th>
+								<th>Milestone</th>
 								<th>Note</th>
 								<th className="sticky-right"></th>
 							</tr>
 						</thead>
 						<tbody>
-							{feedEntries.length === 0 ? (
+							{milestoneEntries.length === 0 ? (
 								<tr>
-									<td colSpan="5">No feed entries found</td>
+									<td colSpan="4">No milestone entries found</td>
 								</tr>
 							) : (
-								feedEntries.map((entry) => (
+								milestoneEntries.map((entry) => (
 									<tr key={entry.id}>
 										<td>
-											<span className="no-wrap">
-												{moment(entry.timestamp.toDate()).format("h:mm a")}
-											</span>
+											<span className="no-wrap">{formatTimestamp(entry.timestamp)}</span>
 											<br />
 											<small className="text-gloss text-uppercase">
-												{moment(entry.timestamp.toDate()).format("MMM D")}
+												{formatDate(entry.timestamp)}
 											</small>
 										</td>
-										<td>{toTitleCase(entry.type)}</td>
-										<td>
-											{entry.type === "breast"
-												? entry.duration + " mins"
-												: entry.amount + " ml"}
-										</td>
-										<td>{entry.note}</td>
+										<td>{getMilestoneTitle(entry)}</td>
+										<td>{getMilestoneNote(entry)}</td>
 										<td className="sticky-right">
-											<a href={`/feed/${entry.id}`}>
+											<a href={`/milestone/${entry.id}`}>
 												<WaButton
 													className="btn-gloss btn-round"
 													size="medium"
@@ -185,8 +202,8 @@ const FeedListPage = () => {
 					</table>
 					<footer className="pagination justify-between">
 						<div>
-							{totalFeedCount === 0 ? 0 : pageStart + 1} {" - "}
-							{pageStart + feedEntries.length} of {totalFeedCount}
+							{totalMilestoneCount === 0 ? 0 : pageStart + 1} {" - "}
+							{pageStart + milestoneEntries.length} of {totalMilestoneCount}
 						</div>
 						<div className="elem-group gap-sm">
 							<WaSelect
@@ -230,7 +247,7 @@ const FeedListPage = () => {
 								className="btn-gloss"
 								size="small"
 								onClick={() => handlePagination("next")}
-								disabled={pageStart + feedEntries.length >= totalFeedCount}
+								disabled={pageStart + milestoneEntries.length >= totalMilestoneCount}
 							>
 								<WaIcon
 									name="chevron-right"
@@ -245,4 +262,4 @@ const FeedListPage = () => {
 	);
 };
 
-export default FeedListPage;
+export default MilestoneListPage;
