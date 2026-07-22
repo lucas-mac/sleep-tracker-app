@@ -19,6 +19,7 @@ import Item from "./Item";
 import "./Timeline.css";
 import "./controls.css";
 import Header from "./Header";
+import Timer from "./Timer";
 
 import {Play, Pause, Square, Circle, Pencil} from "lucide-react";
 import {registerIconLibrary} from "@web.awesome.me/webawesome-pro/dist/webawesome.js";
@@ -55,7 +56,8 @@ const Timeline = () => {
 	const [time, setTime] = useState(0);
 	const [sleepId, setSleepId] = useState(null);
 	const [awakeId, setAwakeId] = useState(0);
-	const [activeSleepEvent, setActiveSleepEvent] = useState(null);
+    const [activeSleepEvent, setActiveSleepEvent] = useState(null);
+    const [startTime, setStartTime] = useState(null);
 
 	const {activeChild, activeChildId} = useActiveChild();
 
@@ -97,6 +99,7 @@ const Timeline = () => {
 		setEntries((prevEntries) => prevEntries.filter((entry) => entry.id !== entryId));
 		if (activeSleepEvent?.id === entryId) {
 			setActiveSleepEvent(null);
+			setStartTime(null);
 			setIsRunning(false);
 			setIsAwake(true);
 			setTime(0);
@@ -265,18 +268,13 @@ const Timeline = () => {
 							setIsRunning(true);
 							setActiveSleepEvent({id: lastEntry.id, ...lastEntryData});
 							setSleepId(lastEntry.id);
-
-							const currentTime = Timestamp.now().seconds;
-							const startTime = lastEntryData.start?.seconds;
-							if (startTime) {
-								const elapsedTime = currentTime - startTime;
-								setTime(elapsedTime);
-							}
+							setStartTime(lastEntryData.start?.toMillis?.() ?? null);
 						}
 					} else {
 						setIsAwake(true);
 						setIsRunning(false);
-						setActiveSleepEvent(null);
+                        setActiveSleepEvent(null);
+                        setStartTime(null);
 						setTime(0);
 					}
 				} catch (error) {
@@ -339,6 +337,9 @@ const Timeline = () => {
 
 	const handleStart = async () => {
 		setIsRunning(true);
+		if (activeSleepEvent?.start) {
+			setStartTime(activeSleepEvent.start.toMillis?.() ?? null);
+		}
 		if (isPaused) {
 			setIsPaused(false);
 			// get last wake entry and update end time
@@ -369,16 +370,19 @@ const Timeline = () => {
 		} else {
 			let eventUlid;
 			let sleepEntry;
+			let startTimestamp;
 			if (!activeSleepEvent) {
 				eventUlid = ulid();
+				startTimestamp = Timestamp.now();
 				sleepEntry = {
 					child_id: activeChild ? activeChild.id : null,
-					start: Timestamp.now(),
+					start: startTimestamp,
 					end: null,
 					duration: null,
 					wake: [],
 					notes: "",
 				};
+				setStartTime(startTimestamp.toMillis());
 			} else {
 				eventUlid = activeSleepEvent.id;
 				// get last wake entry for this sleep event
@@ -454,6 +458,7 @@ const Timeline = () => {
 		}
 
 		setTime(0); // Reset the timer
+		setStartTime(null);
 		setIsRunning(false);
 		setIsAwake(true);
 	};
@@ -544,7 +549,9 @@ const Timeline = () => {
 						</button>
 					)}
 				</div>
-				<div className="timer">{formatTime(time)}</div>
+				<div className="timer">
+					<Timer timestamp={startTime} />
+				</div>
 				<WaDropdown placement="top-end">
 					<WaButton
 						className="btn-accent btn-round icon-gloss"
