@@ -76,7 +76,7 @@ const GrowthEntryPage = () => {
 			await showToast("Could not save growth entry. Please try again.", "danger");
 		}
 	};
-	const handleCancel = () => navigate(-1);
+	const handleCancel = () => navigate("/growth-history");
 
 	const handleDelete = async () => {
 		if (!entryId) return;

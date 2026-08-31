@@ -77,7 +77,7 @@ const FeedEntryPage = () => {
 			await showToast("Could not save feed entry. Please try again.", "danger");
 		}
 	};
-    const handleCancel = () => navigate(-1);
+    const handleCancel = () => navigate("/feed-history");
     
     const handleDelete = async () => {
 		if (!entryId) return;

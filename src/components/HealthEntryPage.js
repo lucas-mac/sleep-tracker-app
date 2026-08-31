@@ -91,7 +91,7 @@ const HealthEntryPage = () => {
 	};
 
 	const handleCancel = () => {
-		navigate(-1);
+		navigate("/health-history");
 	};
 
 	useEffect(() => {

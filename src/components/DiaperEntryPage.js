@@ -76,7 +76,7 @@ const DiaperEntryPage = () => {
 			await showToast("Could not save diaper entry. Please try again.", "danger");
 		}
 	};
-    const handleCancel = () => navigate(-1);
+    const handleCancel = () => navigate("/diaper-history");
     
     const handleDelete = async () => {
 		if (!entryId) return;

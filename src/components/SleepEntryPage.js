@@ -77,7 +77,7 @@ const SleepEntryPage = () => {
 	};
 
 	const handleCancel = () => {
-		navigate(-1); // Navigate back to the previous page
+		navigate("/"); // Navigate back to the previous page
 	};
 
 	useEffect(() => {

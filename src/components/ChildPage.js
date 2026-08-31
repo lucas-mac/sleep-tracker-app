@@ -263,9 +263,7 @@ const ChildPage = () => {
 										>
 											<X size={24} />
 										</WaButton>
-										<WaTooltip for={`revoke-${guardianId}`}>
-											Revoke permission
-										</WaTooltip>
+										<WaTooltip for={`revoke-${guardianId}`}>Revoke permission</WaTooltip>
 									</td>
 								</tr>
 							)}
@@ -285,9 +283,7 @@ const ChildPage = () => {
 											>
 												<X size={24} />
 											</WaButton>
-											<WaTooltip for={`revoke-${index}`}>
-												Revoke permission
-											</WaTooltip>
+											<WaTooltip for={`revoke-${index}`}>Revoke permission</WaTooltip>
 										</td>
 									</tr>
 								))
@@ -327,7 +323,7 @@ const ChildPage = () => {
 					<WaButton
 						className="btn-gloss"
 						size="large"
-						onClick={() => navigate(-1)}
+						onClick={() => navigate("/profile#children")}
 						pill
 					>
 						Cancel
