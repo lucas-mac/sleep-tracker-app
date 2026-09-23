@@ -70,7 +70,7 @@ const GrowthEntryPage = () => {
 				await setDoc(doc(db, "growth", id), payload);
 			}
 
-			navigate(-1);
+			navigate("/growth-history");
 		} catch (error) {
 			console.error("Error saving growth entry:", error);
 			await showToast("Could not save growth entry. Please try again.", "danger");
@@ -83,7 +83,7 @@ const GrowthEntryPage = () => {
 		if (confirm("Are you sure you want to delete this entry?")) {
 			try {
 				await deleteDoc(doc(db, "growth", entryId));
-				navigate(-1);
+				navigate("/growth-history");
 			} catch (error) {
 				console.error("Error deleting growth entry:", error);
 				await showToast("Could not delete growth entry. Please try again.", "danger");

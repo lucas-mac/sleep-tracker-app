@@ -38,7 +38,7 @@ const SleepEntryPage = () => {
 			};
 			try {
 				await setDoc(doc(db, "sleep", ulid()), data);
-				navigate(-1); // Redirect to the main page after saving
+				navigate("/"); // Redirect to the main page after saving
 			} catch (error) {
 				console.error("Error creating entry:", error);
 			}
@@ -57,7 +57,7 @@ const SleepEntryPage = () => {
 					end: data.end,
 					note: data.note,
 				});
-				navigate(-1);
+				navigate("/");
 			} catch (error) {
 				console.error("Error updating entry:", error);
 			}
@@ -70,7 +70,7 @@ const SleepEntryPage = () => {
 		try {
 			await deleteDoc(docRef);
 			console.log("Entry deleted successfully");
-			navigate(-1);
+			navigate("/");
 		} catch (error) {
 			console.error("Error deleting entry:", error);
 		}

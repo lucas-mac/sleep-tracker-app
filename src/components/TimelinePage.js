@@ -199,6 +199,14 @@ const Timeline = () => {
 		}
 	};
 
+    const resetTimer = () => {
+		setIsAwake(true);
+		setIsRunning(false);
+		setActiveSleepEvent(null);
+		setStartTime(null);
+		setTime(0);
+	};
+
 	useEffect(() => {
 		let timer;
 		if (isRunning) {
@@ -244,6 +252,7 @@ const Timeline = () => {
 	}, [entries]);
 
     useEffect(() => {
+        resetTimer();
 		if (activeChild) {
 			fetchEntries(currentDay);
 			// eslint-disable-next-line
@@ -271,11 +280,7 @@ const Timeline = () => {
 							setStartTime(lastEntryData.start?.toMillis?.() ?? null);
 						}
 					} else {
-						setIsAwake(true);
-						setIsRunning(false);
-                        setActiveSleepEvent(null);
-                        setStartTime(null);
-						setTime(0);
+						resetTimer();
 					}
 				} catch (error) {
 					console.error("Error checking last sleep entry:", error);

@@ -71,7 +71,7 @@ const FeedEntryPage = () => {
 				await setDoc(doc(db, "feed", id), payload);
 			}
 
-			navigate(-1);
+			navigate("/feed-history");
 		} catch (error) {
 			console.error("Error saving feed entry:", error);
 			await showToast("Could not save feed entry. Please try again.", "danger");
@@ -84,7 +84,7 @@ const FeedEntryPage = () => {
 		if (confirm("Are you sure you want to delete this entry?")) {
 			try {
 				await deleteDoc(doc(db, "feed", entryId));
-				navigate(-1);
+				navigate("/feed-history");
 			} catch (error) {
 				console.error("Error deleting feed entry:", error);
 				await showToast("Could not delete feed entry. Please try again.", "danger");

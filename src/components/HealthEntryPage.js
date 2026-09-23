@@ -47,7 +47,7 @@ const HealthEntryPage = () => {
 		if (confirm("Are you sure you want to delete this entry?")) {
 			try {
 				await deleteDoc(doc(db, "health", entryId));
-				navigate(-1);
+				navigate("/health-history");
 			} catch (error) {
 				console.error("Error deleting health entry:", error);
 				await showToast("Could not delete health entry. Please try again.", "danger");
@@ -83,7 +83,7 @@ const HealthEntryPage = () => {
 				await setDoc(doc(db, "health", id), payload);
 			}
 
-			navigate(-1);
+			navigate("/health-history");
 		} catch (error) {
 			console.error("Error saving health entry:", error);
 			await showToast("Could not save health entry. Please try again.", "danger");

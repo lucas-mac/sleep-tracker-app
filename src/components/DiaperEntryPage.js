@@ -70,7 +70,7 @@ const DiaperEntryPage = () => {
 				await setDoc(doc(db, "diaper", id), payload);
 			}
 
-			navigate(-1);
+			navigate("/diaper-history");
 		} catch (error) {
 			console.error("Error saving diaper entry:", error);
 			await showToast("Could not save diaper entry. Please try again.", "danger");
@@ -83,7 +83,7 @@ const DiaperEntryPage = () => {
 		if (confirm("Are you sure you want to delete this entry?")) {
 			try {
 				await deleteDoc(doc(db, "diaper", entryId));
-				navigate(-1);
+				navigate("/diaper-history");
 			} catch (error) {
 				console.error("Error deleting diaper entry:", error);
 				await showToast("Could not delete diaper entry. Please try again.", "danger");
