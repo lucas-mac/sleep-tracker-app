@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from "react";
 import {useParams, useNavigate} from "react-router-dom";
-import {doc, setDoc, getDoc} from "firebase/firestore";
+import {doc, setDoc, getDoc, collection, query, where, getDocs, limit, updateDoc, arrayUnion, arrayRemove} from "firebase/firestore";
 import {db, auth} from "../firebase";
 import {ulid} from "ulid";
 
@@ -13,9 +13,11 @@ import WaTooltip from "@web.awesome.me/webawesome-pro/dist/react/tooltip";
 import WaColorPicker from "@web.awesome.me/webawesome-pro/dist/react/color-picker";
 import WaBreadcrumb from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb";
 import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcrumb-item";
+import WaDialog from "@web.awesome.me/webawesome-pro/dist/react/dialog";
 
 import {MainMenu} from "./Menu";
 import {X, LayoutGrid} from "lucide-react";
+import {showToast} from "../utils/toast";
 
 import IconSelector from "./IconSelector";
 
@@ -32,17 +34,140 @@ const ChildPage = () => {
 	const [avatarIcon, setAvatarIcon] = useState("");
 	const [avatarColor, setAvatarColor] = useState("");
 	const [sharedUsers, setSharedUsers] = useState([]);
+	const [sharedUserIds, setSharedUserIds] = useState([]);
+	const [shareEmail, setShareEmail] = useState("");
+	const [sharing, setSharing] = useState(false);
+	const [revokeTargetUser, setRevokeTargetUser] = useState(null);
+	const [revoking, setRevoking] = useState(false);
 
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
+	const shareDialogRef = useRef(null);
+	const revokeDialogRef = useRef(null);
 
     const birthYears = Array.from({length: 18}, (_, i) => new Date().getFullYear() - i);
 
-	const showToast = async (message, variant = "neutral") => {
-		const toast = document.querySelector("wa-toast");
-		if (!toast) return;
-		toast.placement = "top-center";
-		await toast.create(message, {variant});
+	const setDialogOpen = (dialogRef, isOpen) => {
+		if (dialogRef?.current) {
+			dialogRef.current.open = isOpen;
+		}
+	};
+
+	const openShareDialog = () => {
+		if (!childId) {
+			showToast("Save this child profile before sharing", "warning");
+			return;
+		}
+		if (auth.currentUser?.uid !== guardianId) {
+			showToast("Only the owner can share this child", "warning");
+			return;
+		}
+		setDialogOpen(shareDialogRef, true);
+	};
+
+	const handleShareWithEmail = async () => {
+		const user = auth.currentUser;
+		if (!user || !childId) return;
+
+		const normalizedEmail = shareEmail.trim().toLowerCase();
+		if (!normalizedEmail) {
+			await showToast("Enter an email address", "warning");
+			return;
+		}
+
+		setSharing(true);
+		try {
+			const userQuery = query(collection(db, "user"), where("email", "==", normalizedEmail), limit(1));
+			const querySnapshot = await getDocs(userQuery);
+
+			if (querySnapshot.empty) {
+				await showToast("No user found with that email", "warning");
+				return;
+			}
+
+			const targetDoc = querySnapshot.docs[0];
+			const targetUserId = targetDoc.id;
+			const targetData = targetDoc.data();
+			const targetName = `${targetData.firstName || ""} ${targetData.lastName || ""}`.trim() || normalizedEmail;
+
+			if (targetUserId === guardianId) {
+				await showToast("This user is already the owner", "warning");
+				return;
+			}
+
+			if (sharedUserIds.includes(targetUserId)) {
+				await showToast("This user already has access", "warning");
+				return;
+			}
+
+			await updateDoc(doc(db, "child", childId), {
+				shared_with: arrayUnion(targetUserId),
+			});
+
+			setSharedUserIds((prev) => [...prev, targetUserId]);
+			setSharedUsers((prev) => [
+				...prev,
+				{
+					id: targetUserId,
+					name: targetName,
+					email: targetData.email || normalizedEmail,
+				},
+			]);
+			setDialogOpen(shareDialogRef, false);
+			setShareEmail("");
+			await showToast("Child shared successfully", "success");
+		} catch (error) {
+			console.error("Error sharing child profile: ", error);
+			await showToast("Error sharing child profile", "danger");
+		} finally {
+			setSharing(false);
+		}
+	};
+
+	const openRevokeDialog = (targetUser) => {
+		if (auth.currentUser?.uid !== guardianId) {
+			showToast("Only the owner can revoke access", "warning");
+			return;
+		}
+		setRevokeTargetUser(targetUser);
+		setDialogOpen(revokeDialogRef, true);
+	};
+
+	const closeRevokeDialog = () => {
+		setRevokeTargetUser(null);
+		setDialogOpen(revokeDialogRef, false);
+	};
+
+	const handleRevokeSharedUser = async (targetUserId) => {
+		const user = auth.currentUser;
+		if (!user || !childId) return;
+
+		if (user.uid !== guardianId) {
+			await showToast("Only the owner can revoke access", "warning");
+			return;
+		}
+
+		if (!targetUserId || !sharedUserIds.includes(targetUserId)) {
+			await showToast("User does not have access", "warning");
+			return;
+		}
+
+		setRevoking(true);
+		try {
+			await updateDoc(doc(db, "child", childId), {
+				shared_with: arrayRemove(targetUserId),
+			});
+
+			setSharedUserIds((prev) => prev.filter((id) => id !== targetUserId));
+			setSharedUsers((prev) => prev.filter((sharedUser) => sharedUser.id !== targetUserId));
+			closeRevokeDialog();
+			await showToast("Access revoked", "success");
+		} catch (error) {
+			console.error("Error revoking child share access: ", error);
+			await showToast("Error revoking access", "danger");
+		} finally {
+			setRevoking(false);
+		}
 	};
 
 	useEffect(() => {
@@ -75,19 +200,25 @@ const ChildPage = () => {
 						setGuardian(guardianData.firstName + " " + guardianData.lastName);
 					}
 
-					const sharedWith = data.shared_with || [];
+					const sharedWith = Array.isArray(data.shared_with) ? data.shared_with : [];
+					setSharedUserIds(sharedWith);
 					if (sharedWith.length > 0) {
-						const sharedUsersQuery = query(
-							collection(db, "user"),
-							where("uid", "in", sharedWith),
-						);
-						const querySnapshot = await getDocs(sharedUsersQuery);
-						const sharedUsers = [];
-						querySnapshot.forEach((doc) => {
-							const userData = doc.data();
-							sharedUsers.push(userData.firstName + " " + userData.lastName);
-						});
-						setSharedUsers(sharedUsers);
+						const sharedUserDocs = await Promise.all(sharedWith.map((uid) => getDoc(doc(db, "user", uid))));
+						const loadedSharedUsers = sharedUserDocs
+							.map((sharedDoc, index) => {
+								if (!sharedDoc.exists()) return null;
+								const userData = sharedDoc.data();
+								const name = `${userData.firstName || ""} ${userData.lastName || ""}`.trim() || userData.email || "Unknown User";
+								return {
+									id: sharedWith[index],
+									name,
+									email: userData.email || "",
+								};
+							})
+							.filter(Boolean);
+						setSharedUsers(loadedSharedUsers);
+					} else {
+						setSharedUsers([]);
 					}
 				} else {
 					console.log("No such document!");
@@ -104,7 +235,7 @@ const ChildPage = () => {
 		if (user) {
 			setSaving(true);
 			const docId = childId || ulid(); // You can generate this ID as needed
-			try {
+            try {
 				await setDoc(doc(db, "child", docId), {
 					nickname: nickname || "",
 					birth_month: birthMonth || "",
@@ -112,8 +243,10 @@ const ChildPage = () => {
 					gender: gender || "",
 					avatar_icon: avatarIcon,
 					avatar_color: avatarColor || "",
-					guardian: user.uid,
+					guardian: guardianId || user.uid,
+					shared_with: sharedUserIds,
 				});
+
 				navigate("/profile#children");
 				await showToast("Child profile updated successfully", "success");
 			} catch (error) {
@@ -271,7 +404,7 @@ const ChildPage = () => {
 								sharedUsers.map((user, index) => (
 									<tr key={index}>
 										<td>
-											{user}
+											{user.name}
 											{auth.currentUser.uid === user.id && " (You)"}
 										</td>
 										<td>Viewer</td>
@@ -280,10 +413,12 @@ const ChildPage = () => {
 												className="btn-gloss btn-round"
 												size="small"
 												id={`revoke-${index}`}
+												onClick={() => openRevokeDialog(user)}
+												disabled={auth.currentUser.uid !== guardianId}
 											>
 												<X size={24} />
 											</WaButton>
-											<WaTooltip for={`revoke-${index}`}>Revoke permission</WaTooltip>
+											<WaTooltip for={`revoke-${index}`}>{auth.currentUser.uid === guardianId ? "Revoke permission" : "Only owner can revoke"}</WaTooltip>
 										</td>
 									</tr>
 								))
@@ -300,7 +435,7 @@ const ChildPage = () => {
 										className="btn-outline"
 										size="small"
 										pill
-										href={`/share/${childId}`}
+										onClick={openShareDialog}
 									>
 										Share with someone
 									</WaButton>
@@ -309,6 +444,69 @@ const ChildPage = () => {
 						</tfoot>
 					</table>
 				</div>
+
+				<WaDialog
+					ref={shareDialogRef}
+					label="Share Child Profile"
+				>
+					<div className="column gap-md">
+						<WaInput
+							autofocus
+							label="User Email"
+							name="share_email"
+							type="email"
+							placeholder="user@example.com"
+							value={shareEmail}
+							onChange={(e) => setShareEmail(e.target.value)}
+						></WaInput>
+						<div className="elem-group gap-sm">
+							<WaButton
+								className="btn-gloss"
+								data-dialog="close"
+								slot="footer"
+							>
+								Cancel
+							</WaButton>
+							<WaButton
+								className="btn-accent"
+								onClick={handleShareWithEmail}
+								disabled={sharing}
+								slot="footer"
+							>
+								{sharing ? "Sharing..." : "Share"}
+							</WaButton>
+						</div>
+					</div>
+				</WaDialog>
+
+				<WaDialog
+					ref={revokeDialogRef}
+					label="Revoke Access"
+				>
+					<div className="column gap-md">
+						<p>
+							Are you sure you want to revoke access for <strong>{revokeTargetUser?.name || "this user"}</strong>?
+						</p>
+						<div className="elem-group gap-sm">
+							<WaButton
+								className="btn-gloss"
+								onClick={closeRevokeDialog}
+								disabled={revoking}
+								slot="footer"
+							>
+								Cancel
+							</WaButton>
+							<WaButton
+								className="btn-accent"
+								onClick={() => handleRevokeSharedUser(revokeTargetUser?.id)}
+								disabled={revoking || !revokeTargetUser?.id}
+								slot="footer"
+							>
+								{revoking ? "Revoking..." : "Confirm"}
+							</WaButton>
+						</div>
+					</div>
+				</WaDialog>
 
 				<div className="elem-group gap-sm">
 					<WaButton

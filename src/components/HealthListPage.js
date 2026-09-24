@@ -113,9 +113,7 @@ const HealthListPage = () => {
 					<WaBreadcrumbItem href="/">
 						<LayoutGrid size={24} />
 					</WaBreadcrumbItem>
-					<WaBreadcrumbItem href={`/health-history/`}>
-						{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Health
-					</WaBreadcrumbItem>
+					<WaBreadcrumbItem href={`/health-history/`}>{activeChild ? activeChild.nickname + "'s" : "Select Child for"} Health</WaBreadcrumbItem>
 				</WaBreadcrumb>
 			</div>
 			<div className="page-content">
@@ -150,13 +148,9 @@ const HealthListPage = () => {
 								healthEntries.map((entry) => (
 									<tr key={entry.id}>
 										<td>
-											<span className="no-wrap">
-												{moment(entry.timestamp.toDate()).format("h:mm a")}
-											</span>
+											<span className=" text-uppercase no-wrap">{moment(entry.timestamp.toDate()).format("MMM D")}</span>
 											<br />
-											<small className="text-gloss text-uppercase">
-												{moment(entry.timestamp.toDate()).format("MMM D")}
-											</small>
+											<small className="text-gloss no-wrap">{moment(entry.timestamp.toDate()).format("h:mm a")}</small>
 										</td>
 										<td>{toTitleCase(entry.type)}</td>
 										<td>

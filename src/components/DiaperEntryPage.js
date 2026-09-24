@@ -4,6 +4,8 @@ import {useActiveChild} from "./ActiveChildContext";
 import {setDoc, doc, Timestamp, updateDoc, getDoc, deleteDoc} from "firebase/firestore";
 import {ulid} from "ulid";
 import {db} from "../firebase";
+import {requireEntryAccess} from "../utils/childAccess";
+import {showToast} from "../utils/toast";
 import {LayoutGrid} from "lucide-react";
 import {
 	WaBreadcrumb,
@@ -36,14 +38,7 @@ const DiaperEntryPage = () => {
 	const [note, setNote] = useState("");
 	const navigate = useNavigate();
 
-    const {activeChild, activeChildId} = useActiveChild();
-
-	const showToast = async (message, variant = "neutral") => {
-		const toast = document.querySelector("wa-toast");
-		if (!toast) return;
-		toast.placement = "top-center";
-		await toast.create(message, {variant});
-	};
+	const {activeChild, activeChildId, children, selectChild, loadingChildren} = useActiveChild();
 
 	const handleSave = async () => {
 		if (!activeChildId) {
@@ -64,6 +59,17 @@ const DiaperEntryPage = () => {
 		try {
 			if (entryId) {
 				const entryRef = doc(db, "diaper", entryId);
+				const entrySnap = await getDoc(entryRef);
+				const canAccess = await requireEntryAccess({
+					entrySnap,
+					children,
+					showToast,
+					navigate,
+					redirectTo: "/diaper-history",
+				});
+				if (!canAccess) {
+					return;
+				}
 				await updateDoc(entryRef, payload);
 			} else {
 				const id = ulid();
@@ -82,7 +88,19 @@ const DiaperEntryPage = () => {
 		if (!entryId) return;
 		if (confirm("Are you sure you want to delete this entry?")) {
 			try {
-				await deleteDoc(doc(db, "diaper", entryId));
+				const entryRef = doc(db, "diaper", entryId);
+				const entrySnap = await getDoc(entryRef);
+				const canAccess = await requireEntryAccess({
+					entrySnap,
+					children,
+					showToast,
+					navigate,
+					redirectTo: "/diaper-history",
+				});
+				if (!canAccess) {
+					return;
+				}
+				await deleteDoc(entryRef);
 				navigate("/diaper-history");
 			} catch (error) {
 				console.error("Error deleting diaper entry:", error);
@@ -93,26 +111,30 @@ const DiaperEntryPage = () => {
 
 	useEffect(() => {
 		const fetchEntry = async () => {
+			if (loadingChildren) return;
 			if (!entryId) return;
 			const docRef = doc(db, "diaper", entryId);
 			const docSnap = await getDoc(docRef);
 			if (docSnap.exists()) {
+				const canAccess = await requireEntryAccess({
+					entrySnap: docSnap,
+					children,
+					showToast,
+					navigate,
+					redirectTo: "/diaper-history",
+					selectChild,
+					activeChildId,
+					syncActiveChild: true,
+				});
+				if (!canAccess) {
+					return;
+				}
 				const data = docSnap.data();
 				// Convert Firestore Timestamp to local date and time strings
 				if (data.timestamp) {
 					const startDateObj = new Date(data.timestamp.seconds * 1000);
-					setDate(
-						startDateObj.getFullYear() +
-							"-" +
-							String(startDateObj.getMonth() + 1).padStart(2, "0") +
-							"-" +
-							String(startDateObj.getDate()).padStart(2, "0"),
-					);
-					setTime(
-						String(startDateObj.getHours()).padStart(2, "0") +
-							":" +
-							String(startDateObj.getMinutes()).padStart(2, "0"),
-					);
+					setDate(startDateObj.getFullYear() + "-" + String(startDateObj.getMonth() + 1).padStart(2, "0") + "-" + String(startDateObj.getDate()).padStart(2, "0"));
+					setTime(String(startDateObj.getHours()).padStart(2, "0") + ":" + String(startDateObj.getMinutes()).padStart(2, "0"));
 				}
 				setNote(data.note || "");
 				setType(data.type || "pee");
@@ -121,7 +143,7 @@ const DiaperEntryPage = () => {
 			}
 		};
 		fetchEntry();
-	}, [entryId]);
+	}, [entryId, children, loadingChildren]);
 
 	return (
 		<div className="page">

@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {collection, getDocs, orderBy, query, where} from "firebase/firestore";
-import {db} from "../firebase";
+import {onAuthStateChanged} from "firebase/auth";
+import {db, auth} from "../firebase";
 
 const ActiveChildContext = createContext(null);
 const STORAGE_KEY = "ST_activeChildId";
@@ -15,19 +16,45 @@ export const ActiveChildProvider = ({children}) => {
 	const refreshChildren = async () => {
 		setLoadingChildren(true);
 		try {
-			const childrenQuery = query(collection(db, "child"));
-			const querySnapshot = await getDocs(childrenQuery);
-
-			if (querySnapshot.empty) {
+			const user = auth.currentUser;
+			if (!user) {
 				setChildrenList([]);
 				setActiveChildId(null);
 				return;
 			}
 
-			const loadedChildren = querySnapshot.docs.map((childDoc) => ({
-				id: childDoc.id,
-				...childDoc.data(),
-			}));
+			const ownedChildrenQuery = query(collection(db, "child"), where("guardian", "==", user.uid));
+			const sharedChildrenQuery = query(collection(db, "child"), where("shared_with", "array-contains", user.uid));
+			const [ownedResult, sharedResult] = await Promise.allSettled([getDocs(ownedChildrenQuery), getDocs(sharedChildrenQuery)]);
+
+			const ownedDocs = ownedResult.status === "fulfilled" ? ownedResult.value.docs : [];
+			const sharedDocs = sharedResult.status === "fulfilled" ? sharedResult.value.docs : [];
+
+			if (ownedResult.status === "rejected") {
+				console.error("Error fetching owned children:", ownedResult.reason);
+			}
+			if (sharedResult.status === "rejected") {
+				console.error("Error fetching shared children:", sharedResult.reason);
+			}
+
+			const childDocs = [...ownedDocs, ...sharedDocs];
+
+			if (childDocs.length === 0) {
+				setChildrenList([]);
+				setActiveChildId(null);
+				return;
+			}
+
+			const childMap = new Map();
+			childDocs.forEach((childDoc) => {
+				if (!childMap.has(childDoc.id)) {
+					childMap.set(childDoc.id, {
+						id: childDoc.id,
+						...childDoc.data(),
+					});
+				}
+			});
+			const loadedChildren = Array.from(childMap.values());
 
 			setChildrenList(loadedChildren);
 
@@ -45,7 +72,10 @@ export const ActiveChildProvider = ({children}) => {
 	};
 
 	useEffect(() => {
-		refreshChildren();
+		const unsubscribe = onAuthStateChanged(auth, () => {
+			refreshChildren();
+		});
+		return unsubscribe;
 	}, []);
 
 	const selectChild = (childOrId) => {

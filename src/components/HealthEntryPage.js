@@ -6,7 +6,9 @@ import {useActiveChild} from "./ActiveChildContext";
 import {LayoutGrid} from "lucide-react";
 import {ulid} from "ulid";
 import {db} from "../firebase";
+import {requireEntryAccess} from "../utils/childAccess";
 import {toTitleCase} from "../utils/format";
+import {showToast} from "../utils/toast";
 import {
 	WaBreadcrumb,
 	WaBreadcrumbItem,
@@ -40,13 +42,25 @@ const HealthEntryPage = () => {
 	const [medicationName, setMedicationName] = useState("");
 	const [note, setNote] = useState("");
 	const navigate = useNavigate();
-	const {activeChild, activeChildId} = useActiveChild();
+	const {activeChild, activeChildId, children, selectChild, loadingChildren} = useActiveChild();
 
 	const handleDelete = async () => {
 		if (!entryId) return;
 		if (confirm("Are you sure you want to delete this entry?")) {
 			try {
-				await deleteDoc(doc(db, "health", entryId));
+				const entryRef = doc(db, "health", entryId);
+				const entrySnap = await getDoc(entryRef);
+				const canAccess = await requireEntryAccess({
+					entrySnap,
+					children,
+					showToast,
+					navigate,
+					redirectTo: "/health-history",
+				});
+				if (!canAccess) {
+					return;
+				}
+				await deleteDoc(entryRef);
 				navigate("/health-history");
 			} catch (error) {
 				console.error("Error deleting health entry:", error);
@@ -68,15 +82,26 @@ const HealthEntryPage = () => {
 			timestamp,
 			temperature: type === "temperature" ? temperature : null,
 			temperature_unit: type === "temperature" ? temperatureUnit : null,
-			amount: type === "medication" ? amount : null,
-			amount_unit: type === "medication" ? amountUnit : null,
-			medication_name: type === "medication" ? medicationName : null,
+			amount,
+			amount_unit: amountUnit,
+			medication_name: medicationName,
 			note,
 		};
 
 		try {
 			if (entryId) {
 				const entryRef = doc(db, "health", entryId);
+				const entrySnap = await getDoc(entryRef);
+				const canAccess = await requireEntryAccess({
+					entrySnap,
+					children,
+					showToast,
+					navigate,
+					redirectTo: "/health-history",
+				});
+				if (!canAccess) {
+					return;
+				}
 				await updateDoc(entryRef, payload);
 			} else {
 				const id = ulid();
@@ -96,26 +121,30 @@ const HealthEntryPage = () => {
 
 	useEffect(() => {
 		const fetchEntry = async () => {
+			if (loadingChildren) return;
 			if (!entryId) return;
 			const docRef = doc(db, "health", entryId);
 			const docSnap = await getDoc(docRef);
 			if (docSnap.exists()) {
+				const canAccess = await requireEntryAccess({
+					entrySnap: docSnap,
+					children,
+					showToast,
+					navigate,
+					redirectTo: "/health-history",
+					selectChild,
+					activeChildId,
+					syncActiveChild: true,
+				});
+				if (!canAccess) {
+					return;
+				}
 				const data = docSnap.data();
 				// Convert Firestore Timestamp to local date and time strings
 				if (data.timestamp) {
 					const startDateObj = new Date(data.timestamp.seconds * 1000);
-					setDate(
-						startDateObj.getFullYear() +
-							"-" +
-							String(startDateObj.getMonth() + 1).padStart(2, "0") +
-							"-" +
-							String(startDateObj.getDate()).padStart(2, "0"),
-					);
-					setTime(
-						String(startDateObj.getHours()).padStart(2, "0") +
-							":" +
-							String(startDateObj.getMinutes()).padStart(2, "0"),
-					);
+					setDate(startDateObj.getFullYear() + "-" + String(startDateObj.getMonth() + 1).padStart(2, "0") + "-" + String(startDateObj.getDate()).padStart(2, "0"));
+					setTime(String(startDateObj.getHours()).padStart(2, "0") + ":" + String(startDateObj.getMinutes()).padStart(2, "0"));
 				}
 				setNote(data.note || "");
 				setType(data.type);
@@ -127,7 +156,7 @@ const HealthEntryPage = () => {
 			}
 		};
 		fetchEntry();
-	}, [entryId]);
+	}, [entryId, children, loadingChildren]);
 
 	return (
 		<div className="page">

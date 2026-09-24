@@ -1,8 +1,72 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true; // Allow all reads and writes
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isChildAccessible(childData) {
+      return isSignedIn()
+        && (
+          childData.guardian == request.auth.uid
+          || (
+            childData.shared_with != null
+            && request.auth.uid in childData.shared_with
+          )
+        );
+    }
+
+    function hasChildAccess(childId) {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/child/$(childId))
+        && isChildAccessible(get(/databases/$(database)/documents/child/$(childId)).data);
+    }
+
+    match /user/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /child/{childId} {
+      allow read: if isChildAccessible(resource.data);
+
+      allow create: if isSignedIn()
+        && request.resource.data.guardian == request.auth.uid;
+
+      allow update: if isChildAccessible(resource.data)
+        && request.resource.data.guardian == resource.data.guardian;
+
+      allow delete: if isChildAccessible(resource.data);
+    }
+
+    match /sleep/{entryId} {
+      allow read, write: if hasChildAccess(resource.data.child_id);
+      allow create: if hasChildAccess(request.resource.data.child_id);
+    }
+
+    match /feed/{entryId} {
+      allow read, write: if hasChildAccess(resource.data.child_id);
+      allow create: if hasChildAccess(request.resource.data.child_id);
+    }
+
+    match /diaper/{entryId} {
+      allow read, write: if hasChildAccess(resource.data.child_id);
+      allow create: if hasChildAccess(request.resource.data.child_id);
+    }
+
+    match /health/{entryId} {
+      allow read, write: if hasChildAccess(resource.data.child_id);
+      allow create: if hasChildAccess(request.resource.data.child_id);
+    }
+
+    match /growth/{entryId} {
+      allow read, write: if hasChildAccess(resource.data.child_id);
+      allow create: if hasChildAccess(request.resource.data.child_id);
+    }
+
+    match /milestone/{entryId} {
+      allow read, write: if hasChildAccess(resource.data.child_id);
+      allow create: if hasChildAccess(request.resource.data.child_id);
     }
   }
 }

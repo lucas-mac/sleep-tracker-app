@@ -18,6 +18,7 @@ import WaBreadcrumbItem from "@web.awesome.me/webawesome-pro/dist/react/breadcru
 
 import {MainMenu} from "./Menu";
 import {LayoutGrid} from "lucide-react";
+import {showToast} from "../utils/toast";
 
 import "./ProfilePage.css";
 
@@ -34,31 +35,55 @@ const ProfilePage = () => {
 
 	useEffect(() => {
 		const fetchUserData = async () => {
-			const user = auth.currentUser;
-			if (user) {
-				const userDoc = await getDoc(doc(db, "user", user.uid));
-				if (userDoc.exists()) {
-					const data = userDoc.data();
-					setFirstName(data.firstName || "");
-					setLastName(data.lastName || "");
-					setEmail(data.email || "");
+			try {
+				const user = auth.currentUser;
+				if (user) {
+					const userDoc = await getDoc(doc(db, "user", user.uid));
+					if (userDoc.exists()) {
+						const data = userDoc.data();
+						setFirstName(data.firstName || "");
+						setLastName(data.lastName || "");
+						setEmail(data.email || "");
+					}
 				}
+			} catch (error) {
+				console.error("Error fetching user data:", error);
 			}
 			setLoading(false);
 		};
-		fetchUserData();
+
 		const fetchChildData = async () => {
-			const user = auth.currentUser;
-			if (user) {
-				const q = query(collection(db, "child"), where("guardian", "==", user.uid));
-				const querySnapshot = await getDocs(q);
-				const childrenData = [];
-				querySnapshot.forEach((doc) => {
-					childrenData.push({id: doc.id, ...doc.data()});
-				});
-				setChildren(childrenData);
+			try {
+				const user = auth.currentUser;
+				if (user) {
+					const ownedChildrenQuery = query(collection(db, "child"), where("guardian", "==", user.uid));
+					const sharedChildrenQuery = query(collection(db, "child"), where("shared_with", "array-contains", user.uid));
+					const [ownedResult, sharedResult] = await Promise.allSettled([getDocs(ownedChildrenQuery), getDocs(sharedChildrenQuery)]);
+
+					if (ownedResult.status === "rejected") {
+						console.error("Error fetching owned children:", ownedResult.reason);
+					}
+					if (sharedResult.status === "rejected") {
+						console.error("Error fetching shared children:", sharedResult.reason);
+					}
+
+					const ownedDocs = ownedResult.status === "fulfilled" ? ownedResult.value.docs : [];
+					const sharedDocs = sharedResult.status === "fulfilled" ? sharedResult.value.docs : [];
+					const childMap = new Map();
+					[...ownedDocs, ...sharedDocs].forEach((childDoc) => {
+						if (!childMap.has(childDoc.id)) {
+							childMap.set(childDoc.id, {id: childDoc.id, ...childDoc.data()});
+						}
+					});
+					setChildren(Array.from(childMap.values()));
+				}
+			} catch (error) {
+				console.error("Error fetching child data:", error);
+				setChildren([]);
 			}
 		};
+
+		fetchUserData();
 		fetchChildData();
 	}, []);
 
@@ -87,13 +112,6 @@ const ProfilePage = () => {
 				setSaving(false);
 			}
 		}
-	};
-
-	const showToast = async (message, variant = "neutral") => {
-		const toast = document.querySelector("wa-toast");
-		if (!toast) return;
-		toast.placement = "top-center";
-		await toast.create(message, {variant});
 	};
 
 	if (loading) {

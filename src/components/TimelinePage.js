@@ -41,6 +41,7 @@ import {
 	IconPoo,
 	IconDroplets,
 } from "@tabler/icons-react";
+import {showToast} from "../utils/toast";
 
 import {ulid} from "ulid";
 
@@ -72,13 +73,6 @@ const Timeline = () => {
 	const now = new Date();
 	const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
 	const navigate = useNavigate();
-
-	const showToast = async (message, variant = "neutral") => {
-		const toast = document.querySelector("wa-toast");
-		if (!toast) return;
-		toast.placement = "top-center";
-		await toast.create(message, {variant});
-	};
 
 	const handlePageChange = (page) => () => navigate(`/${page}`);
 

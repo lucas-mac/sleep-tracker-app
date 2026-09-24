@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from "react";
-import {doc, getDoc, setDoc, updateDoc, Timestamp} from "firebase/firestore";
+import {doc, getDoc, setDoc, updateDoc, deleteDoc, Timestamp} from "firebase/firestore";
 import {db} from "../firebase";
 import {useParams, useNavigate} from "react-router-dom";
 import {ulid} from "ulid";
 import {useActiveChild} from "./ActiveChildContext";
+import {requireEntryAccess} from "../utils/childAccess";
+import {showToast} from "../utils/toast";
 import Header from "./Header";
 import {
 	WaSwitch,
@@ -26,9 +28,14 @@ const SleepEntryPage = () => {
 	const [endTime, setEndTime] = useState("");
 	const [note, setNote] = useState("");
 	const [isOngoing, setIsOngoing] = useState(false);
-	const {activeChildId} = useActiveChild();
+	const {activeChildId, children, selectChild, loadingChildren} = useActiveChild();
 
 	const handleSave = async () => {
+		if (!activeChildId) {
+			await showToast("Please select a child before saving.", "warning");
+			return;
+		}
+
 		if (!entryId) {
 			const data = {
 				child_id: activeChildId,
@@ -51,6 +58,17 @@ const SleepEntryPage = () => {
 				note: note,
 			};
 			try {
+				const entrySnap = await getDoc(docRef);
+				const canAccess = await requireEntryAccess({
+					entrySnap,
+					children,
+					showToast,
+					navigate,
+					redirectTo: "/",
+				});
+				if (!canAccess) {
+					return;
+				}
 				await updateDoc(docRef, {
 					child_id: data.child_id,
 					start: data.start,
@@ -68,6 +86,17 @@ const SleepEntryPage = () => {
 		if (!entryId) return;
 		const docRef = doc(db, "sleep", entryId);
 		try {
+			const entrySnap = await getDoc(docRef);
+			const canAccess = await requireEntryAccess({
+				entrySnap,
+				children,
+				showToast,
+				navigate,
+				redirectTo: "/",
+			});
+			if (!canAccess) {
+				return;
+			}
 			await deleteDoc(docRef);
 			console.log("Entry deleted successfully");
 			navigate("/");
@@ -82,41 +111,35 @@ const SleepEntryPage = () => {
 
 	useEffect(() => {
 		const fetchEntry = async () => {
+			if (loadingChildren) return;
 			if (!entryId) return;
 			const docRef = doc(db, "sleep", entryId);
 			const docSnap = await getDoc(docRef);
 			if (docSnap.exists()) {
+				const canAccess = await requireEntryAccess({
+					entrySnap: docSnap,
+					children,
+					showToast,
+					navigate,
+					redirectTo: "/",
+					selectChild,
+					activeChildId,
+					syncActiveChild: true,
+				});
+				if (!canAccess) {
+					return;
+				}
 				const data = docSnap.data();
 				// Convert Firestore Timestamp to local date and time strings
 				if (data.start) {
 					const startDateObj = new Date(data.start.seconds * 1000);
-					setStartDate(
-						startDateObj.getFullYear() +
-							"-" +
-							String(startDateObj.getMonth() + 1).padStart(2, "0") +
-							"-" +
-							String(startDateObj.getDate()).padStart(2, "0"),
-					);
-					setStartTime(
-						String(startDateObj.getHours()).padStart(2, "0") +
-							":" +
-							String(startDateObj.getMinutes()).padStart(2, "0"),
-					);
+					setStartDate(startDateObj.getFullYear() + "-" + String(startDateObj.getMonth() + 1).padStart(2, "0") + "-" + String(startDateObj.getDate()).padStart(2, "0"));
+					setStartTime(String(startDateObj.getHours()).padStart(2, "0") + ":" + String(startDateObj.getMinutes()).padStart(2, "0"));
 				}
 				if (data.end) {
 					const endDateObj = new Date(data.end.seconds * 1000);
-					setEndDate(
-						endDateObj.getFullYear() +
-							"-" +
-							String(endDateObj.getMonth() + 1).padStart(2, "0") +
-							"-" +
-							String(endDateObj.getDate()).padStart(2, "0"),
-					);
-					setEndTime(
-						String(endDateObj.getHours()).padStart(2, "0") +
-							":" +
-							String(endDateObj.getMinutes()).padStart(2, "0"),
-					);
+					setEndDate(endDateObj.getFullYear() + "-" + String(endDateObj.getMonth() + 1).padStart(2, "0") + "-" + String(endDateObj.getDate()).padStart(2, "0"));
+					setEndTime(String(endDateObj.getHours()).padStart(2, "0") + ":" + String(endDateObj.getMinutes()).padStart(2, "0"));
 				} else {
 					setIsOngoing(true);
 				}
@@ -124,7 +147,7 @@ const SleepEntryPage = () => {
 			}
 		};
 		fetchEntry();
-	}, [entryId]);
+	}, [entryId, children, loadingChildren]);
 
 	return (
 		<div className="page">

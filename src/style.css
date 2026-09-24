@@ -808,7 +808,12 @@ wa-breadcrumb-item {
     outline-offset:-4px;
 }
 
+wa-toast-item::part(content){
+    color: var(--text);
+}
 
+wa-toast-item::part(toast-item),
+wa-dialog::part(dialog),
 wa-dropdown::part(menu),
 wa-dropdown-item::part(submenu){
 	background-color: var(--bg);
